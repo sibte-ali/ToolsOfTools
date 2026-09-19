@@ -1,0 +1,26 @@
+---
+import HubPage from '../../../components/HubPage.astro';
+import { foldersByLang, toolsByLang, type Tool } from '../../../lib/tools';
+
+export function getStaticPaths() {
+  const ptFolders = foldersByLang('pt-br');
+  const ptTools = toolsByLang('pt-br');
+
+  return ptFolders.map((folder) => ({
+    params: { folder },
+    props: {
+      folder,
+      tools: ptTools.filter((t) => t.folder === folder),
+    },
+  }));
+}
+
+interface Props {
+  folder: string;
+  tools: Tool[];
+}
+
+const { folder, tools } = Astro.props;
+---
+
+<HubPage lang="pt-br" folder={folder} tools={tools} />

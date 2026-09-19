@@ -13,8 +13,19 @@ export default defineConfig({
   },
   compressHTML: true,
   prefetch: false,
-  integrations: [sitemap()],
+  i18n: {
+    defaultLocale: 'en',
+    locales: ['en', 'pt-br', 'es'],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
+  integrations: [
+    sitemap({
+      filter: (page) => !page.includes('/es/otras-calculadoras/calculadora/'),
+    }),
+  ],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [/** @type {any} */ (tailwindcss())],
   },
 });

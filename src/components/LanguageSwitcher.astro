@@ -1,0 +1,51 @@
+---
+import { getHreflang } from '../lib/hreflang';
+import { supportedLanguages, getHtmlLang, getLanguageHome } from '../i18n';
+
+interface Props {
+  currentUrl: string;
+  currentLang: string;
+}
+
+const { currentUrl, currentLang } = Astro.props;
+
+const alternates = getHreflang(currentUrl, currentLang);
+
+const languageLabels: Record<string, string> = {
+  en: 'English',
+  'pt-br': 'Português',
+  es: 'Español',
+};
+
+const items = supportedLanguages.map((lang) => {
+  const htmlCode = getHtmlLang(lang);
+  const match = alternates.find((a) => a.lang === htmlCode);
+  const targetUrl = match ? match.url : getLanguageHome(lang);
+  const isCurrent = lang === currentLang;
+
+  return {
+    lang,
+    label: languageLabels[lang] || lang,
+    url: targetUrl,
+    isCurrent,
+  };
+});
+---
+
+<nav aria-label="Language selection" class="flex items-center gap-1.5 text-xs font-medium">
+  {
+    items.map((item) => (
+      <a
+        href={item.url}
+        class={`rounded-md px-2.5 py-1.5 transition-colors ${
+          item.isCurrent
+            ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 font-semibold shadow-xs'
+            : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white'
+        }`}
+        aria-current={item.isCurrent ? 'true' : undefined}
+      >
+        {item.label}
+      </a>
+    ))
+  }
+</nav>

@@ -1,0 +1,20 @@
+---
+import ToolPage from '../../components/ToolPage.astro';
+import { toolsByLang, type Tool } from '../../lib/tools';
+
+export function getStaticPaths() {
+  const enTools = toolsByLang('en');
+  return enTools.map((tool) => ({
+    params: { folder: tool.folder, slug: tool.slug },
+    props: { tool },
+  }));
+}
+
+interface Props {
+  tool: Tool;
+}
+
+const { tool } = Astro.props;
+---
+
+<ToolPage lang="en" tool={tool} />

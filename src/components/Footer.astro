@@ -1,0 +1,27 @@
+---
+import { getTranslations } from '../i18n';
+
+interface Props {
+  lang?: string;
+}
+
+const { lang = 'en' } = Astro.props;
+const t = getTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-neutral-200 bg-white py-12 dark:border-neutral-800 dark:bg-neutral-900 mt-20">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="text-center md:text-left">
+        <p class="text-sm font-semibold text-neutral-900 dark:text-white">ToolsOfTools</p>
+        <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+          {t.footer.description}
+        </p>
+      </div>
+      <div class="text-xs text-neutral-400 dark:text-neutral-500">
+        &copy; {year} ToolsOfTools. {t.footer.allRightsReserved}
+      </div>
+    </div>
+  </div>
+</footer>
