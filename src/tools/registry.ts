@@ -38,12 +38,30 @@ import ieltsBandConfig from './en/ielts-band-calculator';
 import markExamConfig from './en/mark-calculator-exam';
 import gateConfig from './en/gate-calculator';
 
-// Portuguese tools
+// Batch C Health & Fitness tools (EN)
+import calorieConfig from './en/calorie-calculator';
+import idealWeightConfig from './en/ideal-weight-calculator';
+import bodyShapeConfig from './en/body-shape-calculator';
+import bmiConfig from './en/bmi-calculator';
+import plateWeightConfig from './en/plate-weight-calculator';
+import paceConfig from './en/pace-calculator';
+import calorieBurnConfig from './en/calorie-burn-calculator';
+
+// Batch C Health & Fitness tools (PT-BR)
+import pacePtBrConfig from './pt-br/calculadora-de-pace';
+import caloriasPtBrConfig from './pt-br/calculadora-de-calorias';
+import macrosPtBrConfig from './pt-br/calculadora-de-macros';
+import tdeePtBrConfig from './pt-br/tdee-calculator';
+import imcPtBrConfig from './pt-br/imc';
+
+// Batch C Health & Fitness tools (ES)
+import ritmoEsConfig from './es/calculadora-de-ritmos';
+
+// Portuguese Finance tools
 import investimentoPtBrConfig from './pt-br/calculadora-de-investimentos';
 
 const registry: Record<string, Record<string, ToolConfig>> = {
   en: {
-    // Batch A
     'swp-calculator': swpConfig,
     'pf-calculator': pfConfig,
     'discount-calculator': discountConfig,
@@ -54,7 +72,7 @@ const registry: Record<string, Record<string, ToolConfig>> = {
     'lot-size-calculator': lotSizeConfig,
     'car-loan-emi-calculator': carLoanConfig,
     'home-loan-calculator': homeLoanConfig,
-    sip: sipConfig,
+    'sip': sipConfig,
     'scss-calculator': scssConfig,
     'cash-calculator': cashConfig,
     'reducing-emi-calculator': reducingEmiConfig,
@@ -64,8 +82,6 @@ const registry: Record<string, Record<string, ToolConfig>> = {
     'mortgage-loan-calculator': mortgageConfig,
     'compound-interest-calculator': compoundConfig,
     'lump-sum-amount': lumpSumConfig,
-
-    // Batch B
     'attendance-calculator': attendanceConfig,
     'cat-score-calculator': catConfig,
     'how-to-calculate-cgpa-to-percentage': cgpaToPctConfig,
@@ -80,10 +96,25 @@ const registry: Record<string, Record<string, ToolConfig>> = {
     'ielts-band-calculator': ieltsBandConfig,
     'mark-calculator-exam': markExamConfig,
     'gate-calculator': gateConfig,
+    'calorie-calculator': calorieConfig,
+    'ideal-weight-calculator': idealWeightConfig,
+    'body-shape-calculator': bodyShapeConfig,
+    'bmi-calculator': bmiConfig,
+    'plate-weight-calculator': plateWeightConfig,
+    'pace-calculator': paceConfig,
+    'calorie-burn-calculator': calorieBurnConfig,
   },
   'pt-br': {
     'calculadora-de-investimentos': investimentoPtBrConfig,
+    'calculadora-de-pace': pacePtBrConfig,
+    'calculadora-de-calorias': caloriasPtBrConfig,
+    'calculadora-de-macros': macrosPtBrConfig,
+    'tdee-calculator': tdeePtBrConfig,
+    'imc': imcPtBrConfig,
   },
+  es: {
+    'calculadora-de-ritmos': ritmoEsConfig,
+  }
 };
 
 export function getToolConfig(lang: string, slug: string): ToolConfig | null {

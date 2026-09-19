@@ -12,10 +12,16 @@ import { calculateJeeMainScore } from './en/jee-marks-calculator';
 import { calculateSgpaToCgpa } from './en/sgpa-to-cgpa';
 import { calculateSrmGpa } from './en/srm-cgpa-calculator';
 import { convertSgpaToPercentage } from './en/how-to-convert-sgpa-into-percentage';
-import { calculateJeeAdvPaper } from './en/jee-advanced-marks-calculator';
+import jeeAdvConfig, { calculateJeeAdvPaper } from './en/jee-advanced-marks-calculator';
 import { calculateIeltsBands, roundIeltsOverallBand } from './en/ielts-band-calculator';
 import { calculateWeightedExamGrade } from './en/mark-calculator-exam';
 import { calculateGateMarks } from './en/gate-calculator';
+
+function runCompute(config: { compute: (v: any) => any }, values: Record<string, any>): Record<string, any> {
+  const res = config.compute(values);
+  if (res instanceof Error) throw res;
+  return res as Record<string, any>;
+}
 
 describe('Batch B Education Tools Unit Tests', () => {
   // 1. Attendance Calculator

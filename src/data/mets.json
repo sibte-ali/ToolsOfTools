@@ -1,0 +1,130 @@
+[
+  {
+    "id": "walking_moderate",
+    "name": "Walking (moderate pace, ~4.8 km/h / 3.0 mph)",
+    "category": "Walking",
+    "met": 3.5,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "walking_brisk",
+    "name": "Walking (brisk pace, ~5.6 km/h / 3.5 mph)",
+    "category": "Walking",
+    "met": 4.3,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "jogging_general",
+    "name": "Jogging (general, ~7.0 km/h / 4.3 mph)",
+    "category": "Running",
+    "met": 7.0,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "running_8kmh",
+    "name": "Running (8.0 km/h / 5.0 mph)",
+    "category": "Running",
+    "met": 8.3,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "running_10kmh",
+    "name": "Running (9.7-10.0 km/h / 6.0 mph)",
+    "category": "Running",
+    "met": 9.8,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "running_12kmh",
+    "name": "Running (12.0 km/h / 7.5 mph)",
+    "category": "Running",
+    "met": 11.8,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "cycling_leisure",
+    "name": "Cycling (leisure, flat, 15-19 km/h / 9.4-12 mph)",
+    "category": "Cycling",
+    "met": 6.0,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "cycling_vigorous",
+    "name": "Cycling (vigorous, 22-25 km/h / 14-16 mph)",
+    "category": "Cycling",
+    "met": 10.0,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "swimming_freestyle_mod",
+    "name": "Swimming (freestyle, moderate effort)",
+    "category": "Water Activities",
+    "met": 7.0,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "swimming_vigorous",
+    "name": "Swimming (vigorous, crawl or butterfly)",
+    "category": "Water Activities",
+    "met": 9.8,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "resistance_training",
+    "name": "Weight Lifting / Resistance Training (moderate)",
+    "category": "Conditioning",
+    "met": 3.5,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "vigorous_weights",
+    "name": "Weight Lifting (vigorous powerlifting or circuit)",
+    "category": "Conditioning",
+    "met": 6.0,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "hiit_calisthenics",
+    "name": "HIIT / Calisthenics (burpees, jumping jacks, intense)",
+    "category": "Conditioning",
+    "met": 8.0,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "jump_rope",
+    "name": "Jumping Rope (moderate to fast pace)",
+    "category": "Conditioning",
+    "met": 11.0,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "yoga_hatha",
+    "name": "Yoga (Hatha / gentle stretching)",
+    "category": "Flexibility & Balance",
+    "met": 2.5,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  },
+  {
+    "id": "pilates_general",
+    "name": "Pilates (mat exercises)",
+    "category": "Flexibility & Balance",
+    "met": 3.0,
+    "source_url": "https://sites.google.com/site/compendiumofphysicalactivities/",
+    "last_verified": "2026-03-01"
+  }
+]

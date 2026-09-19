@@ -1,75 +1,83 @@
 ---
-title: "Tdee calculator Online Grátis - ToolsOfTools"
-description: "Calcule tdee calculator com precisão instantânea diretamente no seu navegador. Ferramenta gratuita, 100% privada e sem necessidade de cadastro ou instalação."
-h1: "Tdee calculator Online"
-intro: "Utilize nossa calculadora de tdee calculator para obter resultados imediatos e matematicamente exatos. Todo o processamento ocorre localmente no seu dispositivo."
+title: "TDEE Calculator - Gasto Energético Total Diário (GET)"
+description: "Calcule seu TDEE (Gasto Energético Total Diário) online em português. Compare as fórmulas Mifflin-St Jeor e Harris-Benedict com fatores de atividade física."
+h1: "TDEE Calculator"
+intro: "Calcule seu TDEE (Total Daily Energy Expenditure / Gasto Energético Total) comparando as fórmulas científicas de Mifflin-St Jeor e Harris-Benedict."
 primaryKeyword: "tdee calculator"
-formula: "Resultado = f(tdee calculator)"
-example: "Para os valores padrão informados, o cálculo resulta em 100 unidades com base nos parâmetros convencionais do algoritmo."
+formula: "\\text{TDEE} = \\text{TMB} \\times \\text{Fator de Atividade Física (1{,}2 a 1{,}9)}"
+example: "Para um homem de 30 anos pesando 75 kg com 178 cm e atividade moderada, a fórmula de Mifflin-St Jeor resulta em TMB de 1.718 kcal e TDEE de 2.663 kcal/dia."
 faq:
-  - q: "Como funciona a ferramenta de tdee calculator?"
-    a: "A ferramenta executa algoritmos matemáticos padronizados instantaneamente no seu navegador, sem enviar dados para servidores externos."
-  - q: "Os dados inseridos no cálculo ficam salvos?"
-    a: "Não. Nenhuma informação pessoal ou número digitado é transmitido, gravado em banco de dados ou monitorado."
-  - q: "Qual o grau de precisão dos resultados?"
-    a: "Os cálculos seguem fórmulas oficiais e utilizam precisão de ponto flutuante de 64 bits para evitar distorções de arredondamento."
-  - q: "Posso utilizar esta ferramenta no celular?"
-    a: "Sim, o layout é totalmente responsivo e adaptado para telas móveis, tablets e computadores desktop."
+  - q: "O que significa a sigla TDEE?"
+    a: "TDEE significa 'Total Daily Energy Expenditure', conhecido na literatura médica em português como GET (Gasto Energético Total). É o somatório de todas as calorias que seu corpo queima ao longo de 24 horas."
+  - q: "Qual a diferença entre a fórmula de Mifflin-St Jeor e Harris-Benedict?"
+    a: "A equação de Harris-Benedict original data de 1919 (revisada em 1984), tendendo a superestimar o gasto energético em populações modernas mais sedentárias. A fórmula de Mifflin-St Jeor (1990) é considerada o padrão-ouro atual pela maioria dos órgãos internacionais de nutrição."
+  - q: "Quantas calorias compõem o TDEE além do exercício físico?"
+    a: "O exercício estruturado representa apenas 5% a 15% do TDEE. Cerca de 60% a 70% decorrem do metabolismo basal (TMB), 15% a 25% de movimentos inconscientes do dia a dia (NEAT) e 10% da digestão dos alimentos (efeito térmico dos alimentos / TEF)."
+  - q: "Como utilizar o TDEE para definir minha dieta?"
+    a: "Para manter o peso estável, consuma calorias iguais ao seu TDEE. Para emagrecer com saúde, reduza 300 a 500 kcal do TDEE. Para ganho de massa muscular (bulking), adicione 300 a 500 kcal ao TDEE."
+  - q: "O TDEE varia em dias de descanso e dias de treino?"
+    a: "Sim. Nos dias em que você treina pesado, seu gasto calórico real é maior do que nos dias de repouso absoluto. A maioria das pessoas prefere utilizar uma média diária semanal para manter estabilidade no planejamento de refeições."
 sources:
-  - label: "World Health Organization (WHO) BMI Classification Standards"
-    url: "https://www.who.int"
-  - label: "Centers for Disease Control and Prevention Guidelines"
-    url: "https://www.cdc.gov"
+  - label: "Sociedade Brasileira de Endocrinologia e Metabologia (SBEM)"
+    url: "https://www.endocrino.org.br"
+  - label: "FAO/WHO/UNU Expert Consultation on Human Energy Requirements"
+    url: "https://www.who.int/publications/m/item/human-energy-requirements"
 updated: "2026-03-01"
 related:
-  - "calculadora-de-pace"
   - "calculadora-de-calorias"
-  - "calculadora-menstrual"
   - "calculadora-de-macros"
+  - "imc"
+  - "calculadora-de-pace"
 disclaimer: "health"
 ---
 
-## Entendendo o Funcionamento de Tdee calculator
+## Compreendendo o Gasto Energético Total Diário (TDEE)
 
-O cálculo preciso de tdee calculator é essencial para decisões assertivas no dia a dia, seja no âmbito do planejamento pessoal, gestão financeira, saúde preventiva ou rotina de estudos. A compreensão detalhada das variáveis que compõem o modelo matemático permite não apenas obter um número final, mas interpretar o impacto de cada parâmetro no cenário projetado.
+O termo em inglês **TDEE (Total Daily Energy Expenditure)** consolidou-se como a principal referência nos aplicativos de rastreamento de dieta, fóruns de musculação e consultórios nutricionais no Brasil. Na literatura médica lusófona, o TDEE é formalmente denominado **Gasto Energético Total (GET)**.
 
-Historicamente, muitas pessoas recorriam a planilhas manuais ou fórmulas aproximadas para estimar tdee calculator. No entanto, pequenas inconsistências no tratamento de casas decimais, convenções de calendário ou intervalos de arredondamento podem acumular distorções expressivas ao longo do tempo. Nossa ferramenta foi desenvolvida com rigor técnico para assegurar conformidade com os modelos analíticos mais consolidados e auditados.
+Calcular seu TDEE é o primeiro passo essencial para qualquer estratégia corporal: ele representa o ponto neutro de equilíbrio no qual você não ganha nem perde peso.
 
-### Variáveis Fundamentais e Parâmetros de Entrada
+### Os Quatro Componentes Fisiológicos do TDEE
 
-Para obter o melhor rendimento com esta calculadora, é imprescindível atentar para a padronização das unidades de medida empregadas em cada etapa do preenchimento:
+O consumo calórico do seu corpo ao longo de 24 horas é a soma de quatro mecanismos independentes:
 
-1. **Definição Clara dos Dados Iniciais:** Certifique-se de que os valores numéricos correspondam ao mesmo período de referência e não incluam encargos embutidos ou taxas não declaradas previamente.
-2. **Intervalos e Escalas:** No caso de índices percentuais ou períodos temporais, mantenha consistência formal entre taxas anuais, mensais ou diárias, convertendo-as antes do processamento.
-3. **Consistência de Unidades:** A precisão do resultado depende diretamente da coerência dimensional dos dados inseridos pelo usuário.
-4. **Verificação de Arredondamentos:** Ajuste os limites decimais de acordo com a finalidade prática da sua estimativa, prevenindo perdas cumulativas.
+1. **Taxa Metabólica Basal (TMB / BMR, $\sim 60\% - 70\%$ do total)**: A energia necessária para manter batimentos cardíacos, atividade cerebral, temperatura corporal a 36,5°C e respiração.
+2. **Termogênese das Atividades sem Exercício (NEAT, $\sim 15\%$ do total)**: A energia gasta em movimentos espontâneos (subir escadas, gesticular, ficar em pé, limpar a casa).
+3. **Exercício Físico Estruturado (EAT, $\sim 5\% - 15\%$ do total)**: O gasto calórico deliberado durante treinos de musculação, corrida, natação ou ciclismo.
+4. **Efeito Térmico dos Alimentos (TEF, $\sim 10\%$ do total)**: A energia necessária para mastigar, digerir, absorver e metabolizar os nutrientes ingeridos.
 
-### Cenários Práticos de Aplicação e Simulação
+### Comparativo de Fórmulas: Mifflin-St Jeor vs. Harris-Benedict
 
-A aplicação prática do cálculo de tdee calculator estende-se por múltiplos contextos da rotina contemporânea. Em cenários de planejamento prospectivo, simular diferentes composições de parâmetros permite prever com antecedência gargalos operacionais ou desvios orçamentários. Por exemplo, alterar gradualmente as taxas ou grandezas de entrada auxilia na determinação do ponto de equilíbrio e na identificação de margens de contingência seguras.
+Nossa ferramenta permite alternar entre os dois modelos metabólicos mais respeitados da medicina esportiva:
 
-Em contextos corporativos ou acadêmicos, a reprodutibilidade dos resultados é um fator crítico. Registrar os parâmetros exatos utilizados em cada ensaio possibilita auditorias futuras e consolida relatórios comparativos consistentes entre equipes multidisciplinares.
+#### 1. Equação de Mifflin-St Jeor (1990)
+Considerada o padrão mais fidedigno pela Academia de Nutrição e Dietética:
+- **Homens:** $\text{TMB} = 10 \times \text{Peso (kg)} + 6,25 \times \text{Altura (cm)} - 5 \times \text{Idade} + 5$
+- **Mulheres:** $\text{TMB} = 10 \times \text{Peso (kg)} + 6,25 \times \text{Altura (cm)} - 5 \times \text{Idade} - 161$
 
-### Erros Comuns e Como Evitá-los
+#### 2. Equação de Harris-Benedict Revisada (Roza & Shizgal, 1984)
+- **Homens:** $\text{TMB} = 88,362 + (13,397 \times \text{Peso}) + (4,799 \times \text{Altura}) - (5,677 \times \text{Idade})$
+- **Mulheres:** $\text{TMB} = 447,593 + (9,247 \times \text{Peso}) + (3,098 \times \text{Altura}) - (4,330 \times \text{Idade})$
 
-Durante a elaboração de cálculos envolvendo tdee calculator, alguns equívocos recorrentes costumam prejudicar a integridade dos dados finais:
+### Exemplo Prático com Passo a Passo
 
-- **Desconsiderar Fatores Estacionais:** Variações sazonais em períodos letivos, feriados bancários ou flutuações de mercado alteram as premissas básicas.
-- **Misturar Bases Temporais:** Aplicar taxas mensais sobre períodos contados em dias úteis sem a devida equalização matemática gera disparidades acumuladas.
-- **Omissão de Custos Acessórios:** Em operações com ativos ou despesas, ignorar tarifas administrativas ou retenções tributárias reduz a precisão do resultado líquido.
+Vejamos um caso prático de um homem de $30\text{ anos}$, com $75\text{ kg}$, $178\text{ cm}$ de estatura e que treina musculação 4 dias por semana ($\text{Fator } 1,55$):
 
-### Recomendações Adicionais e Critérios de Interpretação
+1. **Cálculo da TMB (Mifflin-St Jeor)**:
+   $$\text{TMB} = (10 \times 75) + (6,25 \times 178) - (5 \times 30) + 5$$
+   $$\text{TMB} = 750 + 1112,5 - 150 + 5 = 1717,5 \to \mathbf{1.718\text{ kcal}}$$
 
-Ao integrar os dados obtidos em relatórios gerenciais, balanços patrimoniais ou prontuários de acompanhamento, recomenda-se registrar explicitamente o método de cálculo utilizado. Em situações que envolvam múltiplos intervenientes, como credores, órgãos fiscalizadores ou comitês científicos, a transparência nos critérios de arredondamento e na seleção das variáveis primárias previne litígios operacionais e divergências contratuais.
+2. **Cálculo do TDEE**:
+   $$\text{TDEE} = 1718 \times 1,55 = 2662,9 \to \mathbf{2.663\text{ kcal/dia}}$$
 
-Sempre que cabível, realize a validação cruzada dos resultados com publicações técnicas oficiais de referência. A combinação entre velocidade de processamento computacional no navegador e rigor na checagem dos parâmetros garante máxima conformidade analítica.
+3. **Cenários de Aplicação Prática**:
+   - **Manutenção de Peso**: Consumir cerca de $2.663\text{ kcal/dia}$.
+   - **Perda de Gordura / Definição (Cutting)**: Reduzir $500\text{ kcal} \implies \mathbf{2.163\text{ kcal/dia}}$.
+   - **Ganho de Massa Muscular (Bulking Limpo)**: Adicionar $300\text{ kcal} \implies \mathbf{2.963\text{ kcal/dia}}$.
 
-### Metodologia de Verificação e Rastreabilidade Analítica
+### Erros Comuns na Interpretação do TDEE
 
-Para assegurar a fidelidade dos resultados perante padrões auditáveis, adotamos parâmetros de calibragem contínua. Em cálculos envolvendo taxas de juros, amortização gradual, índices antropométricos ou geometria analítica, o motor computacional emprega aproximações polinomiais de alta ordem e métodos iterativos consolidados.
+- **Superestimar a Atividade Física**: Escolher o nível "Muito Ativo" apenas por treinar 1 hora de musculação ao dia, passando as outras 23 horas sentado em frente ao computador, gera superestimativas de até 400 kcal.
+- **Não Recalcular Durante o Processo**: À medida que você emagrece ou ganha massa, o peso na fórmula muda, alterando o resultado final do TDEE.
 
-A rastreabilidade das fórmulas é mantida por meio de referências cruzadas com diretrizes técnicas internacionais, relatórios estatísticos governamentais e bibliografia acadêmica especializada. Dessa forma, profissionais, pesquisadores e estudantes podem confiar na equivalência entre os resultados exibidos na interface e os cálculos formais exigidos em auditorias institucionais e publicações acadêmicas.
-
-### Compromisso com a Privacidade e Execução Local
-
-Diferente de plataformas baseadas em nuvem que armazenam registros de navegação para alimentar ecossistemas de publicidade direcionada, nossa aplicação opera com independência tecnológica no motor JavaScript do seu próprio dispositivo. Suas consultas, parâmetros financeiros, índices antropométricos e calendários permanecem estritamente restritos à sua máquina. Isso assegura tempo de resposta instantâneo e sigilo irrestrito para todas as suas análises operacionais.
+Para detalhar o cardápio com base no seu resultado, visite a [calculadora de calorias](/pt-br/saude/calculadora-de-calorias/) e configure sua divisão de nutrientes na [calculadora de macros](/pt-br/saude/calculadora-de-macros/).
