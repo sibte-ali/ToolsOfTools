@@ -57,6 +57,21 @@ import imcPtBrConfig from './pt-br/imc';
 // Batch C Health & Fitness tools (ES)
 import ritmoEsConfig from './es/calculadora-de-ritmos';
 
+// Batch D Date & Time tools (EN)
+import { estToIstConfig } from './en/est-to-ist';
+import { cstToIstConfig } from './en/cst-to-ist-converter';
+import { tenAmGmtToIstConfig } from './en/10am-gmt-to-ist';
+import { dayCalculatorConfig } from './en/day-calculator';
+import { dobCalculatorConfig } from './en/dob-calculator';
+import { experienceCalculatorConfig } from './en/experience-calculator';
+import { shelfLifeCalculatorConfig } from './en/shelf-life-calculator';
+
+// Batch D Date & Time tools (PT-BR)
+import { contadorDeDiasConfig } from './pt-br/contador-de-dias';
+import { calculadoraDeHorasTrabalhadasConfig } from './pt-br/calculadora-de-horas-trabalhadas';
+import { calculadoraEntreDatasConfig } from './pt-br/calculadora-entre-datas';
+import { calculadoraDeHorasConfig } from './pt-br/calculadora-de-horas';
+
 // Portuguese Finance tools
 import investimentoPtBrConfig from './pt-br/calculadora-de-investimentos';
 
@@ -103,6 +118,13 @@ const registry: Record<string, Record<string, ToolConfig>> = {
     'plate-weight-calculator': plateWeightConfig,
     'pace-calculator': paceConfig,
     'calorie-burn-calculator': calorieBurnConfig,
+    'est-to-ist': estToIstConfig,
+    'cst-to-ist-converter': cstToIstConfig,
+    '10am-gmt-to-ist': tenAmGmtToIstConfig,
+    'day-calculator': dayCalculatorConfig,
+    'dob-calculator': dobCalculatorConfig,
+    'experience-calculator': experienceCalculatorConfig,
+    'shelf-life-calculator': shelfLifeCalculatorConfig,
   },
   'pt-br': {
     'calculadora-de-investimentos': investimentoPtBrConfig,
@@ -111,6 +133,10 @@ const registry: Record<string, Record<string, ToolConfig>> = {
     'calculadora-de-macros': macrosPtBrConfig,
     'tdee-calculator': tdeePtBrConfig,
     'imc': imcPtBrConfig,
+    'contador-de-dias': contadorDeDiasConfig,
+    'calculadora-de-horas-trabalhadas': calculadoraDeHorasTrabalhadasConfig,
+    'calculadora-entre-datas': calculadoraEntreDatasConfig,
+    'calculadora-de-horas': calculadoraDeHorasConfig,
   },
   es: {
     'calculadora-de-ritmos': ritmoEsConfig,

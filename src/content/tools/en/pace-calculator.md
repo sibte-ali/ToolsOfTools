@@ -5,7 +5,7 @@ h1: "Pace Calculator"
 intro: "Calculate running pace, average speed, finish times for 5K, 10K, half marathon, and marathon, and generate step-by-step split tables for any target distance."
 primaryKeyword: "pace calculator"
 formula: "\\text{Pace (min/km)} = \\frac{\\text{Total Time (seconds)}}{\\text{Distance (km)} \\times 60}, \\quad \\text{Speed (km/h)} = \\frac{\\text{Distance (km)}}{\\text{Time (hours)}}"
-example: "Running 10 kilometers in 50 minutes results in an average pace of 5:00 per kilometer (8:03 per mile) with an average running speed of 12.00 km/h."
+example: "Running 10 kilometers in 50 minutes results in an average pace of 5:00 /km (8:03 per mile) with an average running speed of 12.00 km/h."
 faq:
   - q: "What is the difference between pace and speed?"
     a: "Speed measures distance covered per unit of time (e.g. kilometers per hour or miles per hour). Pace measures the exact time required to cover a fixed unit of distance (e.g. minutes and seconds per kilometer or per mile)."

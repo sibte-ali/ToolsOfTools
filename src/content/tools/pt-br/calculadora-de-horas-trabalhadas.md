@@ -1,71 +1,52 @@
 ---
-title: "Calculadora de horas trabalhadas Online Grátis - ToolsOfTool"
-description: "Calcule calculadora de horas trabalhadas com precisão instantânea diretamente no seu navegador. Ferramenta gratuita, 100% privada e sem necessidade de cadastro "
-h1: "Calculadora de horas trabalhadas Online"
-intro: "Utilize nossa calculadora de calculadora de horas trabalhadas para obter resultados imediatos e matematicamente exatos. Todo o processamento ocorre localmente no seu dispositivo."
+title: "Calculadora de Horas Trabalhadas - Ponto e Horas Extras"
+description: "Calcule horas trabalhadas diárias e mensais com a nossa calculadora de horas trabalhadas. Apuração de folha de ponto CLT, horas extras e formato decimal."
+h1: "Calculadora de Horas Trabalhadas"
+intro: "Calcule as horas trabalhadas da sua folha de ponto com precisão CLT. Descubra o total diário e semanal, horas normais e horas extras em formato HH:MM e decimal."
 primaryKeyword: "calculadora de horas trabalhadas"
-formula: "Resultado = f(calculadora de horas trabalhadas)"
-example: "Para os valores padrão informados, o cálculo resulta em 100 unidades com base nos parâmetros convencionais do algoritmo."
+formula: "\\text{Horas do Dia} = (\\text{Saída}_1 - \\text{Entrada}_1) + (\\text{Saída}_2 - \\text{Entrada}_2), \\quad \\text{Hora Extra} = \\max(0, \\text{Total} - \\text{Jornada})"
+example: "Entrada às 08:00, saída almoço às 12:00, retorno às 13:00 e saída às 18:00: totalizam 09:00 horas trabalhadas (9,00h decimais). Para jornada padrão de 8h, apura-se 1 hora extra."
 faq:
-  - q: "Como funciona a ferramenta de calculadora de horas trabalhadas?"
-    a: "A ferramenta executa algoritmos matemáticos padronizados instantaneamente no seu navegador, sem enviar dados para servidores externos."
-  - q: "Os dados inseridos no cálculo ficam salvos?"
-    a: "Não. Nenhuma informação pessoal ou número digitado é transmitido, gravado em banco de dados ou monitorado."
-  - q: "Qual o grau de precisão dos resultados?"
-    a: "Os cálculos seguem fórmulas oficiais e utilizam precisão de ponto flutuante de 64 bits para evitar distorções de arredondamento."
-  - q: "Posso utilizar esta ferramenta no celular?"
-    a: "Sim, o layout é totalmente responsivo e adaptado para telas móveis, tablets e computadores desktop."
-sources: []
-updated: "2026-03-01"
+  - q: "Como a CLT regulamenta a jornada de trabalho padrão?"
+    a: "O artigo 58 da CLT estabelece a duração normal da jornada de trabalho em até 8 horas diárias e 44 horas semanais para empregados sob o regime padrão, salvo convenções coletivas específicas."
+  - q: "Qual é a tolerância legal na marcação de ponto?"
+    a: "Segundo o artigo 58, § 1º da CLT, não serão descontadas nem computadas como jornada extraordinária variações de até 5 minutos no registro de ponto, observado o limite máximo diário de 10 minutos."
+  - q: "Como converter horas e minutos (HH:MM) para horas decimais na folha?"
+    a: "Para converter minutos em formato decimal, divida os minutos por 60. Por exemplo, 8 horas e 30 minutos equivalem a 8 + (30/60) = 8,50 horas decimais."
+  - q: "Como funciona o intervalo intrajornada para alimentação e descanso?"
+    a: "Em qualquer trabalho contínuo cuja duração exceda 6 horas diárias, a CLT (artigo 71) obriga a concessão de um intervalo para repouso ou alimentação de, no mínimo, 1 hora e, no máximo, 2 horas."
+sources:
+  - label: "Consolidação das Leis do Trabalho (CLT) - Decreto-Lei nº 5.452/1943"
+    url: "https://www.planalto.gov.br/ccivil_03/decreto-lei/del5452.htm"
+  - label: "Ministério do Trabalho e Emprego (Brasil) - Legislação Trabalhista"
+    url: "https://www.gov.br/trabalho-e-emprego"
+updated: "2026-03-15"
 related:
+  - "calculadora-de-horas"
   - "contador-de-dias"
   - "calculadora-entre-datas"
-  - "calculadora-de-horas"
   - "calculadora-de-investimentos"
 disclaimer: "none"
 ---
 
-## Entendendo o Funcionamento de Calculadora de horas trabalhadas
+## Controle e Fechamento de Ponto Conforme a CLT
 
-O cálculo preciso de calculadora de horas trabalhadas é essencial para decisões assertivas no dia a dia, seja no âmbito do planejamento pessoal, gestão financeira, saúde preventiva ou rotina de estudos. A compreensão detalhada das variáveis que compõem o modelo matemático permite não apenas obter um número final, mas interpretar o impacto de cada parâmetro no cenário projetado.
+O fechamento do espelho de ponto é uma tarefa mensal essencial tanto para o trabalhador que deseja conferir se o seu holerite veio correto quanto para o departamento de Recursos Humanos e Departamento Pessoal das empresas. A nossa **calculadora de horas trabalhadas** simplifica a apuração de turnos matutinos, vespertinos e noturnos, separando com clareza as horas normais das horas extras acumuladas.
 
-Historicamente, muitas pessoas recorriam a planilhas manuais ou fórmulas aproximadas para estimar calculadora de horas trabalhadas. No entanto, pequenas inconsistências no tratamento de casas decimais, convenções de calendário ou intervalos de arredondamento podem acumular distorções expressivas ao longo do tempo. Nossa ferramenta foi desenvolvida com rigor técnico para assegurar conformidade com os modelos analíticos mais consolidados e auditados.
+No dia a dia corporativo, a marcação de ponto é feita em horários sexagesimais (horas e minutos, como `08:15` ou `17:45`), mas os sistemas de folha de pagamento realizam os cálculos financeiros multiplicando o salário-hora por valores decimais (como `8,25h`). Saber converter e somar esses períodos evita divergências nos pagamentos mensais.
 
-### Variáveis Fundamentais e Parâmetros de Entrada
+### Como Preencher os Turnos Corretamente
 
-Para obter o melhor rendimento com esta calculadora, é imprescindível atentar para a padronização das unidades de medida empregadas em cada etapa do preenchimento:
+Para obter o resultado mais fiel ao seu cartão de ponto, insira os dados nos campos correspondentes:
 
-1. **Definição Clara dos Dados Iniciais:** Certifique-se de que os valores numéricos correspondam ao mesmo período de referência e não incluam encargos embutidos ou taxas não declaradas previamente.
-2. **Intervalos e Escalas:** No caso de índices percentuais ou períodos temporais, mantenha consistência formal entre taxas anuais, mensais ou diárias, convertendo-as antes do processamento.
-3. **Consistência de Unidades:** A precisão do resultado depende diretamente da coerência dimensional dos dados inseridos pelo usuário.
-4. **Verificação de Arredondamentos:** Ajuste os limites decimais de acordo com a finalidade prática da sua estimativa, prevenindo perdas cumulativas.
+1. **Primeiro Turno (Manhã):** Digite o horário em que você iniciou o trabalho (Entrada 1, ex: `08:00`) e o momento em que pausou para o almoço (Saída 1, ex: `12:00`).
+2. **Segundo Turno (Tarde):** Digite o horário em que retornou do almoço (Entrada 2, ex: `13:00`) e a sua saída final ao término do expediente (Saída 2, ex: `18:00`). O intervalo de almoço já fica naturalmente registrado no intervalo entre as 12:00 e as 13:00.
+3. **Jornada Padrão Contratual:** A jornada habitual no Brasil é de 8 horas diárias (para escalas 5x2 ou 6x1 com 44h semanais). Você pode ajustar para 6 horas (comum para bancários e teleatendimento) ou 4 horas (estágios).
+4. **Período Acumulado:** Caso queira projetar o resultado para a semana inteira de trabalho, altere o campo de repetição para 5 dias; para o mês comercial fechado, utilize 22 dias úteis.
 
-### Cenários Práticos de Aplicação e Simulação
+### Regras Trabalhistas Importantes para o Cálculo
 
-A aplicação prática do cálculo de calculadora de horas trabalhadas estende-se por múltiplos contextos da rotina contemporânea. Em cenários de planejamento prospectivo, simular diferentes composições de parâmetros permite prever com antecedência gargalos operacionais ou desvios orçamentários. Por exemplo, alterar gradualmente as taxas ou grandezas de entrada auxilia na determinação do ponto de equilíbrio e na identificação de margens de contingência seguras.
-
-Em contextos corporativos ou acadêmicos, a reprodutibilidade dos resultados é um fator crítico. Registrar os parâmetros exatos utilizados em cada ensaio possibilita auditorias futuras e consolida relatórios comparativos consistentes entre equipes multidisciplinares.
-
-### Erros Comuns e Como Evitá-los
-
-Durante a elaboração de cálculos envolvendo calculadora de horas trabalhadas, alguns equívocos recorrentes costumam prejudicar a integridade dos dados finais:
-
-- **Desconsiderar Fatores Estacionais:** Variações sazonais em períodos letivos, feriados bancários ou flutuações de mercado alteram as premissas básicas.
-- **Misturar Bases Temporais:** Aplicar taxas mensais sobre períodos contados em dias úteis sem a devida equalização matemática gera disparidades acumuladas.
-- **Omissão de Custos Acessórios:** Em operações com ativos ou despesas, ignorar tarifas administrativas ou retenções tributárias reduz a precisão do resultado líquido.
-
-### Recomendações Adicionais e Critérios de Interpretação
-
-Ao integrar os dados obtidos em relatórios gerenciais, balanços patrimoniais ou prontuários de acompanhamento, recomenda-se registrar explicitamente o método de cálculo utilizado. Em situações que envolvam múltiplos intervenientes, como credores, órgãos fiscalizadores ou comitês científicos, a transparência nos critérios de arredondamento e na seleção das variáveis primárias previne litígios operacionais e divergências contratuais.
-
-Sempre que cabível, realize a validação cruzada dos resultados com publicações técnicas oficiais de referência. A combinação entre velocidade de processamento computacional no navegador e rigor na checagem dos parâmetros garante máxima conformidade analítica.
-
-### Metodologia de Verificação e Rastreabilidade Analítica
-
-Para assegurar a fidelidade dos resultados perante padrões auditáveis, adotamos parâmetros de calibragem contínua. Em cálculos envolvendo taxas de juros, amortização gradual, índices antropométricos ou geometria analítica, o motor computacional emprega aproximações polinomiais de alta ordem e métodos iterativos consolidados.
-
-A rastreabilidade das fórmulas é mantida por meio de referências cruzadas com diretrizes técnicas internacionais, relatórios estatísticos governamentais e bibliografia acadêmica especializada. Dessa forma, profissionais, pesquisadores e estudantes podem confiar na equivalência entre os resultados exibidos na interface e os cálculos formais exigidos em auditorias institucionais e publicações acadêmicas.
-
-### Compromisso com a Privacidade e Execução Local
-
-Diferente de plataformas baseadas em nuvem que armazenam registros de navegação para alimentar ecossistemas de publicidade direcionada, nossa aplicação opera com independência tecnológica no motor JavaScript do seu próprio dispositivo. Suas consultas, parâmetros financeiros, índices antropométricos e calendários permanecem estritamente restritos à sua máquina. Isso assegura tempo de resposta instantâneo e sigilo irrestrito para todas as suas análises operacionais.
+- **Adicional de Horas Extras:** De acordo com o artigo 59 da CLT e o artigo 7º, inciso XVI da Constituição Federal, a remuneração da hora extra deve ser, no mínimo, 50% superior à da hora normal em dias úteis, e de 100% aos domingos e feriados (salvo compensação por banco de horas devidamente acordado).
+- **Limite Diário de Horas Extras:** A legislação brasileira veda a realização de mais de 2 horas extras por dia, salvo situações excepcionais e de força maior expressamente comunicadas à autoridade trabalhista.
+- **Hora Noturna Reduzida:** Para trabalhos realizados entre as 22h de um dia e as 5h do dia seguinte no meio urbano, a hora de trabalho é computada como sendo de 52 minutos e 30 segundos (artigo 73 da CLT), aplicando-se ainda o adicional noturno mínimo de 20%.
+- **Acordo de Banco de Horas:** Caso a empresa adote regime de compensação de jornada via banco de horas individual ou coletivo, o excesso de horas apurado em um dia pode ser compensado com folgas futuras dentro do prazo legal de 6 meses (acordo individual) ou 1 ano (acordo coletivo).
