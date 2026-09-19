@@ -13,6 +13,9 @@ export const ptBr: UIStrings = {
     allRightsReserved: 'Todos os direitos reservados.',
     privacy: 'Política de Privacidade',
     terms: 'Termos de Uso',
+    about: 'Sobre Nós',
+    contact: 'Contato',
+    methodology: 'Metodologia de Cálculo',
   },
   howItWorks: 'Como funciona',
   formula: 'Fórmula',
@@ -20,6 +23,7 @@ export const ptBr: UIStrings = {
   faq: 'Perguntas frequentes',
   relatedTools: 'Ferramentas relacionadas',
   lastUpdated: 'Última atualização',
+  methodologyLinkText: 'Saiba como nossas fórmulas são revisadas e auditadas em nosso Guia de Metodologia.',
   disclaimer: {
     none: '',
     finance:

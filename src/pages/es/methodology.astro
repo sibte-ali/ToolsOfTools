@@ -1,0 +1,42 @@
+---
+import InfoPage from '../../components/InfoPage.astro';
+---
+
+<InfoPage
+  lang="es"
+  title="Metodología de Cálculo"
+  heading="Metodología de Cálculo y Verificación de Fórmulas"
+  description="Cómo se documentan, auditan y contrastan las fórmulas de ToolsOfTools frente a normativas y fuentes oficiales."
+>
+  <section class="space-y-6">
+    <p>
+      En <strong>ToolsOfTools</strong>, la exactitud matemática y la transparencia metodológica son compromisos innegociables.
+    </p>
+
+    <div>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-white">1. Fuentes Oficiales y Documentadas</h2>
+      <p class="mt-2">
+        No empleamos fórmulas de fuentes dudosas o no oficiales. Nuestras referencias provienen de:
+      </p>
+      <ul class="mt-2 list-disc pl-5 space-y-1">
+        <li><strong>Herramientas Financieras:</strong> Organismos reguladores, bancos centrales (BCE, Banco de España, etc.), publicaciones oficiales de las agencias tributarias y literatura académica contrastada.</li>
+        <li><strong>Salud y Bienestar:</strong> La Organización Mundial de la Salud (OMS) e investigaciones clínicas publicadas en revistas médicas (fórmulas de Mifflin-St Jeor, Devine, Harris-Benedict).</li>
+        <li><strong>Ingeniería y Matemáticas:</strong> Estándares de conversión ISO/NIST y normas de representación numérica de precisión IEEE 754.</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-white">2. Batería de Pruebas Unitarias</h2>
+      <p class="mt-2">
+        Cada motor de cálculo se valida exhaustivamente mediante suites de pruebas automáticas en Vitest para garantizar que valores extremos, redondeos y límites no generen distorsiones.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-white">3. Mantenimiento y Actualización de Tablas</h2>
+      <p class="mt-2">
+        Los tramos impositivos y tasas de referencia se configuran en estructuras de datos desacopladas para aplicar actualizaciones inmediatamente tras cada cambio legislativo.
+      </p>
+    </div>
+  </section>
+</InfoPage>

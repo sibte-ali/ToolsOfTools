@@ -12,6 +12,9 @@ export const en: UIStrings = {
     allRightsReserved: 'All rights reserved.',
     privacy: 'Privacy Policy',
     terms: 'Terms of Use',
+    about: 'About Us',
+    contact: 'Contact',
+    methodology: 'Calculation Methodology',
   },
   howItWorks: 'How It Works',
   formula: 'Formula',
@@ -19,6 +22,7 @@ export const en: UIStrings = {
   faq: 'Frequently Asked Questions',
   relatedTools: 'Related Tools',
   lastUpdated: 'Last updated',
+  methodologyLinkText: 'Learn more about how our formulas are verified in our Methodology Guide.',
   disclaimer: {
     none: '',
     finance:

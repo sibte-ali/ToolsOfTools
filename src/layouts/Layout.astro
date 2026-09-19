@@ -2,25 +2,37 @@
 import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import SeoHead from '../components/SeoHead.astro';
 import { getHtmlLang } from '../i18n';
 import { getHreflang } from '../lib/hreflang';
 
 interface Props {
   title?: string;
   description?: string;
+  canonical?: string;
   lang?: string;
+  ogType?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, any>[];
 }
 
 const {
   title = 'Tools of Tools - Fast, Client-Side Free Tools',
   description = 'Fast, accurate, client-side calculations and tools for finance, math, and everyday needs.',
+  canonical,
   lang = 'en',
+  ogType = 'website',
+  ogImage,
+  noindex = false,
+  jsonLd = [],
 } = Astro.props;
 
 const htmlLang = getHtmlLang(lang);
 const currentPath = Astro.url.pathname;
 const siteUrl = Astro.site ? Astro.site.origin : 'https://toolsoftools.com';
 
+const canonicalUrl = canonical || `${siteUrl}${currentPath}`;
 const alternates = getHreflang(currentPath, lang);
 ---
 
@@ -31,18 +43,28 @@ const alternates = getHreflang(currentPath, lang);
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="sitemap" href="/sitemap-index.xml" />
-    <title>{title}</title>
-    <meta name="description" content={description} />
 
-    {
-      alternates.map((alt) => (
-        <link rel="alternate" hreflang={alt.lang} href={`${siteUrl}${alt.url}`} />
-      ))
-    }
+    <SeoHead
+      title={title}
+      description={description}
+      canonical={canonicalUrl}
+      lang={lang}
+      alternates={alternates}
+      ogType={ogType}
+      ogImage={ogImage}
+      noindex={noindex}
+      jsonLd={jsonLd}
+    />
   </head>
   <body class="min-h-screen flex flex-col bg-neutral-50 text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-50">
+    <a
+      href="#main-content"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:rounded-md focus:bg-neutral-900 focus:px-4 focus:py-2 focus:text-white focus:shadow-lg dark:focus:bg-white dark:focus:text-neutral-900"
+    >
+      Skip to content
+    </a>
     <Header currentUrl={currentPath} lang={lang} />
-    <div class="flex-1">
+    <div class="flex-1 flex flex-col">
       <slot />
     </div>
     <Footer lang={lang} />

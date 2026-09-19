@@ -1,0 +1,87 @@
+---
+import type { HreflangLink } from '../lib/hreflang';
+
+interface Props {
+  title: string;
+  description: string;
+  canonical: string;
+  lang?: string;
+  alternates?: HreflangLink[];
+  ogType?: string;
+  ogImage?: string;
+  noindex?: boolean;
+  jsonLd?: Record<string, any>[];
+}
+
+const {
+  title,
+  description,
+  canonical,
+  lang = 'en',
+  alternates = [],
+  ogType = 'website',
+  ogImage,
+  noindex = false,
+  jsonLd = [],
+} = Astro.props;
+
+const siteUrl = Astro.site ? Astro.site.origin : 'https://toolsoftools.com';
+
+// Ensure canonical is absolute with trailing slash
+const absoluteCanonical = canonical.startsWith('http')
+  ? canonical
+  : `${siteUrl}${canonical.startsWith('/') ? canonical : `/${canonical}`}`;
+const finalCanonical = absoluteCanonical.endsWith('/') ? absoluteCanonical : `${absoluteCanonical}/`;
+
+const defaultOgImage = `${siteUrl}/og-image.png`;
+const finalOgImage = ogImage || defaultOgImage;
+
+const ogLocales: Record<string, string> = {
+  en: 'en_US',
+  'pt-br': 'pt_BR',
+  es: 'es_ES',
+};
+const ogLocale = ogLocales[lang] || 'en_US';
+---
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+<link rel="canonical" href={finalCanonical} />
+<meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+<meta name="theme-color" content="#171717" />
+
+<!-- Hreflang Alternates -->
+{
+  alternates.map((alt) => {
+    const fullHref = alt.url.startsWith('http') ? alt.url : `${siteUrl}${alt.url}`;
+    return <link rel="alternate" hreflang={alt.lang} href={fullHref} />;
+  })
+}
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={ogType} />
+<meta property="og:url" content={finalCanonical} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:image" content={finalOgImage} />
+<meta property="og:site_name" content="ToolsOfTools" />
+<meta property="og:locale" content={ogLocale} />
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:url" content={finalCanonical} />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={finalOgImage} />
+
+<!-- Structured Data (JSON-LD) -->
+{
+  jsonLd &&
+    jsonLd
+      .filter(Boolean)
+      .map((schema) => (
+        <script type="application/ld+json" is:inline set:html={JSON.stringify(schema)} />
+      ))
+}

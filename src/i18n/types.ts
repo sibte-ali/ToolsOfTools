@@ -12,6 +12,9 @@ export interface UIStrings {
     allRightsReserved: string;
     privacy: string;
     terms: string;
+    about: string;
+    contact: string;
+    methodology: string;
   };
   howItWorks: string;
   formula: string;
@@ -19,6 +22,7 @@ export interface UIStrings {
   faq: string;
   relatedTools: string;
   lastUpdated: string;
+  methodologyLinkText: string;
   disclaimer: {
     none: string;
     finance: string;

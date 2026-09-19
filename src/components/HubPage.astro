@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import type { Tool } from '../lib/tools';
 import { getTranslations, type SupportedLanguage, getLanguageHome } from '../i18n';
 import { getCanonicalToolUrl } from '../lib/hreflang';
+import { generateBreadcrumbSchema } from '../lib/schema';
 
 interface Props {
   lang: SupportedLanguage;
@@ -15,13 +16,31 @@ const t = getTranslations(lang);
 const homeUrl = getLanguageHome(lang);
 const folderTitle = folder.replace(/-/g, ' ');
 
+const siteUrl = Astro.site ? Astro.site.origin : 'https://toolsoftools.com';
+const currentPath = Astro.url.pathname;
+const canonical = `${siteUrl}${currentPath}`;
+
 const pageTitle = `${folderTitle.charAt(0).toUpperCase() + folderTitle.slice(1)} Tools - ToolsOfTools`;
-const pageDescription = `Explore all free, client-side tools and calculators in the ${folderTitle} category.`;
+const pageDescription = `Explore all free, client-side tools and calculators in the ${folderTitle} category. Fast and browser-based.`;
+
+// BreadcrumbList JSON-LD
+const jsonLd = [
+  generateBreadcrumbSchema([
+    { name: t.nav.home, url: `${siteUrl}${homeUrl}` },
+    { name: folderTitle, url: canonical },
+  ]),
+];
 ---
 
-<Layout title={pageTitle} description={pageDescription} lang={lang}>
-  <main class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
-    <nav class="mb-8 flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
+<Layout
+  title={pageTitle}
+  description={pageDescription}
+  canonical={canonical}
+  lang={lang}
+  jsonLd={jsonLd}
+>
+  <main id="main-content" class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <nav aria-label="Breadcrumbs" class="mb-8 flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
       <a href={homeUrl} class="hover:underline">{t.nav.home}</a>
       <span>/</span>
       <span class="capitalize text-neutral-900 dark:text-white font-medium">{folderTitle}</span>

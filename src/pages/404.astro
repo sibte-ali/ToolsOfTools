@@ -1,0 +1,29 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+  title="404 - Page Not Found | ToolsOfTools"
+  description="The requested page could not be found."
+  noindex={true}
+>
+  <main id="main-content" class="mx-auto flex max-w-3xl flex-1 flex-col items-center justify-center px-4 py-24 text-center sm:px-6">
+    <p class="font-mono text-sm font-semibold uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
+      Error 404
+    </p>
+    <h1 class="mt-4 text-4xl font-extrabold tracking-tight sm:text-5xl text-neutral-950 dark:text-white">
+      Page Not Found
+    </h1>
+    <p class="mt-4 max-w-md text-base text-neutral-600 dark:text-neutral-300">
+      Sorry, the page you are looking for doesn't exist, has been removed, or had its name changed.
+    </p>
+    <div class="mt-8">
+      <a
+        href="/"
+        class="inline-flex items-center justify-center rounded-lg bg-neutral-900 px-5 py-2.5 text-sm font-medium text-white shadow-xs hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100"
+      >
+        Return to Home
+      </a>
+    </div>
+  </main>
+</Layout>

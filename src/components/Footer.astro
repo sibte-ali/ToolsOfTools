@@ -8,6 +8,14 @@ interface Props {
 const { lang = 'en' } = Astro.props;
 const t = getTranslations(lang);
 const year = new Date().getFullYear();
+
+const langPrefix = lang === 'en' ? '' : `/${lang}`;
+const links = [
+  { href: `${langPrefix}/about/`, label: t.footer.about },
+  { href: `${langPrefix}/methodology/`, label: t.footer.methodology },
+  { href: `${langPrefix}/privacy/`, label: t.footer.privacy },
+  { href: `${langPrefix}/contact/`, label: t.footer.contact },
+];
 ---
 
 <footer class="border-t border-neutral-200 bg-white py-12 dark:border-neutral-800 dark:bg-neutral-900 mt-20">
@@ -19,6 +27,17 @@ const year = new Date().getFullYear();
           {t.footer.description}
         </p>
       </div>
+
+      <nav aria-label="Footer navigation" class="flex flex-wrap items-center justify-center gap-6 text-xs text-neutral-600 dark:text-neutral-400">
+        {
+          links.map((link) => (
+            <a href={link.href} class="hover:text-neutral-950 dark:hover:text-white transition">
+              {link.label}
+            </a>
+          ))
+        }
+      </nav>
+
       <div class="text-xs text-neutral-400 dark:text-neutral-500">
         &copy; {year} ToolsOfTools. {t.footer.allRightsReserved}
       </div>

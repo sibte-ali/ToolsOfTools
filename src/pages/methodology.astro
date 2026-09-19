@@ -1,0 +1,54 @@
+---
+import InfoPage from '../components/InfoPage.astro';
+---
+
+<InfoPage
+  lang="en"
+  title="Calculation Methodology"
+  heading="Calculation Methodology & Formula Verification"
+  description="How formulas on ToolsOfTools are sourced, mathematically verified, peer-checked, and updated against official statutory sources."
+>
+  <section class="space-y-6">
+    <p>
+      At <strong>ToolsOfTools</strong>, transparency and precision are paramount. Every calculation engine powering our platform adheres to strict engineering and mathematical verification guidelines.
+    </p>
+
+    <div>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-white">1. Sourcing Official Statutory & Mathematical Formulas</h2>
+      <p class="mt-2">
+        We do not rely on unverified third-party blogs or secondary sources. Formulas are sourced strictly from:
+      </p>
+      <ul class="mt-2 list-disc pl-5 space-y-1">
+        <li><strong>Financial Tools:</strong> Official regulatory bodies, central banks (e.g., RBI, Federal Reserve, Central Bank of Brazil), tax authority statutory publications (CBIC, IRS, Receita Federal), and peer-reviewed corporate finance textbooks.</li>
+        <li><strong>Health & Wellness:</strong> The World Health Organization (WHO), published peer-reviewed clinical literature (e.g., Mifflin-St Jeor, Devine, Robinson equations), and national health institutes.</li>
+        <li><strong>Engineering & Math:</strong> Standard ISO/NIST unit standards, textbook geometry formulas, and algorithmic standards (IEEE 754 precision math).</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-white">2. Automated Unit Testing & Edge Case Auditing</h2>
+      <p class="mt-2">
+        Prior to deployment, calculation engines are validated using automated test suites in Vitest. Tests check for:
+      </p>
+      <ul class="mt-2 list-disc pl-5 space-y-1">
+        <li>Extreme bounds (near-zero, negative, and astronomical values).</li>
+        <li>Floating point rounding precision issues (e.g., avoiding classic binary representation errors like 0.1 + 0.2).</li>
+        <li>Regulatory edge conditions (e.g., cap thresholds on Indian EPS pension contributions, Brazilian IR progressive deductions, GST slab updates).</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-white">3. Scheduled Verification & Change Tracking</h2>
+      <p class="mt-2">
+        Financial and tax rates (such as EPF interest rates, Selic/CDI benchmarks, and GST schedules) are decoupled into dedicated dataset registries and monitored for updates with every statutory budget release.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-white">4. Independent Verification Encouragement</h2>
+      <p class="mt-2">
+        Every tool provides an explicit "Formula" and "Worked Example" breakdown. We encourage users to verify our formulas against their personal documentation or professional advisory.
+      </p>
+    </div>
+  </section>
+</InfoPage>

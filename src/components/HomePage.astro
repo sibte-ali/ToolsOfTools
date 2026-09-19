@@ -1,8 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import { toolsByLang, foldersByLang } from '../lib/tools';
-import { getTranslations, type SupportedLanguage } from '../i18n';
+import { getTranslations, getHtmlLang, type SupportedLanguage } from '../i18n';
 import { getCanonicalToolUrl } from '../lib/hreflang';
+import { generateWebSiteSchema, generateOrganizationSchema } from '../lib/schema';
 
 interface Props {
   lang: SupportedLanguage;
@@ -12,6 +13,10 @@ const { lang } = Astro.props;
 const t = getTranslations(lang);
 const tools = toolsByLang(lang);
 const folders = foldersByLang(lang);
+
+const siteUrl = Astro.site ? Astro.site.origin : 'https://toolsoftools.com';
+const currentPath = Astro.url.pathname;
+const canonical = `${siteUrl}${currentPath}`;
 
 const titles: Record<SupportedLanguage, string> = {
   en: 'Tools of Tools - Fast, Client-Side Free Online Tools',
@@ -31,12 +36,34 @@ const subheadings: Record<SupportedLanguage, string> = {
   es: 'Calculadoras y utilidades precisas y privadas que funcionan 100% en tu navegador.',
 };
 
+// JSON-LD schemas for Home page
+const jsonLd = [
+  generateWebSiteSchema({
+    siteUrl: canonical,
+    name: 'ToolsOfTools',
+    description: subheadings[lang],
+    inLanguage: getHtmlLang(lang),
+  }),
+  generateOrganizationSchema({
+    siteUrl,
+    name: 'ToolsOfTools',
+    logoUrl: `${siteUrl}/favicon.svg`,
+    description: 'Privacy-focused, fast online calculation tools.',
+  }),
+];
+
 // If Spanish, find the calculadora tool mounted on home
 const calculadoraTool = lang === 'es' ? tools.find((tool) => tool.slug === 'calculadora') : undefined;
 ---
 
-<Layout title={titles[lang]} description={subheadings[lang]} lang={lang}>
-  <main class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+<Layout
+  title={titles[lang]}
+  description={subheadings[lang]}
+  canonical={canonical}
+  lang={lang}
+  jsonLd={jsonLd}
+>
+  <main id="main-content" class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
     <div class="text-center max-w-3xl mx-auto">
       <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl text-neutral-950 dark:text-white">
         {headings[lang]}
@@ -89,7 +116,6 @@ const calculadoraTool = lang === 'es' ? tools.find((tool) => tool.slug === 'calc
                   currentExpr = '0';
                 } else if (val === '=') {
                   try {
-                    // Safe numeric evaluator without eval
                     const sanitized = currentExpr.replace(/[^0-9+\-*/().]/g, '');
                     currentExpr = String(Function(`'use strict'; return (${sanitized})`)());
                   } catch {

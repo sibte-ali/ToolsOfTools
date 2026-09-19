@@ -16,12 +16,12 @@ export function getCanonicalToolUrl(tool: { lang: string; slug: string; url: str
 export const canonicalHreflangGroups: Map<string, Array<{ lang: string; url: string }>> = new Map();
 export const urlToHreflangGroup: Map<string, string> = new Map();
 
+// Tool hreflang groups
 for (const tool of buildTools) {
   const group = tool.hreflang_group?.trim();
   if (group) {
     const canonicalUrl = getCanonicalToolUrl(tool);
     const existing = canonicalHreflangGroups.get(group) || [];
-    // Ensure no duplicate URLs within a group
     if (!existing.some((e) => e.url === canonicalUrl)) {
       existing.push({ lang: tool.lang, url: canonicalUrl });
     }
@@ -31,6 +31,37 @@ for (const tool of buildTools) {
     if (canonicalUrl !== tool.url) {
       urlToHreflangGroup.set(tool.url, group);
     }
+  }
+}
+
+// Static informational pages groups across languages
+const staticPageGroups: Record<string, Array<{ lang: string; url: string }>> = {
+  about: [
+    { lang: 'en', url: '/about/' },
+    { lang: 'pt-br', url: '/pt-br/about/' },
+    { lang: 'es', url: '/es/about/' },
+  ],
+  privacy: [
+    { lang: 'en', url: '/privacy/' },
+    { lang: 'pt-br', url: '/pt-br/privacy/' },
+    { lang: 'es', url: '/es/privacy/' },
+  ],
+  contact: [
+    { lang: 'en', url: '/contact/' },
+    { lang: 'pt-br', url: '/pt-br/contact/' },
+    { lang: 'es', url: '/es/contact/' },
+  ],
+  methodology: [
+    { lang: 'en', url: '/methodology/' },
+    { lang: 'pt-br', url: '/pt-br/methodology/' },
+    { lang: 'es', url: '/es/methodology/' },
+  ],
+};
+
+for (const [groupName, targets] of Object.entries(staticPageGroups)) {
+  canonicalHreflangGroups.set(groupName, targets);
+  for (const target of targets) {
+    urlToHreflangGroup.set(target.url, groupName);
   }
 }
 

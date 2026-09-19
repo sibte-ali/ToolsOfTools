@@ -1,0 +1,42 @@
+---
+import InfoPage from '../../components/InfoPage.astro';
+---
+
+<InfoPage
+  lang="pt-br"
+  title="Metodologia de Cálculo"
+  heading="Metodologia de Cálculo e Auditoria de Fórmulas"
+  description="Como as fórmulas do ToolsOfTools são documentadas, testadas e auditadas conforme normas e fontes oficiais."
+>
+  <section class="space-y-6">
+    <p>
+      No <strong>ToolsOfTools</strong>, a exatidão matemática e a fidelidade às normas legais são prioridades máximas.
+    </p>
+
+    <div>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-white">1. Fontes Oficiais e Normativas</h2>
+      <p class="mt-2">
+        Nossas ferramentas não utilizam aproximações empíricas sem validação. As referências incluem:
+      </p>
+      <ul class="mt-2 list-disc pl-5 space-y-1">
+        <li><strong>Finanças:</strong> Banco Central do Brasil (Bacen), Receita Federal (tabelas progressivas e regressivas de IR), normas da CVM e publicações estatutárias oficiais.</li>
+        <li><strong>Saúde:</strong> Organização Mundial da Saúde (OMS) e publicações clínicas indexadas (fórmulas de Mifflin-St Jeor, Devine, Harris-Benedict).</li>
+        <li><strong>Matemática e Engenharia:</strong> Normas técnicas ABNT/ISO e padrões computacionais de ponto flutuante IEEE 754.</li>
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-white">2. Testes Automatizados</h2>
+      <p class="mt-2">
+        Antes de entrar em produção, cada motor de cálculo é submetido a testes unitários automatizados com Vitest, testando valores limite, arredondamentos e casos extremos.
+      </p>
+    </div>
+
+    <div>
+      <h2 class="text-xl font-bold text-neutral-900 dark:text-white">3. Parâmetros Atualizados</h2>
+      <p class="mt-2">
+        Taxas variáveis como Selic, CDI e faixas de contribuição previdenciária ficam organizadas em arquivos de dados específicos para que sejam atualizadas com agilidade a cada alteração oficial.
+      </p>
+    </div>
+  </section>
+</InfoPage>

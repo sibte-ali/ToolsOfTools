@@ -1,0 +1,48 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getTranslations, type SupportedLanguage, getLanguageHome } from '../i18n';
+
+interface Props {
+  lang: SupportedLanguage;
+  title: string;
+  description: string;
+  heading: string;
+  lastUpdated?: string;
+}
+
+const { lang, title, description, heading, lastUpdated = '2026-03-01' } = Astro.props;
+const t = getTranslations(lang);
+const homeUrl = getLanguageHome(lang);
+
+const siteUrl = Astro.site ? Astro.site.origin : 'https://toolsoftools.com';
+const currentPath = Astro.url.pathname;
+const canonical = `${siteUrl}${currentPath}`;
+---
+
+<Layout
+  title={`${title} - ToolsOfTools`}
+  description={description}
+  canonical={canonical}
+  lang={lang}
+>
+  <main id="main-content" class="mx-auto max-w-4xl px-4 py-12 sm:px-6 lg:px-8">
+    <nav aria-label="Breadcrumbs" class="mb-6 flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
+      <a href={homeUrl} class="hover:underline">{t.nav.home}</a>
+      <span>/</span>
+      <span class="text-neutral-900 dark:text-white font-medium">{heading}</span>
+    </nav>
+
+    <header class="border-b border-neutral-200 pb-6 dark:border-neutral-800">
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl text-neutral-950 dark:text-white">
+        {heading}
+      </h1>
+      <p class="mt-2 text-xs text-neutral-500 dark:text-neutral-400">
+        {t.lastUpdated}: {lastUpdated}
+      </p>
+    </header>
+
+    <div class="mt-8 space-y-6 text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
+      <slot />
+    </div>
+  </main>
+</Layout>

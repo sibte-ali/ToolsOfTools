@@ -1,0 +1,28 @@
+---
+import InfoPage from '../components/InfoPage.astro';
+---
+
+<InfoPage
+  lang="en"
+  title="Privacy Policy"
+  heading="Privacy Policy"
+  description="ToolsOfTools privacy commitment: zero tracking scripts, browser-based execution, and complete user privacy."
+>
+  <section class="space-y-4">
+    <p>
+      At <strong>ToolsOfTools</strong>, privacy is built directly into our technical architecture. We operate on a simple principle: <em>your data never leaves your device</em>.
+    </p>
+    <h2 class="text-xl font-bold text-neutral-900 dark:text-white">1. Client-Side Execution</h2>
+    <p>
+      All calculations, unit conversions, and text transformations are performed locally in your web browser using client-side TypeScript. None of the values, numbers, or text you input into any tool are sent to our servers or third parties.
+    </p>
+    <h2 class="text-xl font-bold text-neutral-900 dark:text-white">2. No Tracking or Fingerprinting</h2>
+    <p>
+      We do not use invasive third-party analytics, behavioral profiling pixels, or advertising fingerprinting libraries.
+    </p>
+    <h2 class="text-xl font-bold text-neutral-900 dark:text-white">3. Local Storage</h2>
+    <p>
+      Where tools offer memory or history (such as the calculator memory keys), that data is kept strictly inside your browser's local storage and can be wiped by you at any time.
+    </p>
+  </section>
+</InfoPage>

@@ -13,6 +13,9 @@ export const es: UIStrings = {
     allRightsReserved: 'Todos los derechos reservados.',
     privacy: 'Política de Privacidad',
     terms: 'Términos de Uso',
+    about: 'Sobre Nosotros',
+    contact: 'Contacto',
+    methodology: 'Metodología de Cálculo',
   },
   howItWorks: 'Cómo funciona',
   formula: 'Fórmula',
@@ -20,6 +23,7 @@ export const es: UIStrings = {
   faq: 'Preguntas frecuentes',
   relatedTools: 'Herramientas relacionadas',
   lastUpdated: 'Última actualización',
+  methodologyLinkText: 'Descubre cómo verificamos cada fórmula en nuestra Guía de Metodología.',
   disclaimer: {
     none: '',
     finance:
