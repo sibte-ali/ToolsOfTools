@@ -1,0 +1,13 @@
+{
+  "source_url": "https://www.iata.org/en/programs/cargo/id/",
+  "last_verified": "2026-01-15",
+  "note": "Volumetric weight divisors are set by each carrier and may change. Verify with the carrier before billing.",
+  "couriers": [
+    { "key": "dhl", "name": "DHL Express", "divisor": 5000, "unit": "cm³/kg" },
+    { "key": "fedex", "name": "FedEx International", "divisor": 5000, "unit": "cm³/kg" },
+    { "key": "ups", "name": "UPS Worldwide", "divisor": 5000, "unit": "cm³/kg" },
+    { "key": "local_air", "name": "Local Air Freight", "divisor": 6000, "unit": "cm³/kg" },
+    { "key": "local_road", "name": "Local Road Freight", "divisor": 4000, "unit": "cm³/kg" }
+  ],
+  "defaultDivisor": 5000
+}

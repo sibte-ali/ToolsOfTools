@@ -75,6 +75,38 @@ import { calculadoraDeHorasConfig } from './pt-br/calculadora-de-horas';
 // Portuguese Finance tools
 import investimentoPtBrConfig from './pt-br/calculadora-de-investimentos';
 
+// Batch E Tools (EN)
+import simplifyConfig from './en/simplify-calculator';
+import epochConfig from './en/epoch-converter';
+import sqftConfig from './en/square-feet-calculator';
+import metersToFeetConfig from './en/meters-to-feet';
+import speedConfig from './en/speed-calculator';
+import jsonToExcelConfig from './en/json-to-excel';
+import jsonFormatterConfig from './en/json-formatter';
+import resinConfig from './en/resin-calculator';
+import houseCostConfig from './en/house-construction-cost-calculator';
+import combinationConfig from './en/combination-calculator';
+import msPipeConfig from './en/ms-pipe-weight-calculator';
+import infixPostfixConfig from './en/infix-to-postfix-converter';
+import gramsToLbsConfig from './en/grams-to-lbs';
+import concreteConfig from './en/concrete-calculator';
+import stdDevConfig from './en/standard-deviation-calculator';
+import mbToKbConfig from './en/mb-to-kb-converter';
+import volumetricWeightConfig from './en/volumetric-weight-calculator';
+import hectareToAcreConfig from './en/hectare-to-acre';
+import mlToGramsConfig from './en/ml-to-grams-converter';
+
+// Batch E Tools (ES)
+import interesCompuestoConfig from './es/interes-compuesto';
+import calcularPorcentajeConfig from './es/calcular-porcentaje';
+
+// Batch E Tools (PT-BR)
+import metroQuadradoPtBrConfig from './pt-br/como-calcular-metro-quadrado';
+import regraDeTresPtBrConfig from './pt-br/regra-de-3-online';
+import porcentagemPtBrConfig from './pt-br/calculadora-de-porcentagem';
+import rampaPtBrConfig from './pt-br/calculadora-de-rampa';
+import fracaoPtBrConfig from './pt-br/calculadora-de-fracao';
+
 const registry: Record<string, Record<string, ToolConfig>> = {
   en: {
     'swp-calculator': swpConfig,
@@ -125,6 +157,26 @@ const registry: Record<string, Record<string, ToolConfig>> = {
     'dob-calculator': dobCalculatorConfig,
     'experience-calculator': experienceCalculatorConfig,
     'shelf-life-calculator': shelfLifeCalculatorConfig,
+    // Batch E EN
+    'simplify-calculator': simplifyConfig,
+    'epoch-converter': epochConfig,
+    'square-feet-calculator': sqftConfig,
+    'meters-to-feet': metersToFeetConfig,
+    'speed-calculator': speedConfig,
+    'json-to-excel': jsonToExcelConfig,
+    'json-formatter': jsonFormatterConfig,
+    'resin-calculator': resinConfig,
+    'house-construction-cost-calculator': houseCostConfig,
+    'combination-calculator': combinationConfig,
+    'ms-pipe-weight-calculator': msPipeConfig,
+    'infix-to-postfix-converter': infixPostfixConfig,
+    'grams-to-lbs': gramsToLbsConfig,
+    'concrete-calculator': concreteConfig,
+    'standard-deviation-calculator': stdDevConfig,
+    'mb-to-kb-converter': mbToKbConfig,
+    'volumetric-weight-calculator': volumetricWeightConfig,
+    'hectare-to-acre': hectareToAcreConfig,
+    'ml-to-grams-converter': mlToGramsConfig,
   },
   'pt-br': {
     'calculadora-de-investimentos': investimentoPtBrConfig,
@@ -137,9 +189,18 @@ const registry: Record<string, Record<string, ToolConfig>> = {
     'calculadora-de-horas-trabalhadas': calculadoraDeHorasTrabalhadasConfig,
     'calculadora-entre-datas': calculadoraEntreDatasConfig,
     'calculadora-de-horas': calculadoraDeHorasConfig,
+    // Batch E PT-BR
+    'como-calcular-metro-quadrado': metroQuadradoPtBrConfig,
+    'regra-de-3-online': regraDeTresPtBrConfig,
+    'calculadora-de-porcentagem': porcentagemPtBrConfig,
+    'calculadora-de-rampa': rampaPtBrConfig,
+    'calculadora-de-fracao': fracaoPtBrConfig,
   },
   es: {
     'calculadora-de-ritmos': ritmoEsConfig,
+    // Batch E ES
+    'interes-compuesto': interesCompuestoConfig,
+    'calcular-porcentaje': calcularPorcentajeConfig,
   }
 };
 

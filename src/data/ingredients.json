@@ -1,0 +1,25 @@
+{
+  "source_url": "https://www.fatsecret.com/",
+  "last_verified": "2026-01-15",
+  "note": "Densities are approximate for room-temperature liquids. Flours and sugars vary by brand and packing; values marked 'approximate: true' are based on standard cup measurements and may differ from your batch.",
+  "ingredients": [
+    { "key": "water", "label": "Water", "density": 1.000, "unit": "g/ml", "approximate": false },
+    { "key": "milk_whole", "label": "Milk (whole)", "density": 1.030, "unit": "g/ml", "approximate": false },
+    { "key": "milk_skim", "label": "Milk (skim)", "density": 1.035, "unit": "g/ml", "approximate": false },
+    { "key": "vegetable_oil", "label": "Vegetable Oil", "density": 0.920, "unit": "g/ml", "approximate": false },
+    { "key": "olive_oil", "label": "Olive Oil", "density": 0.911, "unit": "g/ml", "approximate": false },
+    { "key": "honey", "label": "Honey", "density": 1.420, "unit": "g/ml", "approximate": false },
+    { "key": "syrup_maple", "label": "Maple Syrup", "density": 1.370, "unit": "g/ml", "approximate": false },
+    { "key": "butter_melted", "label": "Butter (melted)", "density": 0.911, "unit": "g/ml", "approximate": false },
+    { "key": "cream_heavy", "label": "Heavy Cream", "density": 1.010, "unit": "g/ml", "approximate": false },
+    { "key": "alcohol_ethanol", "label": "Ethanol / Alcohol (pure)", "density": 0.789, "unit": "g/ml", "approximate": false },
+    { "key": "vinegar_white", "label": "White Vinegar", "density": 1.005, "unit": "g/ml", "approximate": false },
+    { "key": "sugar_white", "label": "White Sugar (granulated)", "density": 0.845, "unit": "g/ml", "approximate": true },
+    { "key": "sugar_brown", "label": "Brown Sugar (packed)", "density": 0.870, "unit": "g/ml", "approximate": true },
+    { "key": "flour_ap", "label": "All-Purpose Flour", "density": 0.593, "unit": "g/ml", "approximate": true },
+    { "key": "flour_bread", "label": "Bread Flour", "density": 0.529, "unit": "g/ml", "approximate": true },
+    { "key": "cocoa_powder", "label": "Cocoa Powder", "density": 0.520, "unit": "g/ml", "approximate": true },
+    { "key": "salt_table", "label": "Table Salt", "density": 1.217, "unit": "g/ml", "approximate": true },
+    { "key": "yogurt_plain", "label": "Plain Yogurt", "density": 1.040, "unit": "g/ml", "approximate": false }
+  ]
+}

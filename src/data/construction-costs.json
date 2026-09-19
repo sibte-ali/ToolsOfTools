@@ -1,0 +1,51 @@
+{
+  "source_url": "https://www.costimation.com/house-construction-cost-india-per-sq-ft/",
+  "last_verified": "2026-01-15",
+  "note": "These are representative ranges for India; actual costs vary by city, contractor, and materials. Treat all figures as estimates.",
+  "tiers": {
+    "economy": {
+      "label": "Economy (basic materials, standard finishing)",
+      "costPerSqFtMin": 1500,
+      "costPerSqFtMax": 2000,
+      "breakdown": {
+        "structure": 0.40,
+        "finishing": 0.25,
+        "electrical": 0.10,
+        "plumbing": 0.10,
+        "flooring": 0.08,
+        "doors_windows": 0.07
+      }
+    },
+    "standard": {
+      "label": "Standard (mid-range materials, good finishing)",
+      "costPerSqFtMin": 2000,
+      "costPerSqFtMax": 3000,
+      "breakdown": {
+        "structure": 0.38,
+        "finishing": 0.27,
+        "electrical": 0.10,
+        "plumbing": 0.10,
+        "flooring": 0.08,
+        "doors_windows": 0.07
+      }
+    },
+    "premium": {
+      "label": "Premium (high-end materials, luxury finishing)",
+      "costPerSqFtMin": 3000,
+      "costPerSqFtMax": 5000,
+      "breakdown": {
+        "structure": 0.35,
+        "finishing": 0.30,
+        "electrical": 0.10,
+        "plumbing": 0.10,
+        "flooring": 0.09,
+        "doors_windows": 0.06
+      }
+    }
+  },
+  "floorMultiplier": {
+    "note": "Each additional floor above ground typically adds 15-20% to structure cost.",
+    "perFloor": 0.15
+  },
+  "currency": "INR"
+}

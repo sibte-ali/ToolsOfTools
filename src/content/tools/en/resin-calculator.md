@@ -1,71 +1,58 @@
 ---
-title: "Resin calculator - Free Online Calculator"
-description: "Calculate resin calculator accurately with our free online tool. Instant, private, and client-side with full formula breakdown and worked examples."
-h1: "Resin calculator"
-intro: "Use our free resin calculator to calculate instant, accurate results directly in your browser. Fully private with no data collection or server latency."
+title: "Epoxy Resin Calculator - Resin & Hardener Ratio (A & B)"
+description: "Calculate exact epoxy resin and hardener volumes for river tables, silicone molds, tumblers, and deep pours. Supports 1:1, 2:1, 3:1, and 4:1 ratios by."
+h1: "Epoxy Resin Calculator"
+intro: "Calculate the exact amounts of resin (Part A) and hardener (Part B) needed for river tables, art projects, coasters, and deep-pour castings without waste or shortages."
 primaryKeyword: "resin calculator"
-formula: "Result = f(resin calculator)"
-example: "Using default variables, the standard formula calculates an expected output of 100 based on standard industry inputs."
+formula: "Volume = Length × Width × Depth  |  Total Weight = Volume (ml) × 1.1 g/ml (Epoxy Density)"
+example: "A rectangular river table measuring 60 cm × 30 cm with a depth of 2.5 cm requires 4,500 ml (approx. 4.95 kg) of mixed epoxy. With a 2:1 ratio by volume, you need 3,000 ml of Part A (Resin) and 1,500 ml of Part B (Hardener)."
 faq:
-  - q: "How does the resin calculator calculate results?"
-    a: "The tool evaluates inputs using standard verified equations and executes calculations instantly within your web browser."
-  - q: "Is my numerical data private and secure?"
-    a: "Yes. Zero user figures, dates, or inputs are transmitted across the internet or logged on any server."
-  - q: "How accurate is this resin calculator?"
-    a: "Calculations use 64-bit floating point arithmetic adhering to statutory standards and academic formulas."
-  - q: "Can I run this calculator on mobile devices?"
-    a: "Yes, our interface is responsive across modern mobile smartphones, tablets, laptops, and desktop computers."
-sources: []
-updated: "2026-03-01"
+  - q: "What is the typical density of uncured epoxy resin?"
+    a: "Standard uncured epoxy resin systems have an average density of approximately 1.10 g/ml to 1.15 g/ml. This means 1,000 ml (1 liter) of mixed liquid resin weighs approximately 1,100 grams (1.1 kg or 38.8 oz)."
+  - q: "What is the difference between mixing by volume versus mixing by weight?"
+    a: "Many resin brands formulate Part A and Part B with different liquid densities. A kit labeled '2:1 by volume' might actually require '100:45 by weight' on a digital scale. Always check the manufacturer's technical data sheet (TDS) before mixing on a scale."
+  - q: "How much extra resin should I mix to account for cup cling and waste?"
+    a: "It is standard practice among resin crafters and woodworkers to add 5% to 10% extra to your calculated total to account for residue left on mixing stick containers, leveling overflow, and surface tension meniscus."
+  - q: "What happens if the ratio of Part A to Part B is incorrect?"
+    a: "An incorrect mix ratio prevents complete polymer cross-linking, causing sticky surfaces, soft curing, cloudiness, or excessive exothermic heat buildup (thermal runaway) in deep castings."
+sources:
+  - label: "Source reference 1"
+    url: "Society of Plastics Engineers (SPE) - Thermoset Resin Formulations and Curing Dynamics"
+  - label: "Source reference 2"
+    url: "American Composites Manufacturers Association (ACMA) - Resin Pour and Mixing Guidelines"
+updated: "2026-03-19"
 related:
-  - "square-feet-calculator"
-  - "house-construction-cost-calculator"
-  - "ms-pipe-weight-calculator"
+  - "ml-to-grams-converter"
   - "concrete-calculator"
+  - "square-feet-calculator"
+  - "ms-pipe-weight-calculator"
 disclaimer: "none"
 ---
 
-## Comprehensive Guide to the Resin calculator
+## Complete Guide to Calculating Epoxy Resin Pours
 
-Precision matters when estimating resin calculator. Whether you are navigating personal budgeting milestones, managing physiological wellness routines, optimizing academic schedules, or conducting engineering assessments, standardizing your calculation methodology ensures consistent, dependable, and reproducible outcomes.
+Whether you are crafting custom river tables, coating counter tops, filling silicone molds for jewelry, or making decorative tumblers, getting your **epoxy resin calculations** right is the difference between a glass-smooth finish and a sticky, ruined piece.
 
-Historically, calculating resin calculator required maintaining custom spreadsheet templates or manually tracking intermediate figures through multiple operational stages. Small deviations in rounding logic, compounding schedules, or boundary criteria can cascade into substantial discrepancies over extended forecasting horizons. This tool eliminates subjective estimation by adhering strictly to peer-reviewed mathematical formulations and authoritative technical baselines.
+### Calculating Pour Volumes by Project Shape
 
-### Key Input Variables and Calculation Dynamics
+#### 1. Rectangular Pours (River Tables, Trays, Boards)
+$$\text{Volume } (\text{cm}^3 \text{ or ml}) = \text{Length } (\text{cm}) \times \text{Width } (\text{cm}) \times \text{Depth } (\text{cm})$$
+If working in inches:
+$$\text{Volume } (\text{in}^3) = \text{Length } (\text{in}) \times \text{Width } (\text{in}) \times \text{Depth } (\text{in})$$
+Multiply cubic inches by **$16.387$** to convert into milliliters ($\text{ml}$), or divide by **$1.805$** to convert into fluid ounces ($\text{fl oz}$).
 
-To ensure maximal fidelity when using this resin calculator, verify that each input variable adheres strictly to expected measurement units and standardized baseline definitions:
+#### 2. Circular Projects (Round Tables, Coasters, Lazy Susans)
+$$\text{Volume } (\text{ml}) = \pi \times r^2 \times \text{Depth} \approx 3.1416 \times (\text{Radius})^2 \times \text{Depth}$$
 
-1. **Consistent Unit Scaling:** Confirm whether periodic variables refer to annual, monthly, or daily intervals before executing the calculation.
-2. **Gross vs. Net Distinctions:** Take note of whether baseline figures include preliminary discounts, statutory deductions, or compound adjustments.
-3. **Edge Case Boundaries:** Ensure inputs remain within realistic numerical limits to prevent division-by-zero or asymptotic distortions.
-4. **Rounding Precautions:** Check that decimal precision matches the reporting conventions of your organization or regulatory jurisdiction.
+---
 
-### Practical Scenarios and Sensitivity Analysis
+### Splitting Part A (Resin) and Part B (Hardener)
 
-The practical value of estimating resin calculator emerges most clearly during scenario planning and sensitivity evaluations. In strategic forecasting, adjusting a single key parameter upwards or downwards by five to ten percent illuminates how responsive the final calculation is to input volatility. Establishing these sensitivity bounds equips decision-makers with vital insight into safety margins and risk tolerances.
+Once total volume ($V_{\text{total}}$) is calculated, divide according to your kit's volumetric ratio:
 
-In educational, laboratory, and corporate environments, documenting the exact baseline inputs used during each run allows colleagues and external reviewers to audit the output independently. This rigorous reproducibility fosters confidence in the resulting metrics and simplifies longitudinal performance comparisons.
-
-### Common Calculation Pitfalls to Avoid
-
-When performing calculations related to resin calculator, several recurring oversights frequently compromise result accuracy:
-
-- **Mismatched Time Horizons:** Combining daily operational cycles with annual percentage rates without proper compounding adjustments skews long-term figures.
-- **Ignoring Incremental Costs:** Overlooking transaction fees, friction costs, or ancillary expenses results in artificially optimistic estimates.
-- **Calendar Basis Discrepancies:** Failing to differentiate between exact calendar days, leap years, and standard business day conventions introduces systematic drift.
-
-### Complementary Advisory Recommendations
-
-When incorporating computational outputs into executive dossiers, formal loan applications, tax returns, or medical consultation records, always document the underlying assumptions, revision versions, and source timestamps. In collaborative professional settings involving compliance auditors, insurance underwriters, certified actuaries, or financial planners, explicit transparency regarding rounding parameters mitigates contractual misunderstandings and disputes.
-
-Moreover, periodically revisit numerical baselines to ensure they align with the latest statutory mandates, benchmark interest adjustments, inflation indices, or medical revisions published by authoritative governing bodies. Embracing this disciplined protocol ensures robust operational resilience.
-
-### Methodological Framework and Calibration Standards
-
-Our computational algorithms are benchmarked against standardized academic literature and statutory guidelines. Where multi-step numerical approximations are involved, convergence criteria are enforced to eliminate error propagation and floating-point anomalies.
-
-This explicit traceability provides analysts, researchers, and students with verified confidence that results mirror peer-reviewed manual derivations published in leading domain textbooks and regulatory specifications.
-
-### Zero-Tracking Client-Side Execution Guarantee
-
-Unlike conventional online utilities that harvest user metrics and transmit confidential numbers to analytics servers, this tool operates exclusively within your local browser runtime. Your private balances, operational timelines, and physiological indicators remain securely on your personal device. This architecture ensures instantaneous calculation speeds, zero network latency, and complete privacy protection for every calculation.
+- **1:1 Ratio Kits (Table top & Art Resin):**
+  $$\text{Part A} = \frac{V_{\text{total}}}{2} \quad | \quad \text{Part B} = \frac{V_{\text{total}}}{2}$$
+- **2:1 Ratio Kits (Casting & Deep Pour):**
+  $$\text{Part A} = V_{\text{total}} \times \frac{2}{3} \quad | \quad \text{Part B} = V_{\text{total}} \times \frac{1}{3}$$
+- **3:1 Ratio Kits:**
+  $$\text{Part A} = V_{\text{total}} \times \frac{3}{4} \quad | \quad \text{Part B} = V_{\text{total}} \times \frac{1}{4}$$

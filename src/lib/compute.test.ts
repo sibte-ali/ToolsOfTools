@@ -8,6 +8,8 @@ import {
   computePace,
 } from './compute';
 
+
+
 describe('Compute engines and worked example consistency checks', () => {
   it('SWP worked example matches compute output', () => {
     // Example: $100,000 investment, $800 monthly withdrawal, 8% expected return over 10 years

@@ -1,0 +1,16 @@
+{
+  "source_url": "https://www.unitconverters.net/area/hectare-to-bigha-ii.htm",
+  "last_verified": "2026-01-15",
+  "note": "Bigha and Guntha vary by Indian state. Values below are commonly used approximations. Always verify with local land records.",
+  "units": [
+    { "key": "ha", "label": "Hectare", "to_sqm": 10000, "approximate": false },
+    { "key": "acre", "label": "Acre", "to_sqm": 4046.8564224, "approximate": false },
+    { "key": "sqm", "label": "Square Meter (m²)", "to_sqm": 1, "approximate": false },
+    { "key": "sqft", "label": "Square Foot (ft²)", "to_sqm": 0.09290304, "approximate": false },
+    { "key": "bigha_up", "label": "Bigha (Uttar Pradesh, ~2529 m²)", "to_sqm": 2529, "approximate": true },
+    { "key": "bigha_raj", "label": "Bigha (Rajasthan, ~2471 m²)", "to_sqm": 2471, "approximate": true },
+    { "key": "guntha", "label": "Guntha (Maharashtra/Karnataka)", "to_sqm": 101.17, "approximate": true },
+    { "key": "marla", "label": "Marla (Punjab/Haryana, 25.29 m²)", "to_sqm": 25.293, "approximate": true },
+    { "key": "kanal", "label": "Kanal (Punjab, 505.857 m²)", "to_sqm": 505.857, "approximate": true }
+  ]
+}
