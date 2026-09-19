@@ -1,0 +1,77 @@
+{
+  "cbse": {
+    "name": "Central Board of Secondary Education (CBSE)",
+    "scale": 10,
+    "formula_text": "Percentage = CGPA * 9.5",
+    "multiplier": 9.5,
+    "offset": 0,
+    "source_url": "https://www.cbse.gov.in",
+    "last_verified": "2025-01-15"
+  },
+  "vtu": {
+    "name": "Visvesvaraya Technological University (VTU)",
+    "scale": 10,
+    "formula_text": "Percentage = (CGPA - 0.75) * 10",
+    "multiplier": 10,
+    "offset": -0.75,
+    "source_url": "https://vtu.ac.in",
+    "last_verified": "2024-08-01"
+  },
+  "anna_univ": {
+    "name": "Anna University",
+    "scale": 10,
+    "formula_text": "Percentage = CGPA * 10",
+    "multiplier": 10,
+    "offset": 0,
+    "source_url": "https://www.annauniv.edu",
+    "last_verified": "2024-07-01"
+  },
+  "mumbai_univ_10pt": {
+    "name": "Mumbai University (10-Point CBCS)",
+    "scale": 10,
+    "formula_text": "Percentage = 7.1 * CGPA + 12 (for CGPA < 7) or 7.25 * CGPA + 11 (for CGPA >= 7)",
+    "source_url": "https://mu.ac.in",
+    "last_verified": "2024-06-01"
+  },
+  "standard_10pt": {
+    "name": "Standard 10-Point UGC Scale",
+    "scale": 10,
+    "formula_text": "Percentage = CGPA * 10",
+    "multiplier": 10,
+    "offset": 0,
+    "source_url": "https://www.ugc.gov.in",
+    "last_verified": "2024-09-01"
+  },
+  "vit": {
+    "name": "Vellore Institute of Technology (VIT)",
+    "scale": 10,
+    "grades": [
+      { "grade": "S", "points": 10, "description": "Outstanding" },
+      { "grade": "A", "points": 9, "description": "Excellent" },
+      { "grade": "B", "points": 8, "description": "Very Good" },
+      { "grade": "C", "points": 7, "description": "Good" },
+      { "grade": "D", "points": 6, "description": "Average" },
+      { "grade": "E", "points": 5, "description": "Poor / Pass" },
+      { "grade": "F", "points": 0, "description": "Fail" },
+      { "grade": "N", "points": 0, "description": "Not Appeared" }
+    ],
+    "source_url": "https://vit.ac.in",
+    "last_verified": "2024-07-01"
+  },
+  "srm": {
+    "name": "SRM Institute of Science and Technology (SRMIST)",
+    "scale": 10,
+    "grades": [
+      { "grade": "O", "points": 10, "description": "Outstanding" },
+      { "grade": "A+", "points": 9, "description": "Excellent" },
+      { "grade": "A", "points": 8, "description": "Very Good" },
+      { "grade": "B+", "points": 7, "description": "Good" },
+      { "grade": "B", "points": 6, "description": "Above Average" },
+      { "grade": "C", "points": 5, "description": "Average / Pass" },
+      { "grade": "F", "points": 0, "description": "Fail" },
+      { "grade": "Ab", "points": 0, "description": "Absent" }
+    ],
+    "source_url": "https://www.srmist.edu.in",
+    "last_verified": "2024-07-01"
+  }
+}

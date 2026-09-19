@@ -1,0 +1,83 @@
+{
+  "cat": {
+    "name": "Common Admission Test (CAT)",
+    "conducting_body": "Indian Institutes of Management (IIMs)",
+    "source_url": "https://iimcat.ac.in",
+    "last_verified": "2024-11-01",
+    "sections": {
+      "varc": {
+        "name": "Verbal Ability & Reading Comprehension",
+        "total_questions": 24,
+        "typical_mcq": 20,
+        "typical_tita": 4
+      },
+      "dilr": {
+        "name": "Data Interpretation & Logical Reasoning",
+        "total_questions": 20,
+        "typical_mcq": 15,
+        "typical_tita": 5
+      },
+      "qa": {
+        "name": "Quantitative Ability",
+        "total_questions": 22,
+        "typical_mcq": 15,
+        "typical_tita": 7
+      }
+    },
+    "total_questions": 66,
+    "max_marks": 198,
+    "scoring": {
+      "correct": 3,
+      "incorrect_mcq": -1,
+      "incorrect_tita": 0,
+      "unattempted": 0
+    }
+  },
+  "jee_main": {
+    "name": "Joint Entrance Examination (Main)",
+    "conducting_body": "National Testing Agency (NTA)",
+    "source_url": "https://jeemain.nta.nic.in",
+    "last_verified": "2025-01-01",
+    "subjects": ["physics", "chemistry", "mathematics"],
+    "questions_per_subject": {
+      "section_a_mcq": 20,
+      "section_b_numerical": 10,
+      "max_numerical_attempt": 5
+    },
+    "total_max_questions_attemptable": 75,
+    "max_marks": 300,
+    "scoring": {
+      "correct": 4,
+      "incorrect_mcq": -1,
+      "incorrect_numerical": -1,
+      "unattempted": 0
+    }
+  },
+  "jee_advanced": {
+    "name": "Joint Entrance Examination (Advanced)",
+    "conducting_body": "Organizing IIT",
+    "source_url": "https://jeeadv.ac.in",
+    "last_verified": "2024-06-01",
+    "note": "Marking scheme varies yearly by question type (single choice, multiple choice with partial marking, numerical, and match lists). Always verify with official examination brochure.",
+    "typical_paper_marks": 180,
+    "typical_total_marks": 360
+  },
+  "gate": {
+    "name": "Graduate Aptitude Test in Engineering (GATE)",
+    "conducting_body": "Organizing IIT / IISc",
+    "source_url": "https://gate2025.iitr.ac.in",
+    "last_verified": "2025-02-01",
+    "total_questions": 65,
+    "max_marks": 100,
+    "distribution": {
+      "general_aptitude_marks": 15,
+      "subject_marks": 85
+    },
+    "scoring": {
+      "1_mark_mcq": { "correct": 1, "negative": -0.3333333333333333 },
+      "2_mark_mcq": { "correct": 2, "negative": -0.6666666666666666 },
+      "1_mark_nat_msq": { "correct": 1, "negative": 0 },
+      "2_mark_nat_msq": { "correct": 2, "negative": 0 }
+    }
+  }
+}

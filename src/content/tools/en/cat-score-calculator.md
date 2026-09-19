@@ -1,71 +1,90 @@
 ---
-title: "Cat score calculator - Free Online Calculator"
-description: "Calculate cat score calculator accurately with our free online tool. Instant, private, and client-side with full formula breakdown and worked examples."
-h1: "Cat score calculator"
-intro: "Use our free cat score calculator to calculate instant, accurate results directly in your browser. Fully private with no data collection or server latency."
+title: "CAT Score Calculator - Sectional Raw Score & Marks Scheme"
+description: "Calculate your CAT raw score section-by-section with official marking schemes for VARC, DILR, and QA. Accurate, instant, and fully verified for CAT 2025/2026."
+h1: "CAT Score Calculator"
+intro: "Calculate your sectional and total raw scores for the Common Admission Test (CAT) using official IIM marking schemes (+3 for correct, -1 for incorrect MCQs, 0 for TITA)."
 primaryKeyword: "cat score calculator"
-formula: "Result = f(cat score calculator)"
-example: "Using default variables, the standard formula calculates an expected output of 100 based on standard industry inputs."
+formula: "\\text{Raw Score} = (\\text{Correct} \\times 3) - (\\text{Incorrect MCQs} \\times 1)"
+example: "With 12 correct and 3 incorrect in VARC (33 marks), 10 correct and 2 incorrect in DILR (28 marks), and 14 correct and 4 incorrect in QA (38 marks), the total raw score is 99 out of 198."
 faq:
-  - q: "How does the cat score calculator calculate results?"
-    a: "The tool evaluates inputs using standard verified equations and executes calculations instantly within your web browser."
-  - q: "Is my numerical data private and secure?"
-    a: "Yes. Zero user figures, dates, or inputs are transmitted across the internet or logged on any server."
-  - q: "How accurate is this cat score calculator?"
-    a: "Calculations use 64-bit floating point arithmetic adhering to statutory standards and academic formulas."
-  - q: "Can I run this calculator on mobile devices?"
-    a: "Yes, our interface is responsive across modern mobile smartphones, tablets, laptops, and desktop computers."
-sources: []
+  - q: "What is the marking scheme for CAT 2025 and 2026?"
+    a: "Every correct answer awards +3 marks. Every incorrect Multiple Choice Question (MCQ) carries a penalty of -1 mark. Non-MCQ questions (Type In The Answer / TITA) carry 0 negative marking."
+  - q: "What is the total maximum mark in the CAT examination?"
+    a: "The CAT exam comprises 66 questions distributed across 3 sections (VARC: 24, DILR: 20, QA: 22). With 3 marks per question, the theoretical maximum score is 198 marks."
+  - q: "What is the difference between CAT raw score and scaled score?"
+    a: "The raw score is your direct algebraic total from correct and incorrect answers. The Indian Institutes of Management (IIMs) then apply statistical psychometric normalization across test slots to produce scaled sectional scores and overall percentiles."
+  - q: "Do unattempted questions incur any negative marking?"
+    a: "No. Unattempted questions carry zero marks and do not affect your score negatively."
+  - q: "What raw score is typically required for a 99th percentile in CAT?"
+    a: "While paper difficulty varies year to year, a total raw score of approximately 75 to 85 out of 198 generally aligns with the 99th percentile across exam slots."
+sources:
+  - label: "Official CAT Information Bulletin and Marking Scheme"
+    url: "https://iimcat.ac.in"
 updated: "2026-03-01"
 related:
-  - "attendance-calculator"
-  - "how-to-calculate-cgpa-to-percentage"
+  - "gate-calculator"
+  - "jee-marks-calculator"
   - "marks-percentage-calculator"
-  - "dtp-mock-test"
+  - "attendance-calculator"
 disclaimer: "none"
 ---
 
-## Comprehensive Guide to the Cat score calculator
+## Understanding the CAT Exam Scoring System
 
-Precision matters when estimating cat score calculator. Whether you are navigating personal budgeting milestones, managing physiological wellness routines, optimizing academic schedules, or conducting engineering assessments, standardizing your calculation methodology ensures consistent, dependable, and reproducible outcomes.
+The Common Admission Test (CAT), conducted annually on a rotational basis by the Indian Institutes of Management (IIMs), is India's premier management entrance examination. Over three lakh aspirants compete for seats in flagship Post Graduate Programmes (PGP/MBA) across the 21 IIMs and premier non-IIM institutions like FMS Delhi, SPJIMR Mumbai, and IIT management schools.
 
-Historically, calculating cat score calculator required maintaining custom spreadsheet templates or manually tracking intermediate figures through multiple operational stages. Small deviations in rounding logic, compounding schedules, or boundary criteria can cascade into substantial discrepancies over extended forecasting horizons. This tool eliminates subjective estimation by adhering strictly to peer-reviewed mathematical formulations and authoritative technical baselines.
+Following the release of the official response key and candidate response sheets, calculating your exact sectional raw scores allows you to project your scaled score and shortlisting chances before official scorecards are declared.
 
-### Key Input Variables and Calculation Dynamics
+### Official Marking Scheme and Question Distribution
 
-To ensure maximal fidelity when using this cat score calculator, verify that each input variable adheres strictly to expected measurement units and standardized baseline definitions:
+The standard CAT examination structure consists of 66 questions across three timed 40-minute sections, totaling 198 marks:
 
-1. **Consistent Unit Scaling:** Confirm whether periodic variables refer to annual, monthly, or daily intervals before executing the calculation.
-2. **Gross vs. Net Distinctions:** Take note of whether baseline figures include preliminary discounts, statutory deductions, or compound adjustments.
-3. **Edge Case Boundaries:** Ensure inputs remain within realistic numerical limits to prevent division-by-zero or asymptotic distortions.
-4. **Rounding Precautions:** Check that decimal precision matches the reporting conventions of your organization or regulatory jurisdiction.
+| Section | Total Questions | MCQs (Negative Marking) | TITA (No Negative) | Maximum Marks |
+|---|---|---|---|---|
+| Verbal Ability & Reading Comprehension (VARC) | 24 | ~16–18 | ~6–8 | 72 |
+| Data Interpretation & Logical Reasoning (DILR) | 20 | ~14–16 | ~4–6 | 60 |
+| Quantitative Aptitude (QA) | 22 | ~14–16 | ~6–8 | 66 |
+| **Overall Total** | **66** | **~44–50** | **~16–22** | **198** |
 
-### Practical Scenarios and Sensitivity Analysis
+#### Sectional Scoring Formula
+For each individual section:
 
-The practical value of estimating cat score calculator emerges most clearly during scenario planning and sensitivity evaluations. In strategic forecasting, adjusting a single key parameter upwards or downwards by five to ten percent illuminates how responsive the final calculation is to input volatility. Establishing these sensitivity bounds equips decision-makers with vital insight into safety margins and risk tolerances.
+$$\text{Raw Score} = (\text{Correct Answers} \times 3) - (\text{Incorrect MCQs} \times 1)$$
 
-In educational, laboratory, and corporate environments, documenting the exact baseline inputs used during each run allows colleagues and external reviewers to audit the output independently. This rigorous reproducibility fosters confidence in the resulting metrics and simplifies longitudinal performance comparisons.
+Key scoring principles:
+- **Correct Responses**: $+3$ marks across all question types.
+- **Incorrect MCQs**: $-1$ mark penalty.
+- **Incorrect Non-MCQs (TITA)**: $0$ penalty (no negative marks).
+- **Unattempted Questions**: $0$ marks.
 
-### Common Calculation Pitfalls to Avoid
+### Worked Candidate Example
 
-When performing calculations related to cat score calculator, several recurring oversights frequently compromise result accuracy:
+Consider an aspirant who attempted questions across the three sections with the following breakdown:
 
-- **Mismatched Time Horizons:** Combining daily operational cycles with annual percentage rates without proper compounding adjustments skews long-term figures.
-- **Ignoring Incremental Costs:** Overlooking transaction fees, friction costs, or ancillary expenses results in artificially optimistic estimates.
-- **Calendar Basis Discrepancies:** Failing to differentiate between exact calendar days, leap years, and standard business day conventions introduces systematic drift.
+1. **VARC Section**:
+   - Correct: $12$
+   - Incorrect MCQs: $3$
+   - Score: $(12 \times 3) - (3 \times 1) = 36 - 3 = \mathbf{33\text{ marks}}$ (out of 72)
 
-### Complementary Advisory Recommendations
+2. **DILR Section**:
+   - Correct: $10$
+   - Incorrect MCQs: $2$
+   - Score: $(10 \times 3) - (2 \times 1) = 30 - 2 = \mathbf{28\text{ marks}}$ (out of 60)
 
-When incorporating computational outputs into executive dossiers, formal loan applications, tax returns, or medical consultation records, always document the underlying assumptions, revision versions, and source timestamps. In collaborative professional settings involving compliance auditors, insurance underwriters, certified actuaries, or financial planners, explicit transparency regarding rounding parameters mitigates contractual misunderstandings and disputes.
+3. **QA Section**:
+   - Correct: $14$
+   - Incorrect MCQs: $4$
+   - Score: $(14 \times 3) - (4 \times 1) = 42 - 4 = \mathbf{38\text{ marks}}$ (out of 66)
 
-Moreover, periodically revisit numerical baselines to ensure they align with the latest statutory mandates, benchmark interest adjustments, inflation indices, or medical revisions published by authoritative governing bodies. Embracing this disciplined protocol ensures robust operational resilience.
+- **Total Composite Raw Score**: $33 + 28 + 38 = \mathbf{99\text{ marks}}$ out of 198 ($50.0\%$).
 
-### Methodological Framework and Calibration Standards
+A raw score of 99 marks in typical CAT exam cycles comfortably secures an overall percentile well above the 99.5th percentile mark, guaranteeing interview calls across older IIMs (Ahmedabad, Bangalore, Calcutta, Lucknow, Kozhikode, and Indore), subject to sectional cutoffs.
 
-Our computational algorithms are benchmarked against standardized academic literature and statutory guidelines. Where multi-step numerical approximations are involved, convergence criteria are enforced to eliminate error propagation and floating-point anomalies.
+### From Raw Score to Scaled Score and Percentile
 
-This explicit traceability provides analysts, researchers, and students with verified confidence that results mirror peer-reviewed manual derivations published in leading domain textbooks and regulatory specifications.
+Raw scores are not the numbers that appear directly on admission cutoffs. The IIM testing agency uses an Equipercentile Scaling methodology:
+- Mean and standard deviation are calculated across all testing slots (Slot 1, Slot 2, Slot 3).
+- Test forms with higher difficulty distributions receive upward normalizations.
+- Individual sectional percentiles and composite ranks determine call shortlists for the Personal Interview (PI) and Analytical Writing Test (AWT) rounds.
 
-### Zero-Tracking Client-Side Execution Guarantee
-
-Unlike conventional online utilities that harvest user metrics and transmit confidential numbers to analytics servers, this tool operates exclusively within your local browser runtime. Your private balances, operational timelines, and physiological indicators remain securely on your personal device. This architecture ensures instantaneous calculation speeds, zero network latency, and complete privacy protection for every calculation.
+To compare scores across other national entrance exams, explore our [gate calculator](/education/gate-calculator/) and [jee marks calculator](/education/jee-marks-calculator/).
