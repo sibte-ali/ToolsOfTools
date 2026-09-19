@@ -48,12 +48,24 @@ export async function hydrateCalculator(container: HTMLElement) {
 
   if (!toolId) return;
 
+  const toolLang = container.getAttribute('data-tool-lang')?.toLowerCase();
+
   // Find module in toolModules
   let matchingKey: string | undefined;
-  for (const key of Object.keys(toolModules)) {
-    if (key.endsWith(`/${toolId}.ts`) || key.includes(`/${toolId}/`)) {
-      matchingKey = key;
-      break;
+  if (toolLang) {
+    for (const key of Object.keys(toolModules)) {
+      if (key.includes(`/${toolLang}/${toolId}.ts`)) {
+        matchingKey = key;
+        break;
+      }
+    }
+  }
+  if (!matchingKey) {
+    for (const key of Object.keys(toolModules)) {
+      if (key.endsWith(`/${toolId}.ts`) || key.includes(`/${toolId}/`)) {
+        matchingKey = key;
+        break;
+      }
     }
   }
 

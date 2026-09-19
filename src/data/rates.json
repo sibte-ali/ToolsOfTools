@@ -1,0 +1,57 @@
+{
+  "epf": {
+    "name": "Employees' Provident Fund (EPF)",
+    "rate": 8.25,
+    "unit": "% p.a.",
+    "effective_financial_year": "2023-24 / 2024-25",
+    "source_url": "https://www.epfindia.gov.in/",
+    "last_verified": "2025-03-01",
+    "statutory_employee_rate": 12,
+    "statutory_employer_epf_rate": 3.67,
+    "statutory_employer_eps_rate": 8.33,
+    "eps_wage_ceiling": 15000
+  },
+  "gpf": {
+    "name": "General Provident Fund (GPF)",
+    "rate": 7.1,
+    "unit": "% p.a.",
+    "effective_quarter": "Q4 FY 2024-25",
+    "source_url": "https://dea.gov.in/",
+    "last_verified": "2025-03-01"
+  },
+  "scss": {
+    "name": "Senior Citizens Savings Scheme (SCSS)",
+    "rate": 8.2,
+    "unit": "% p.a.",
+    "max_deposit": 3000000,
+    "tenure_years": 5,
+    "extension_years": 3,
+    "payout_frequency": "quarterly",
+    "source_url": "https://www.indiapost.gov.in/",
+    "last_verified": "2025-03-01"
+  },
+  "brazil": {
+    "selic": {
+      "name": "Taxa Selic Meta",
+      "rate": 13.25,
+      "unit": "% a.a.",
+      "source_url": "https://www.bcb.gov.br/",
+      "last_verified": "2025-03-01"
+    },
+    "cdi": {
+      "name": "Certificado de Depósito Interbancário (CDI)",
+      "rate": 13.15,
+      "unit": "% a.a.",
+      "source_url": "https://www.b3.com.br/",
+      "last_verified": "2025-03-01"
+    },
+    "poupanca": {
+      "name": "Rendimento da Poupança",
+      "monthly_rate": 0.5,
+      "annual_equivalent": 6.17,
+      "unit": "% a.m. + TR",
+      "source_url": "https://www.bcb.gov.br/",
+      "last_verified": "2025-03-01"
+    }
+  }
+}

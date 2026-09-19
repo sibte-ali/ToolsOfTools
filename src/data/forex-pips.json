@@ -1,0 +1,79 @@
+{
+  "source_url": "https://www.investopedia.com/terms/p/pip.asp",
+  "last_verified": "2025-03-01",
+  "standard_lot_units": 100000,
+  "mini_lot_units": 10000,
+  "micro_lot_units": 1000,
+  "pairs": [
+    {
+      "symbol": "EUR/USD",
+      "name": "Euro / US Dollar",
+      "pip_decimal": 4,
+      "pip_size": 0.0001,
+      "pip_value_usd_standard_lot": 10.00
+    },
+    {
+      "symbol": "GBP/USD",
+      "name": "British Pound / US Dollar",
+      "pip_decimal": 4,
+      "pip_size": 0.0001,
+      "pip_value_usd_standard_lot": 10.00
+    },
+    {
+      "symbol": "USD/JPY",
+      "name": "US Dollar / Japanese Yen",
+      "pip_decimal": 2,
+      "pip_size": 0.01,
+      "pip_value_usd_standard_lot": 6.70
+    },
+    {
+      "symbol": "AUD/USD",
+      "name": "Australian Dollar / US Dollar",
+      "pip_decimal": 4,
+      "pip_size": 0.0001,
+      "pip_value_usd_standard_lot": 10.00
+    },
+    {
+      "symbol": "USD/CAD",
+      "name": "US Dollar / Canadian Dollar",
+      "pip_decimal": 4,
+      "pip_size": 0.0001,
+      "pip_value_usd_standard_lot": 7.15
+    },
+    {
+      "symbol": "USD/CHF",
+      "name": "US Dollar / Swiss Franc",
+      "pip_decimal": 4,
+      "pip_size": 0.0001,
+      "pip_value_usd_standard_lot": 11.20
+    },
+    {
+      "symbol": "NZD/USD",
+      "name": "New Zealand Dollar / US Dollar",
+      "pip_decimal": 4,
+      "pip_size": 0.0001,
+      "pip_value_usd_standard_lot": 10.00
+    },
+    {
+      "symbol": "EUR/GBP",
+      "name": "Euro / British Pound",
+      "pip_decimal": 4,
+      "pip_size": 0.0001,
+      "pip_value_usd_standard_lot": 12.80
+    },
+    {
+      "symbol": "EUR/JPY",
+      "name": "Euro / Japanese Yen",
+      "pip_decimal": 2,
+      "pip_size": 0.01,
+      "pip_value_usd_standard_lot": 6.70
+    },
+    {
+      "symbol": "GBP/JPY",
+      "name": "British Pound / Japanese Yen",
+      "pip_decimal": 2,
+      "pip_size": 0.01,
+      "pip_value_usd_standard_lot": 6.70
+    }
+  ]
+}

@@ -12,8 +12,7 @@ import {
 } from '../lib/compute';
 
 import Calculator from './tools/Calculator.astro';
-import emiConfig from '../tools/emi-calculator';
-import sipConfig from '../tools/sip';
+import { getToolConfig } from '../tools/registry';
 
 interface Props {
   tool: Tool;
@@ -25,8 +24,8 @@ const t = getTranslations(lang);
 const localeConfig = resolveToolLocale(tool);
 
 const slug = tool.slug;
-const isConfigEngineTool = slug === 'emi-calculator' || slug === 'sip';
-const engineConfig = slug === 'emi-calculator' ? emiConfig : slug === 'sip' ? sipConfig : null;
+const engineConfig = getToolConfig(lang, slug);
+const isConfigEngineTool = !!engineConfig;
 let widgetType = 'general';
 let defaultInputs: { id: string; label: string; type: any; value: string | number; step?: string }[] = [];
 let defaultResult: { title: string; primary: string; secondary?: string } = {

@@ -1,0 +1,48 @@
+{
+  "authority": "Central Board of Indirect Taxes and Customs (CBIC) / GST Council",
+  "source_url": "https://cbic-gst.gov.in/",
+  "last_verified": "2025-03-01",
+  "slabs": [
+    {
+      "rate": 0,
+      "label": "0% (Exempt / Nil Rated)",
+      "description": "Essential food grains, unbranded milk, fresh vegetables, healthcare, basic education"
+    },
+    {
+      "rate": 0.25,
+      "label": "0.25% (Precious Stones)",
+      "description": "Rough diamonds, unworked precious and semi-precious stones"
+    },
+    {
+      "rate": 3,
+      "label": "3% (Gold & Jewellery)",
+      "description": "Gold, silver, platinum, imitation jewellery, and coins"
+    },
+    {
+      "rate": 5,
+      "label": "5% (Merit Rate)",
+      "description": "Packaged food items, life-saving drugs, economy air travel, tea, coffee, edible oil"
+    },
+    {
+      "rate": 12,
+      "label": "12% (Standard Low Rate)",
+      "description": "Processed food, computers, diagnostic kits, business class air tickets"
+    },
+    {
+      "rate": 18,
+      "label": "18% (Standard General Rate)",
+      "description": "Most consumer goods, IT services, financial services, telecom, restaurants"
+    },
+    {
+      "rate": 28,
+      "label": "28% (Demerit / Luxury Rate)",
+      "description": "Motor vehicles, tobacco, pan masala, aerated drinks, air conditioners, luxury goods"
+    }
+  ],
+  "composition_scheme": {
+    "traders": 1,
+    "manufacturers": 1,
+    "restaurants": 5,
+    "service_providers": 6
+  }
+}
