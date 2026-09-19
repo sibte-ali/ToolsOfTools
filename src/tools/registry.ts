@@ -96,6 +96,17 @@ import volumetricWeightConfig from './en/volumetric-weight-calculator';
 import hectareToAcreConfig from './en/hectare-to-acre';
 import mlToGramsConfig from './en/ml-to-grams-converter';
 
+// Batch F Tools (EN)
+import loveCalculatorConfig from './en/love-calculator';
+import flamesGameConfig from './en/flames-game';
+import loShuGridConfig from './en/lo-shu-grid';
+import nameNumerologyDobConfig from './en/name-numerology-calculator-by-date-of-birth';
+import toneGeneratorConfig from './en/tone-generator';
+import mulankCalculatorConfig from './en/mulank-calculator';
+import bhagyankCalculatorConfig from './en/bhagyank-calculator';
+import friendshipCalculatorConfig from './en/friendship-calculator-by-name';
+import businessNameNumerologyConfig from './en/business-name-numerology-calculator';
+
 // Batch E Tools (ES)
 import interesCompuestoConfig from './es/interes-compuesto';
 import calcularPorcentajeConfig from './es/calcular-porcentaje';
@@ -177,6 +188,16 @@ const registry: Record<string, Record<string, ToolConfig>> = {
     'volumetric-weight-calculator': volumetricWeightConfig,
     'hectare-to-acre': hectareToAcreConfig,
     'ml-to-grams-converter': mlToGramsConfig,
+    // Batch F Tools
+    'love-calculator': loveCalculatorConfig,
+    'flames-game': flamesGameConfig,
+    'lo-shu-grid': loShuGridConfig,
+    'name-numerology-calculator-by-date-of-birth': nameNumerologyDobConfig,
+    'tone-generator': toneGeneratorConfig,
+    'mulank-calculator': mulankCalculatorConfig,
+    'bhagyank-calculator': bhagyankCalculatorConfig,
+    'friendship-calculator-by-name': friendshipCalculatorConfig,
+    'business-name-numerology-calculator': businessNameNumerologyConfig,
   },
   'pt-br': {
     'calculadora-de-investimentos': investimentoPtBrConfig,

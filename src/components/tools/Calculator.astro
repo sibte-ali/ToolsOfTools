@@ -219,6 +219,168 @@ function formatOutput(
       }
     </div>
 
+    {config.id === 'tone-generator' && (
+      <div class="rounded-xl border border-amber-200 bg-amber-50/70 p-4 dark:border-amber-900/50 dark:bg-amber-950/30">
+        <div class="flex items-start gap-2.5 text-xs text-amber-900 dark:text-amber-200 mb-3">
+          <span class="text-base leading-none">⚠️</span>
+          <p>
+            <strong>Hearing Safety Notice:</strong> Pure test tones at high volume can cause auditory damage or fatigue. Always begin at low volume and avoid high continuous levels with headphones.
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <button
+            type="button"
+            id="tone-play-btn"
+            class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-emerald-700 active:scale-95 transition cursor-pointer"
+          >
+            <span>▶ Play Tone</span>
+          </button>
+
+          <button
+            type="button"
+            id="tone-sweep-btn"
+            class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 transition cursor-pointer"
+          >
+            <span>Frequency Sweep (100–1000 Hz)</span>
+          </button>
+
+          <div class="flex items-center gap-1.5 text-xs text-neutral-600 dark:text-neutral-400 ml-auto">
+            <span class="font-semibold">Quick Tuning Presets:</span>
+            <button type="button" class="preset-pill px-2.5 py-1 rounded bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs cursor-pointer" data-freq="440">A440</button>
+            <button type="button" class="preset-pill px-2.5 py-1 rounded bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs cursor-pointer" data-freq="261.63">C4 (261.6 Hz)</button>
+            <button type="button" class="preset-pill px-2.5 py-1 rounded bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs cursor-pointer" data-freq="1000">1 kHz</button>
+            <button type="button" class="preset-pill px-2.5 py-1 rounded bg-neutral-200 hover:bg-neutral-300 dark:bg-neutral-800 dark:hover:bg-neutral-700 text-neutral-800 dark:text-neutral-200 text-xs cursor-pointer" data-freq="432">432 Hz</button>
+          </div>
+        </div>
+
+        <script is:inline>
+          (function() {
+            let audioCtx = null;
+            let osc = null;
+            let gainNode = null;
+            let isPlaying = false;
+
+            const playBtn = document.getElementById('tone-play-btn');
+            const sweepBtn = document.getElementById('tone-sweep-btn');
+
+            function getInputs() {
+              const freqInput = document.querySelector('input[name="frequency"]');
+              const waveInput = document.querySelector('select[name="waveform"]');
+              const volInput = document.querySelector('input[name="volume"]');
+              const freq = freqInput ? parseFloat(freqInput.value) || 440 : 440;
+              const wave = waveInput ? waveInput.value : 'sine';
+              const volPct = volInput ? Math.min(50, Math.max(0, parseFloat(volInput.value) || 15)) : 15;
+              return { freq, wave, gain: (volPct / 100) * 0.5 };
+            }
+
+            function startTone(targetFreq, targetWave, targetGain) {
+              if (!audioCtx) {
+                const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtxClass) {
+                  alert('Web Audio API is not supported in this browser.');
+                  return;
+                }
+                audioCtx = new AudioCtxClass();
+              }
+
+              if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+              }
+
+              if (osc) {
+                try { osc.stop(); osc.disconnect(); } catch (e) {}
+              }
+
+              const { freq, wave, gain } = getInputs();
+              const f = targetFreq !== undefined ? targetFreq : freq;
+              const w = targetWave !== undefined ? targetWave : wave;
+              const g = targetGain !== undefined ? targetGain : gain;
+
+              gainNode = audioCtx.createGain();
+              gainNode.gain.setValueAtTime(g, audioCtx.currentTime);
+              gainNode.connect(audioCtx.destination);
+
+              osc = audioCtx.createOscillator();
+              osc.type = w;
+              osc.frequency.setValueAtTime(f, audioCtx.currentTime);
+              osc.connect(gainNode);
+              osc.start();
+
+              isPlaying = true;
+              if (playBtn) {
+                playBtn.innerHTML = '<span>⏹ Stop Tone</span>';
+                playBtn.className = playBtn.className.replace('bg-emerald-600 hover:bg-emerald-700', 'bg-red-600 hover:bg-red-700');
+              }
+            }
+
+            function stopTone() {
+              if (osc) {
+                try { osc.stop(); osc.disconnect(); } catch (e) {}
+                osc = null;
+              }
+              isPlaying = false;
+              if (playBtn) {
+                playBtn.innerHTML = '<span>▶ Play Tone</span>';
+                playBtn.className = playBtn.className.replace('bg-red-600 hover:bg-red-700', 'bg-emerald-600 hover:bg-emerald-700');
+              }
+            }
+
+            if (playBtn) {
+              playBtn.addEventListener('click', function() {
+                if (isPlaying) {
+                  stopTone();
+                } else {
+                  startTone();
+                }
+              });
+            }
+
+            if (sweepBtn) {
+              sweepBtn.addEventListener('click', function() {
+                startTone(100, 'sine', 0.1);
+                if (osc && audioCtx) {
+                  osc.frequency.exponentialRampToValueAtTime(1000, audioCtx.currentTime + 3);
+                  setTimeout(function() {
+                    if (isPlaying) stopTone();
+                  }, 3200);
+                }
+              });
+            }
+
+            // Real-time parameter updates while playing
+            document.addEventListener('input', function(e) {
+              if (!isPlaying || !osc || !gainNode || !audioCtx) return;
+              const name = e.target && e.target.name;
+              const { freq, wave, gain } = getInputs();
+              if (name === 'frequency') {
+                osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+              } else if (name === 'waveform') {
+                osc.type = wave;
+              } else if (name === 'volume') {
+                gainNode.gain.setValueAtTime(gain, audioCtx.currentTime);
+              }
+            });
+
+            // Preset buttons
+            document.querySelectorAll('.preset-pill').forEach(function(pill) {
+              pill.addEventListener('click', function() {
+                const targetF = parseFloat(pill.getAttribute('data-freq'));
+                const freqInput = document.querySelector('input[name="frequency"]');
+                if (freqInput) {
+                  freqInput.value = targetF;
+                  freqInput.dispatchEvent(new Event('input', { bubbles: true }));
+                }
+                if (isPlaying && osc && audioCtx) {
+                  osc.frequency.setValueAtTime(targetF, audioCtx.currentTime);
+                }
+              });
+            });
+          })();
+        </script>
+      </div>
+    )}
+
     <!-- Action Buttons -->
     <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-neutral-100 dark:border-neutral-800">
       <div class="flex items-center gap-3">
