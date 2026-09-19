@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && tsx scripts/check-perf-budget.ts",
+    "budget": "tsx scripts/check-perf-budget.ts",
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run",

@@ -48,4 +48,37 @@ export const es: UIStrings = {
     percentage: '%',
     currency: 'Moneda',
   },
+  homeHeroHeading: 'Calculadora Online y Herramientas',
+  homeHeroSubtitle: 'Calculadoras y utilidades precisas y privadas que funcionan 100% en tu navegador sin rastreo.',
+  valuePropositionTitle: '¿Por qué elegir ToolsOfTools?',
+  valueProps: [
+    {
+      title: '100% Privado en tu Navegador',
+      desc: 'Todas las operaciones se procesan localmente en tu dispositivo. Ningún dato ni número se transmite a servidores externos.',
+    },
+    {
+      title: 'Cero Latencia y Respuesta Inmediata',
+      desc: 'Sin esperas de red ni retardos de procesamiento. Los resultados se actualizan al instante mientras introduces datos.',
+    },
+    {
+      title: 'Matemáticamente Auditado',
+      desc: 'Modelos y formulaciones contrastados según normativas oficiales vigentes y manuales académicos de referencia.',
+    },
+  ],
+  topTools: 'Herramientas Populares',
+  calculadoraTitle: 'Calculadora Básica y Científica',
+  calculadoraSubtitle: 'Cálculo rápido, privado y seguro en tu navegador con soporte completo para teclado.',
+  sources: 'Fuentes',
+  sourcesVerified: 'Fórmulas verificadas según estándares matemáticos y normativos oficiales.',
+  viewAllInHub: (hub: string) => `← Ver todas las herramientas de ${hub}`,
+  openTool: 'Abrir herramienta →',
+  open: 'Abrir →',
+  toolsAvailable: (count: number) => `${count} herramientas disponibles`,
+  widget: {
+    primaryValue: 'Valor Principal',
+    rateOrPct: 'Tasa / Porcentaje (%)',
+    calculatedResult: 'Resultado Calculado',
+    standardFormulaNote: 'Basado en la fórmula matemática estándar',
+  },
 };
+

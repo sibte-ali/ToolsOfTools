@@ -76,3 +76,76 @@ for (const tool of buildTools) {
     hreflangGroups.set(group, existing);
   }
 }
+
+export function getOtherCalculatorsFolder(lang: string): string {
+  if (lang === 'pt-br') return 'outras-calculadoras';
+  if (lang === 'es') return 'otras-calculadoras';
+  return 'other-calculators';
+}
+
+export interface EffectiveHub {
+  folder: string;
+  name: string;
+  tools: Tool[];
+  isOtherCalculators?: boolean;
+}
+
+/**
+ * Returns hubs to render for a language:
+ * Folders with 5+ build tools become their own hub.
+ * Folders with fewer than 5 build tools are folded into the language's 'other calculators' hub.
+ * Tools in every hub are sorted by search volume descending.
+ */
+export function getEffectiveHubs(lang: string): EffectiveHub[] {
+  const tools = toolsByLang(lang);
+  const otherFolder = getOtherCalculatorsFolder(lang);
+
+  const folderCounts = new Map<string, number>();
+  for (const t of tools) {
+    folderCounts.set(t.folder, (folderCounts.get(t.folder) || 0) + 1);
+  }
+
+  const primaryHubs: EffectiveHub[] = [];
+  const foldedTools: Tool[] = [];
+
+  for (const [folder, count] of folderCounts.entries()) {
+    const folderTools = tools.filter((t) => t.folder === folder);
+    if (count >= 5 && folder !== otherFolder) {
+      primaryHubs.push({
+        folder,
+        name: folder.replace(/-/g, ' '),
+        tools: [...folderTools].sort((a, b) => (b.volume || 0) - (a.volume || 0)),
+      });
+    } else {
+      foldedTools.push(...folderTools);
+    }
+  }
+
+  if (foldedTools.length > 0) {
+    primaryHubs.push({
+      folder: otherFolder,
+      name: otherFolder.replace(/-/g, ' '),
+      tools: [...foldedTools].sort((a, b) => (b.volume || 0) - (a.volume || 0)),
+      isOtherCalculators: true,
+    });
+  }
+
+  return primaryHubs;
+}
+
+export function getToolHubFolder(tool: Tool): string {
+  const hubs = getEffectiveHubs(tool.lang);
+  const directHub = hubs.find((h) => h.folder === tool.folder && !h.isOtherCalculators);
+  if (directHub) {
+    return directHub.folder;
+  }
+  return getOtherCalculatorsFolder(tool.lang);
+}
+
+export function getToolHubUrl(tool: Tool): string {
+  const hubFolder = getToolHubFolder(tool);
+  if (tool.lang === 'en') {
+    return `/${hubFolder}/`;
+  }
+  return `/${tool.lang}/${hubFolder}/`;
+}

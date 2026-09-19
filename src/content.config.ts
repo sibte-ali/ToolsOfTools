@@ -34,4 +34,12 @@ const tools = defineCollection({
   }),
 });
 
-export const collections = { tools };
+const hubs = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/hubs' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+  }),
+});
+
+export const collections = { tools, hubs };

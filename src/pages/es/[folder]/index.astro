@@ -1,16 +1,15 @@
 ---
 import HubPage from '../../../components/HubPage.astro';
-import { foldersByLang, toolsByLang, type Tool } from '../../../lib/tools';
+import { getEffectiveHubs, type Tool } from '../../../lib/tools';
 
 export function getStaticPaths() {
-  const esFolders = foldersByLang('es');
-  const esTools = toolsByLang('es');
+  const hubs = getEffectiveHubs('es');
 
-  return esFolders.map((folder) => ({
-    params: { folder },
+  return hubs.map((hub) => ({
+    params: { folder: hub.folder },
     props: {
-      folder,
-      tools: esTools.filter((t) => t.folder === folder),
+      folder: hub.folder,
+      tools: hub.tools,
     },
   }));
 }

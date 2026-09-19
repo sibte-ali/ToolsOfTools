@@ -37,11 +37,33 @@ export interface UIStrings {
     invalidNumber: string;
     general: string;
   };
+  homeHeroHeading: string;
+  homeHeroSubtitle: string;
+  valuePropositionTitle: string;
+  valueProps: {
+    title: string;
+    desc: string;
+  }[];
+  topTools: string;
+  calculadoraTitle: string;
+  calculadoraSubtitle: string;
+  sources: string;
+  sourcesVerified: string;
+  viewAllInHub: (hub: string) => string;
+  openTool: string;
+  open: string;
+  toolsAvailable: (count: number) => string;
   unitLabels: {
     days: string;
     months: string;
     years: string;
     percentage: string;
     currency: string;
+  };
+  widget: {
+    primaryValue: string;
+    rateOrPct: string;
+    calculatedResult: string;
+    standardFormulaNote: string;
   };
 }

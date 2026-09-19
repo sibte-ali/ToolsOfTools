@@ -1,20 +1,27 @@
 ---
 import ToolPage from '../../../components/ToolPage.astro';
 import { toolsByLang, type Tool } from '../../../lib/tools';
+import { getEntry } from 'astro:content';
 
-export function getStaticPaths() {
+export async function getStaticPaths() {
   const ptTools = toolsByLang('pt-br');
-  return ptTools.map((tool) => ({
-    params: { folder: tool.folder, slug: tool.slug },
-    props: { tool },
-  }));
+  return Promise.all(
+    ptTools.map(async (tool) => {
+      const entry = await getEntry('tools', `pt-br/${tool.slug}`);
+      return {
+        params: { folder: tool.folder, slug: tool.slug },
+        props: { tool, entry },
+      };
+    })
+  );
 }
 
 interface Props {
   tool: Tool;
+  entry?: any;
 }
 
-const { tool } = Astro.props;
+const { tool, entry } = Astro.props;
 ---
 
-<ToolPage lang="pt-br" tool={tool} />
+<ToolPage lang="pt-br" tool={tool} entry={entry} />

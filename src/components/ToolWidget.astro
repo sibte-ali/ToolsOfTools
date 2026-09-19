@@ -1,0 +1,295 @@
+---
+import type { Tool } from '../lib/tools';
+import { getTranslations, type SupportedLanguage } from '../i18n';
+import { resolveToolLocale, formatCurrency } from '../lib/format';
+import {
+  computeSwp,
+  computeBmi,
+  computeAttendance,
+  computeDiscount,
+  computeDaysBetween,
+  computePace,
+} from '../lib/compute';
+
+interface Props {
+  tool: Tool;
+  lang: SupportedLanguage;
+}
+
+const { tool, lang } = Astro.props;
+const t = getTranslations(lang);
+const localeConfig = resolveToolLocale(tool);
+
+// Determine widget configuration and server-rendered default results based on tool slug
+const slug = tool.slug;
+let widgetType = 'general';
+let defaultInputs: { id: string; label: string; type: any; value: string | number; step?: string }[] = [];
+let defaultResult: { title: string; primary: string; secondary?: string } = {
+  title: 'Calculated Result',
+  primary: '100',
+};
+
+if (slug === 'swp-calculator') {
+  widgetType = 'swp';
+  defaultInputs = [
+    { id: 'investment', label: 'Total Investment', type: 'number', value: 100000, step: '1000' },
+    { id: 'withdrawal', label: 'Monthly Withdrawal', type: 'number', value: 800, step: '50' },
+    { id: 'rate', label: 'Expected Return (% p.a.)', type: 'number', value: 8, step: '0.1' },
+    { id: 'tenure', label: 'Time Period (Years)', type: 'number', value: 10, step: '1' },
+  ];
+  const swp = computeSwp(100000, 800, 8, 10);
+  defaultResult = {
+    title: 'SWP Summary',
+    primary: `Total Withdrawn: ${formatCurrency(swp.totalWithdrawn, localeConfig.locale, localeConfig.currency)}`,
+    secondary: `Final Remaining Balance: ${formatCurrency(swp.finalBalance, localeConfig.locale, localeConfig.currency)}`,
+  };
+} else if (slug === 'bmi-calculator' || slug === 'imc') {
+  widgetType = 'bmi';
+  const weightLabel = lang === 'pt-br' ? 'Peso (kg)' : lang === 'es' ? 'Peso (kg)' : 'Weight (kg)';
+  const heightLabel = lang === 'pt-br' ? 'Altura (cm)' : lang === 'es' ? 'Altura (cm)' : 'Height (cm)';
+  defaultInputs = [
+    { id: 'weight', label: weightLabel, type: 'number', value: 70, step: '0.5' },
+    { id: 'height', label: heightLabel, type: 'number', value: 175, step: '1' },
+  ];
+  const bmiRes = computeBmi(70, 175);
+  defaultResult = {
+    title: 'BMI Category',
+    primary: `BMI: ${bmiRes.bmi}`,
+    secondary: `Classification: ${bmiRes.category}`,
+  };
+} else if (slug === 'attendance-calculator') {
+  widgetType = 'attendance';
+  defaultInputs = [
+    { id: 'held', label: 'Total Classes Held', type: 'number', value: 50, step: '1' },
+    { id: 'attended', label: 'Classes Attended', type: 'number', value: 30, step: '1' },
+    { id: 'target', label: 'Target Attendance %', type: 'number', value: 75, step: '1' },
+  ];
+  const attRes = computeAttendance(50, 30, 75);
+  defaultResult = {
+    title: 'Attendance Status',
+    primary: `Current Attendance: ${attRes.currentPct}%`,
+    secondary: `Classes needed to attend: ${attRes.classesToAttend}`,
+  };
+} else if (slug === 'discount-calculator') {
+  widgetType = 'discount';
+  defaultInputs = [
+    { id: 'price', label: 'Original Price', type: 'number', value: 120, step: '0.5' },
+    { id: 'discount', label: 'Discount (%)', type: 'number', value: 25, step: '1' },
+  ];
+  const discRes = computeDiscount(120, 25);
+  defaultResult = {
+    title: 'Discount Breakdown',
+    primary: `Final Price: ${formatCurrency(discRes.finalPrice, localeConfig.locale, localeConfig.currency)}`,
+    secondary: `You Save: ${formatCurrency(discRes.savings, localeConfig.locale, localeConfig.currency)}`,
+  };
+} else if (
+  slug === 'day-calculator' ||
+  slug === 'contador-de-dias' ||
+  slug === 'calculadora-entre-datas'
+) {
+  widgetType = 'datediff';
+  const startLabel = lang === 'pt-br' ? 'Data Inicial' : lang === 'es' ? 'Fecha Inicial' : 'Start Date';
+  const endLabel = lang === 'pt-br' ? 'Data Final' : lang === 'es' ? 'Fecha Final' : 'End Date';
+  defaultInputs = [
+    { id: 'startdate', label: startLabel, type: 'date', value: '2026-01-01' },
+    { id: 'enddate', label: endLabel, type: 'date', value: '2026-01-31' },
+  ];
+  const dateRes = computeDaysBetween('2026-01-01', '2026-01-31');
+  defaultResult = {
+    title: 'Duration',
+    primary: `${dateRes.days} ${t.unitLabels.days}`,
+  };
+} else if (
+  slug === 'pace-calculator' ||
+  slug === 'calculadora-de-pace' ||
+  slug === 'calculadora-de-ritmos'
+) {
+  widgetType = 'pace';
+  const distLabel = lang === 'pt-br' ? 'Distância (km)' : lang === 'es' ? 'Distancia (km)' : 'Distance (km)';
+  const timeLabel = lang === 'pt-br' ? 'Tempo (minutos)' : lang === 'es' ? 'Tiempo (minutos)' : 'Time (minutes)';
+  defaultInputs = [
+    { id: 'dist', label: distLabel, type: 'number', value: 10, step: '0.1' },
+    { id: 'time', label: timeLabel, type: 'number', value: 50, step: '1' },
+  ];
+  const paceRes = computePace(10, 50);
+  defaultResult = {
+    title: 'Target Pace',
+    primary: `Pace: ${paceRes.formattedPace}`,
+  };
+} else {
+  // Generic numeric tool
+  widgetType = 'general';
+  defaultInputs = [
+    { id: 'valA', label: t.widget.primaryValue, type: 'number', value: 100, step: '1' },
+    { id: 'valB', label: t.widget.rateOrPct, type: 'number', value: 15, step: '1' },
+  ];
+  defaultResult = {
+    title: t.widget.calculatedResult,
+    primary: '115',
+    secondary: t.widget.standardFormulaNote,
+  };
+}
+---
+
+<div
+  class="tool-widget-container min-h-[320px] rounded-2xl border border-neutral-200 bg-white p-6 shadow-xs dark:border-neutral-800 dark:bg-neutral-900 transition-all"
+  data-widget-type={widgetType}
+  data-currency={localeConfig.currency}
+  data-locale={localeConfig.locale}
+>
+  <form id="interactive-tool-form" class="space-y-5">
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+      {
+        defaultInputs.map((input) => (
+          <div>
+            <label
+              for={`input-${input.id}`}
+              class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300"
+            >
+              {input.label}
+            </label>
+            <input
+              type={input.type}
+              id={`input-${input.id}`}
+              name={input.id}
+              value={input.value}
+              step={input.step}
+              required
+              class="tool-input mt-1.5 block w-full rounded-lg border border-neutral-300 bg-white px-3.5 py-2 text-sm text-neutral-900 shadow-xs focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:ring-white font-mono"
+            />
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="flex flex-wrap items-center gap-3 pt-2">
+      <button
+        type="submit"
+        id="btn-calculate"
+        class="rounded-lg bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 transition cursor-pointer"
+      >
+        {t.calculate}
+      </button>
+      <button
+        type="button"
+        id="btn-reset"
+        class="rounded-lg border border-neutral-300 bg-white px-4 py-2.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
+      >
+        {t.reset}
+      </button>
+    </div>
+  </form>
+
+  <!-- Server-rendered default result container with aria-live="polite" -->
+  <div
+    id="widget-result-region"
+    role="region"
+    aria-live="polite"
+    class="mt-6 rounded-xl border border-neutral-200 bg-neutral-50 p-5 dark:border-neutral-800 dark:bg-neutral-800/50 min-h-[90px] flex flex-col justify-center"
+  >
+    <div class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+      {defaultResult.title}
+    </div>
+    <div id="result-primary" class="mt-1 text-2xl font-bold tracking-tight text-neutral-900 dark:text-white font-mono">
+      {defaultResult.primary}
+    </div>
+    {
+      defaultResult.secondary && (
+        <div id="result-secondary" class="mt-1 text-sm text-neutral-600 dark:text-neutral-400">
+          {defaultResult.secondary}
+        </div>
+      )
+    }
+  </div>
+</div>
+
+<script>
+  // Plain client-side interactive handler (zero-framework, accessible live re-computation)
+  function setupToolWidget() {
+    const container = document.querySelector('.tool-widget-container');
+    if (!container) return;
+    const widget: HTMLElement = container as HTMLElement;
+
+    const form = widget.querySelector('#interactive-tool-form');
+    const resultPrimary = widget.querySelector('#result-primary');
+    const resultSecondary = widget.querySelector('#result-secondary');
+    const resetBtn = widget.querySelector('#btn-reset');
+    const type = widget.getAttribute('data-widget-type');
+
+    function updateResult() {
+      if (!resultPrimary) return;
+      if (type === 'swp') {
+        const inv = parseFloat((widget.querySelector('#input-investment') as HTMLInputElement)?.value || '0');
+        const w = parseFloat((widget.querySelector('#input-withdrawal') as HTMLInputElement)?.value || '0');
+        const r = parseFloat((widget.querySelector('#input-rate') as HTMLInputElement)?.value || '0');
+        const y = parseFloat((widget.querySelector('#input-tenure') as HTMLInputElement)?.value || '0');
+        const months = y * 12;
+        const mr = r / 100 / 12;
+        let bal = inv;
+        let tw = 0;
+        for (let i = 0; i < months; i++) {
+          if (bal <= 0) break;
+          bal = bal * (1 + mr) - w;
+          tw += w;
+          if (bal < 0) bal = 0;
+        }
+        resultPrimary.textContent = `Total Withdrawn: ${Math.round(tw).toLocaleString()}`;
+        if (resultSecondary) {
+          resultSecondary.textContent = `Final Remaining Balance: ${Math.round(bal).toLocaleString()}`;
+        }
+      } else if (type === 'bmi') {
+        const weight = parseFloat((widget.querySelector('#input-weight') as HTMLInputElement)?.value || '0');
+        const height = parseFloat((widget.querySelector('#input-height') as HTMLInputElement)?.value || '0');
+        if (height > 0) {
+          const m = height / 100;
+          const bmi = (weight / (m * m)).toFixed(1);
+          let cat = 'Normal';
+          const bVal = parseFloat(bmi);
+          if (bVal < 18.5) cat = 'Underweight';
+          else if (bVal < 25.0) cat = 'Normal';
+          else if (bVal < 30.0) cat = 'Overweight';
+          else cat = 'Obese';
+          resultPrimary.textContent = `BMI: ${bmi}`;
+          if (resultSecondary) resultSecondary.textContent = `Classification: ${cat}`;
+        }
+      } else if (type === 'discount') {
+        const p = parseFloat((widget.querySelector('#input-price') as HTMLInputElement)?.value || '0');
+        const d = parseFloat((widget.querySelector('#input-discount') as HTMLInputElement)?.value || '0');
+        const sav = (p * d) / 100;
+        const finalP = p - sav;
+        resultPrimary.textContent = `Final Price: ${finalP.toFixed(2)}`;
+        if (resultSecondary) resultSecondary.textContent = `You Save: ${sav.toFixed(2)}`;
+      } else if (type === 'datediff') {
+        const d1 = new Date((widget.querySelector('#input-startdate') as HTMLInputElement)?.value || '');
+        const d2 = new Date((widget.querySelector('#input-enddate') as HTMLInputElement)?.value || '');
+        if (!isNaN(d1.getTime()) && !isNaN(d2.getTime())) {
+          const diff = Math.round(Math.abs(d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+          resultPrimary.textContent = `${diff} Days`;
+        }
+      } else if (type === 'pace') {
+        const km = parseFloat((widget.querySelector('#input-dist') as HTMLInputElement)?.value || '0');
+        const min = parseFloat((widget.querySelector('#input-time') as HTMLInputElement)?.value || '0');
+        if (km > 0) {
+          const totSec = (min * 60) / km;
+          const pMin = Math.floor(totSec / 60);
+          const pSec = Math.round(totSec % 60);
+          resultPrimary.textContent = `Pace: ${pMin}:${pSec < 10 ? '0' : ''}${pSec} /km`;
+        }
+      }
+    }
+
+    form?.addEventListener('input', updateResult);
+    form?.addEventListener('submit', (e) => {
+      e.preventDefault();
+      updateResult();
+    });
+
+    resetBtn?.addEventListener('click', () => {
+      (form as HTMLFormElement)?.reset();
+      updateResult();
+    });
+  }
+
+  setupToolWidget();
+  document.addEventListener('astro:page-load', setupToolWidget);
+</script>

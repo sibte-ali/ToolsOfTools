@@ -1,8 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { toolsByLang, foldersByLang } from '../lib/tools';
+import { getEffectiveHubs } from '../lib/tools';
 import { getTranslations, getHtmlLang, type SupportedLanguage } from '../i18n';
-import { getCanonicalToolUrl } from '../lib/hreflang';
 import { generateWebSiteSchema, generateOrganizationSchema } from '../lib/schema';
 
 interface Props {
@@ -11,37 +10,21 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = getTranslations(lang);
-const tools = toolsByLang(lang);
-const folders = foldersByLang(lang);
+const hubs = getEffectiveHubs(lang);
 
 const siteUrl = Astro.site ? Astro.site.origin : 'https://toolsoftools.com';
 const currentPath = Astro.url.pathname;
 const canonical = `${siteUrl}${currentPath}`;
 
-const titles: Record<SupportedLanguage, string> = {
-  en: 'Tools of Tools - Fast, Client-Side Free Online Tools',
-  'pt-br': 'Tools of Tools - Ferramentas e Calculadoras Online Gratuitas',
-  es: 'Calculadora Online y Herramientas Gratuitas - Tools of Tools',
-};
-
-const headings: Record<SupportedLanguage, string> = {
-  en: 'Fast, Client-Side Online Tools',
-  'pt-br': 'Ferramentas e Calculadoras Rápidas',
-  es: 'Calculadora Online y Herramientas',
-};
-
-const subheadings: Record<SupportedLanguage, string> = {
-  en: 'Accurate, privacy-friendly calculators and utilities that run 100% in your browser without tracking.',
-  'pt-br': 'Calculadoras e utilitários precisos e privados que rodam direto no seu navegador sem rastreamento.',
-  es: 'Calculadoras y utilidades precisas y privadas que funcionan 100% en tu navegador.',
-};
+const pageTitle = `${t.homeHeroHeading} - ToolsOfTools`;
+const pageDescription = t.homeHeroSubtitle;
 
 // JSON-LD schemas for Home page
 const jsonLd = [
   generateWebSiteSchema({
     siteUrl: canonical,
     name: 'ToolsOfTools',
-    description: subheadings[lang],
+    description: pageDescription,
     inLanguage: getHtmlLang(lang),
   }),
   generateOrganizationSchema({
@@ -52,63 +35,80 @@ const jsonLd = [
   }),
 ];
 
-// If Spanish, find the calculadora tool mounted on home
-const calculadoraTool = lang === 'es' ? tools.find((tool) => tool.slug === 'calculadora') : undefined;
+const isSpanish = lang === 'es';
 ---
 
 <Layout
-  title={titles[lang]}
-  description={subheadings[lang]}
+  title={pageTitle}
+  description={pageDescription}
   canonical={canonical}
   lang={lang}
   jsonLd={jsonLd}
 >
   <main id="main-content" class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+    <!-- Hero Section -->
     <div class="text-center max-w-3xl mx-auto">
       <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl text-neutral-950 dark:text-white">
-        {headings[lang]}
+        {t.homeHeroHeading}
       </h1>
       <p class="mt-4 text-lg text-neutral-600 dark:text-neutral-300">
-        {subheadings[lang]}
+        {t.homeHeroSubtitle}
       </p>
     </div>
 
+    <!-- Spanish Calculadora Mounted Above the Fold -->
     {
-      calculadoraTool && (
-        <section class="mt-12 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 max-w-xl mx-auto">
+      isSpanish && (
+        <section aria-label={t.calculadoraTitle} class="mt-10 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900 max-w-md mx-auto">
           <div class="mb-4 text-center">
-            <h2 class="text-2xl font-bold text-neutral-900 dark:text-white">Calculadora Básica y Científica</h2>
-            <p class="text-sm text-neutral-500 dark:text-neutral-400">Cálculo rápido y seguro en tu navegador</p>
+            <h2 class="text-xl font-bold text-neutral-900 dark:text-white">{t.calculadoraTitle}</h2>
+            <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">{t.calculadoraSubtitle}</p>
           </div>
+          
           <div id="calculator-app" class="space-y-4">
-            <div class="rounded-lg bg-neutral-100 p-4 text-right dark:bg-neutral-800 font-mono text-2xl font-bold border border-neutral-200 dark:border-neutral-700 min-h-16 flex items-center justify-end">
+            <!-- Accessible display with aria-live="polite" and AA contrast -->
+            <div
+              id="calc-display-region"
+              role="region"
+              aria-live="polite"
+              aria-label="Pantalla de la calculadora"
+              class="rounded-xl bg-neutral-100 p-4 text-right dark:bg-neutral-800 font-mono text-3xl font-bold border border-neutral-300 dark:border-neutral-700 min-h-16 flex items-center justify-end text-neutral-950 dark:text-white"
+            >
               <span id="calc-display">0</span>
             </div>
+
             <div class="grid grid-cols-4 gap-2">
-              <button type="button" class="calc-btn p-3 bg-neutral-200 dark:bg-neutral-700 rounded-lg font-semibold hover:bg-neutral-300 dark:hover:bg-neutral-600" data-val="C">C</button>
-              <button type="button" class="calc-btn p-3 bg-neutral-200 dark:bg-neutral-700 rounded-lg font-semibold hover:bg-neutral-300 dark:hover:bg-neutral-600" data-val="(">(</button>
-              <button type="button" class="calc-btn p-3 bg-neutral-200 dark:bg-neutral-700 rounded-lg font-semibold hover:bg-neutral-300 dark:hover:bg-neutral-600" data-val=")">)</button>
-              <button type="button" class="calc-btn p-3 bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 rounded-lg font-semibold" data-val="/">÷</button>
-              <button type="button" class="calc-btn p-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg font-semibold" data-val="7">7</button>
-              <button type="button" class="calc-btn p-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg font-semibold" data-val="8">8</button>
-              <button type="button" class="calc-btn p-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg font-semibold" data-val="9">9</button>
-              <button type="button" class="calc-btn p-3 bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 rounded-lg font-semibold" data-val="*">×</button>
-              <button type="button" class="calc-btn p-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg font-semibold" data-val="4">4</button>
-              <button type="button" class="calc-btn p-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg font-semibold" data-val="5">5</button>
-              <button type="button" class="calc-btn p-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg font-semibold" data-val="6">6</button>
-              <button type="button" class="calc-btn p-3 bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 rounded-lg font-semibold" data-val="-">-</button>
-              <button type="button" class="calc-btn p-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg font-semibold" data-val="1">1</button>
-              <button type="button" class="calc-btn p-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg font-semibold" data-val="2">2</button>
-              <button type="button" class="calc-btn p-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg font-semibold" data-val="3">3</button>
-              <button type="button" class="calc-btn p-3 bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 rounded-lg font-semibold" data-val="+">+</button>
-              <button type="button" class="calc-btn p-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg font-semibold col-span-2" data-val="0">0</button>
-              <button type="button" class="calc-btn p-3 bg-white dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 rounded-lg font-semibold" data-val=".">.</button>
-              <button type="button" class="calc-btn p-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700" data-val="=">=</button>
+              <button type="button" class="calc-btn p-3 bg-neutral-200 text-neutral-900 dark:bg-neutral-700 dark:text-white rounded-lg font-semibold hover:bg-neutral-300 dark:hover:bg-neutral-600 transition cursor-pointer" data-val="C" aria-label="Borrar">C</button>
+              <button type="button" class="calc-btn p-3 bg-neutral-200 text-neutral-900 dark:bg-neutral-700 dark:text-white rounded-lg font-semibold hover:bg-neutral-300 dark:hover:bg-neutral-600 transition cursor-pointer" data-val="(" aria-label="Paréntesis abrir">(</button>
+              <button type="button" class="calc-btn p-3 bg-neutral-200 text-neutral-900 dark:bg-neutral-700 dark:text-white rounded-lg font-semibold hover:bg-neutral-300 dark:hover:bg-neutral-600 transition cursor-pointer" data-val=")" aria-label="Paréntesis cerrar">)</button>
+              <button type="button" class="calc-btn p-3 bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 rounded-lg font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition cursor-pointer" data-val="/" aria-label="Dividir">÷</button>
+              
+              <button type="button" class="calc-btn p-3 bg-white text-neutral-900 dark:bg-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-700 rounded-lg font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-750 transition cursor-pointer" data-val="7">7</button>
+              <button type="button" class="calc-btn p-3 bg-white text-neutral-900 dark:bg-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-700 rounded-lg font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-750 transition cursor-pointer" data-val="8">8</button>
+              <button type="button" class="calc-btn p-3 bg-white text-neutral-900 dark:bg-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-700 rounded-lg font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-750 transition cursor-pointer" data-val="9">9</button>
+              <button type="button" class="calc-btn p-3 bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 rounded-lg font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition cursor-pointer" data-val="*" aria-label="Multiplicar">×</button>
+              
+              <button type="button" class="calc-btn p-3 bg-white text-neutral-900 dark:bg-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-700 rounded-lg font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-750 transition cursor-pointer" data-val="4">4</button>
+              <button type="button" class="calc-btn p-3 bg-white text-neutral-900 dark:bg-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-700 rounded-lg font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-750 transition cursor-pointer" data-val="5">5</button>
+              <button type="button" class="calc-btn p-3 bg-white text-neutral-900 dark:bg-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-700 rounded-lg font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-750 transition cursor-pointer" data-val="6">6</button>
+              <button type="button" class="calc-btn p-3 bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 rounded-lg font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition cursor-pointer" data-val="-" aria-label="Restar">-</button>
+              
+              <button type="button" class="calc-btn p-3 bg-white text-neutral-900 dark:bg-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-700 rounded-lg font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-750 transition cursor-pointer" data-val="1">1</button>
+              <button type="button" class="calc-btn p-3 bg-white text-neutral-900 dark:bg-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-700 rounded-lg font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-750 transition cursor-pointer" data-val="2">2</button>
+              <button type="button" class="calc-btn p-3 bg-white text-neutral-900 dark:bg-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-700 rounded-lg font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-750 transition cursor-pointer" data-val="3">3</button>
+              <button type="button" class="calc-btn p-3 bg-neutral-900 text-white dark:bg-white dark:text-neutral-950 rounded-lg font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-100 transition cursor-pointer" data-val="+" aria-label="Sumar">+</button>
+              
+              <button type="button" class="calc-btn p-3 bg-white text-neutral-900 dark:bg-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-700 rounded-lg font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-750 col-span-2 transition cursor-pointer" data-val="0">0</button>
+              <button type="button" class="calc-btn p-3 bg-white text-neutral-900 dark:bg-neutral-800 dark:text-white border border-neutral-300 dark:border-neutral-700 rounded-lg font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-750 transition cursor-pointer" data-val="." aria-label="Punto decimal">.</button>
+              <button type="button" class="calc-btn p-3 bg-emerald-600 text-white rounded-lg font-semibold hover:bg-emerald-700 transition cursor-pointer" data-val="=" aria-label="Calcular resultado">=</button>
             </div>
           </div>
           <script>
             let currentExpr = '0';
             const display = document.getElementById('calc-display');
+            function updateDisplay(val: string) {
+              if (display) display.textContent = val;
+            }
             document.querySelectorAll('.calc-btn').forEach((btn) => {
               btn.addEventListener('click', () => {
                 const val = btn.getAttribute('data-val');
@@ -128,75 +128,120 @@ const calculadoraTool = lang === 'es' ? tools.find((tool) => tool.slug === 'calc
                     currentExpr += val;
                   }
                 }
-                if (display) display.textContent = currentExpr;
+                updateDisplay(currentExpr);
               });
+            });
+            // Keyboard listener
+            window.addEventListener('keydown', (e) => {
+              if (['0','1','2','3','4','5','6','7','8','9','+','-','*','/','.','(',')'].includes(e.key)) {
+                if (currentExpr === '0' || currentExpr === 'Error') {
+                  currentExpr = e.key;
+                } else {
+                  currentExpr += e.key;
+                }
+                updateDisplay(currentExpr);
+              } else if (e.key === 'Enter') {
+                e.preventDefault();
+                try {
+                  const sanitized = currentExpr.replace(/[^0-9+\-*/().]/g, '');
+                  currentExpr = String(Function(`'use strict'; return (${sanitized})`)());
+                } catch {
+                  currentExpr = 'Error';
+                }
+                updateDisplay(currentExpr);
+              } else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
+                currentExpr = '0';
+                updateDisplay(currentExpr);
+              } else if (e.key === 'Backspace') {
+                currentExpr = currentExpr.length > 1 ? currentExpr.slice(0, -1) : '0';
+                updateDisplay(currentExpr);
+              }
             });
           </script>
         </section>
       )
     }
 
-    <!-- Categories / Folders Hub Links -->
-    <section class="mt-16">
-      <h2 class="text-xl font-bold tracking-tight text-neutral-900 dark:text-white">
-        {t.nav.categories}
-      </h2>
-      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <!-- Value Proposition Section -->
+    <section aria-labelledby="value-prop-heading" class="mt-16">
+      <div class="text-center max-w-2xl mx-auto">
+        <h2 id="value-prop-heading" class="text-2xl font-bold tracking-tight text-neutral-950 dark:text-white">
+          {t.valuePropositionTitle}
+        </h2>
+      </div>
+
+      <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {
-          folders.map((folder) => {
-            const folderPrefix = lang === 'en' ? `/${folder}/` : `/${lang}/${folder}/`;
-            const count = tools.filter((t) => t.folder === folder).length;
-            return (
-              <a
-                href={folderPrefix}
-                class="group rounded-xl border border-neutral-200 bg-white p-5 shadow-xs transition hover:border-neutral-400 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700"
-              >
-                <h3 class="text-base font-semibold capitalize text-neutral-900 group-hover:text-neutral-950 dark:text-neutral-100">
-                  {folder.replace(/-/g, ' ')}
-                </h3>
-                <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-                  {count} {t.nav.tools.toLowerCase()}
-                </p>
-              </a>
-            );
-          })
+          t.valueProps.map((prop) => (
+            <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-xs dark:border-neutral-800 dark:bg-neutral-900">
+              <h3 class="text-base font-bold text-neutral-900 dark:text-white">
+                {prop.title}
+              </h3>
+              <p class="mt-2 text-xs leading-relaxed text-neutral-600 dark:text-neutral-400">
+                {prop.desc}
+              </p>
+            </div>
+          ))
         }
       </div>
     </section>
 
-    <!-- Available Tools Grid -->
-    <section class="mt-16">
-      <h2 class="text-xl font-bold tracking-tight text-neutral-900 dark:text-white">
-        {t.nav.tools}
-      </h2>
-      <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          tools.map((tool) => {
-            const canonicalUrl = getCanonicalToolUrl(tool);
-            return (
-              <a
-                href={canonicalUrl}
-                class="group flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-5 shadow-xs transition hover:border-neutral-400 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700"
-              >
-                <div>
-                  <span class="inline-block rounded-full bg-neutral-100 px-2.5 py-0.5 text-xs font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-300">
-                    {tool.folder}
-                  </span>
-                  <h3 class="mt-2 text-base font-semibold capitalize text-neutral-900 group-hover:text-neutral-950 dark:text-neutral-100">
-                    {tool.keyword}
-                  </h3>
-                  <p class="mt-2 text-xs text-neutral-500 line-clamp-2 dark:text-neutral-400">
-                    {tool.spec}
-                  </p>
-                </div>
-                <div class="mt-4 flex items-center text-xs font-medium text-neutral-900 dark:text-white">
-                  <span>Open tool &rarr;</span>
-                </div>
-              </a>
-            );
-          })
-        }
+    <!-- Top Tools by Volume in Each Hub + Links to Hubs -->
+    <section aria-labelledby="hubs-heading" class="mt-20 space-y-16">
+      <div class="border-b border-neutral-200 pb-4 dark:border-neutral-800 flex items-center justify-between">
+        <h2 id="hubs-heading" class="text-2xl font-bold tracking-tight text-neutral-950 dark:text-white">
+          {t.topTools}
+        </h2>
       </div>
+
+      {
+        hubs.map((hub) => {
+          const hubPrefix = lang === 'en' ? `/${hub.folder}/` : `/${lang}/${hub.folder}/`;
+          const topTools = hub.tools.slice(0, 3);
+          return (
+            <div class="space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xl font-bold capitalize text-neutral-900 dark:text-white">
+                  <a href={hubPrefix} class="hover:underline">
+                    {hub.name}
+                  </a>
+                </h3>
+                <a
+                  href={hubPrefix}
+                  class="text-xs font-semibold text-neutral-600 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white underline"
+                >
+                  {t.viewAllInHub(hub.name)}
+                </a>
+              </div>
+
+              <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {
+                  topTools.map((tool) => {
+                    return (
+                      <a
+                        href={tool.url}
+                        class="group flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-5 shadow-xs transition hover:border-neutral-400 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700"
+                      >
+                        <div>
+                          <h4 class="text-base font-semibold capitalize text-neutral-900 group-hover:text-neutral-950 dark:text-neutral-100">
+                            {tool.keyword}
+                          </h4>
+                          <p class="mt-2 text-xs leading-relaxed text-neutral-500 line-clamp-2 dark:text-neutral-400">
+                            {tool.spec}
+                          </p>
+                        </div>
+                        <div class="mt-4 flex items-center text-xs font-semibold text-neutral-900 dark:text-white">
+                          <span>{t.openTool}</span>
+                        </div>
+                      </a>
+                    );
+                  })
+                }
+              </div>
+            </div>
+          );
+        })
+      }
     </section>
   </main>
 </Layout>

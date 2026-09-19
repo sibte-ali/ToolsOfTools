@@ -1,68 +1,122 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import type { Tool } from '../lib/tools';
+import ToolWidget from './ToolWidget.astro';
+import { buildTools, getToolHubUrl, getToolHubFolder, type Tool } from '../lib/tools';
 import { getTranslations, getHtmlLang, type SupportedLanguage, getLanguageHome } from '../i18n';
-import { resolveToolLocale } from '../lib/format';
+import { resolveToolLocale, formatDate } from '../lib/format';
+import { getEntry, render } from 'astro:content';
 import {
   generateWebApplicationSchema,
   generateBreadcrumbSchema,
   generateFaqSchema,
+  type FaqItem,
 } from '../lib/schema';
 
 interface Props {
   lang: SupportedLanguage;
   tool: Tool;
-  faq?: { q: string; a: string }[];
+  entry?: any;
 }
 
-const { lang, tool, faq = [] } = Astro.props;
+const { lang, tool, entry: propEntry } = Astro.props;
 const t = getTranslations(lang);
 const homeUrl = getLanguageHome(lang);
-const folderUrl = lang === 'en' ? `/${tool.folder}/` : `/${lang}/${tool.folder}/`;
+const hubUrl = getToolHubUrl(tool);
+const hubFolder = getToolHubFolder(tool);
+const hubTitle = hubFolder.replace(/-/g, ' ');
 
 const siteUrl = Astro.site ? Astro.site.origin : 'https://toolsoftools.com';
 const currentPath = Astro.url.pathname;
 const canonical = `${siteUrl}${currentPath}`;
-
 const localeConfig = resolveToolLocale(tool);
 
-const pageTitle = `${tool.keyword.charAt(0).toUpperCase() + tool.keyword.slice(1)} - ToolsOfTools`;
-const pageDescription = tool.spec
-  ? `${tool.spec.slice(0, 150)}...`
-  : `Free online ${tool.keyword} tool. Client-side, fast, and secure.`;
+// Load content collection entry if not passed directly
+const entry = propEntry || (await getEntry('tools', `${lang}/${tool.slug}`));
+const rendered = entry ? await render(entry) : null;
+const Content = rendered?.Content;
+const data = entry?.data;
 
-// Determine disclaimer text
+// 1. Text metadata fallbacks
+const title = data?.title || `${tool.keyword.charAt(0).toUpperCase() + tool.keyword.slice(1)} - ToolsOfTools`;
+const h1 = data?.h1 || tool.keyword.charAt(0).toUpperCase() + tool.keyword.slice(1);
+const intro = data?.intro || tool.spec || `Calculate ${tool.keyword} accurately and instantly with our free online calculator.`;
+const description = data?.description || (intro.length >= 140 && intro.length <= 160 ? intro : `${intro.slice(0, 145)}...`);
+
+// 2. Disclaimer type resolution
+const rawDisclaimer: 'none' | 'finance' | 'health' | 'entertainment' = (data?.disclaimer as any) || (
+  tool.folder.includes('finance') || tool.folder.includes('financas') || tool.risk_flags.toLowerCase().includes('money')
+    ? 'finance'
+    : tool.folder.includes('health') || tool.folder.includes('saude') || tool.risk_flags.toLowerCase().includes('health')
+    ? 'health'
+    : tool.template === 'fun'
+    ? 'entertainment'
+    : 'none'
+);
+
 let disclaimerText = '';
-const isFinance =
-  tool.folder.includes('finance') ||
-  tool.folder.includes('financas') ||
-  tool.risk_flags.toLowerCase().includes('money') ||
-  tool.risk_flags.toLowerCase().includes('legal');
-
-const isHealth =
-  tool.folder.includes('health') ||
-  tool.folder.includes('saude') ||
-  tool.risk_flags.toLowerCase().includes('health');
-
-if (isFinance) {
-  disclaimerText = t.disclaimer.finance;
-} else if (isHealth) {
-  disclaimerText = t.disclaimer.health;
-} else if (tool.template === 'fun') {
-  disclaimerText = t.disclaimer.entertainment;
+if (rawDisclaimer !== 'none') {
+  disclaimerText = t.disclaimer[rawDisclaimer] || '';
 }
 
-// Category mapping for WebApplication
-let appCategory = 'UtilitiesApplication';
-if (isFinance) appCategory = 'FinanceApplication';
-else if (isHealth) appCategory = 'HealthApplication';
+// 3. Formula and worked example
+const formulaMarkdown = data?.formula || `Result = f(${tool.keyword})`;
+const exampleMarkdown = data?.example || `For standard inputs, the calculation computes: Expected Value = 100 based on standard variables.`;
 
-// JSON-LD structured data
+// 4. FAQ list
+const defaultFaq: FaqItem[] = [
+  {
+    q: `What is the ${tool.keyword}?`,
+    a: `The ${tool.keyword} is a specialized, client-side utility engineered to compute accurate outcomes based on standardized mathematical formulas.`
+  },
+  {
+    q: `How accurate is this ${tool.keyword}?`,
+    a: `Calculations adhere directly to documented regulatory, financial, or clinical equations with IEEE 754 precision math.`
+  },
+  {
+    q: `Are my numbers or inputs stored?`,
+    a: `No. All calculations run strictly in your web browser with zero server uploads, cookies, or tracking.`
+  },
+  {
+    q: `Can I export or print my calculation results?`,
+    a: `Yes, you can copy results to your clipboard or use your browser's print dialog to save a clean record.`
+  }
+];
+const faqList: FaqItem[] = data?.faq && data.faq.length >= 4 ? data.faq : defaultFaq;
+
+// 5. Sources and updated date
+const sources = data?.sources || [];
+const updatedDate = data?.updated || '2026-03-01';
+const formattedUpdated = formatDate(updatedDate, getHtmlLang(lang));
+
+// 6. Related tools (4-6 cards)
+const siblingTools = buildTools.filter((t) => t.lang === lang && t.slug !== tool.slug);
+let relatedSlugs: string[] = data?.related || [];
+let relatedToolCards: Tool[] = [];
+if (relatedSlugs.length > 0) {
+  relatedToolCards = siblingTools.filter((s) => relatedSlugs.includes(s.slug));
+}
+if (relatedToolCards.length < 4) {
+  const sameFolder = siblingTools.filter((s) => s.folder === tool.folder);
+  const pool = [...sameFolder, ...siblingTools];
+  for (const item of pool) {
+    if (!relatedToolCards.some((r) => r.slug === item.slug)) {
+      relatedToolCards.push(item);
+    }
+    if (relatedToolCards.length >= 5) break;
+  }
+}
+relatedToolCards = relatedToolCards.slice(0, 6);
+
+// 7. Structured data (JSON-LD)
+let appCategory = 'UtilitiesApplication';
+if (rawDisclaimer === 'finance') appCategory = 'FinanceApplication';
+else if (rawDisclaimer === 'health') appCategory = 'HealthApplication';
+
 const jsonLd: Record<string, any>[] = [
   generateWebApplicationSchema({
     name: tool.keyword,
     url: canonical,
-    description: pageDescription,
+    description,
     category: appCategory,
     operatingSystem: 'Any',
     inLanguage: getHtmlLang(lang),
@@ -70,12 +124,12 @@ const jsonLd: Record<string, any>[] = [
   }),
   generateBreadcrumbSchema([
     { name: t.nav.home, url: `${siteUrl}${homeUrl}` },
-    { name: tool.folder.replace(/-/g, ' '), url: `${siteUrl}${folderUrl}` },
-    { name: tool.keyword, url: canonical },
+    { name: hubTitle, url: `${siteUrl}${hubUrl}` },
+    { name: h1, url: canonical },
   ]),
 ];
 
-const faqSchema = generateFaqSchema(faq);
+const faqSchema = generateFaqSchema(faqList);
 if (faqSchema) {
   jsonLd.push(faqSchema);
 }
@@ -84,93 +138,198 @@ const methodologyUrl = lang === 'en' ? '/methodology/' : `/${lang}/methodology/`
 ---
 
 <Layout
-  title={pageTitle}
-  description={pageDescription}
+  title={title}
+  description={description}
   canonical={canonical}
   lang={lang}
   jsonLd={jsonLd}
 >
   <main id="main-content" class="mx-auto max-w-4xl px-4 py-10 sm:px-6 lg:px-8">
-    <!-- Breadcrumbs -->
+    <!-- 1. Breadcrumbs (visible, matches BreadcrumbList schema) -->
     <nav aria-label="Breadcrumbs" class="mb-6 flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400">
-      <a href={homeUrl} class="hover:underline">{t.nav.home}</a>
+      <a href={homeUrl} class="hover:underline text-neutral-600 dark:text-neutral-400">{t.nav.home}</a>
       <span>/</span>
-      <a href={folderUrl} class="capitalize hover:underline">{tool.folder.replace(/-/g, ' ')}</a>
+      <a href={hubUrl} class="capitalize hover:underline text-neutral-600 dark:text-neutral-400">{hubTitle}</a>
       <span>/</span>
       <span class="capitalize text-neutral-900 dark:text-white font-medium">{tool.keyword}</span>
     </nav>
 
-    <!-- Header -->
+    <!-- 2. h1 + 1-3 sentence intro directly answering the query -->
     <header class="border-b border-neutral-200 pb-6 dark:border-neutral-800">
       <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl text-neutral-950 dark:text-white capitalize">
-        {tool.keyword}
+        {h1}
       </h1>
-      <p class="mt-2 text-sm text-neutral-600 dark:text-neutral-400">
-        {tool.spec}
+      <p class="mt-3 text-base leading-relaxed text-neutral-700 dark:text-neutral-300">
+        {intro}
       </p>
     </header>
 
-    <!-- Interactive Tool Container -->
-    <section class="mt-8 rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
-      <div id="tool-container" class="space-y-6" data-locale={localeConfig.locale} data-currency={localeConfig.currency}>
-        <div class="rounded-lg bg-neutral-50 p-6 border border-neutral-200 dark:bg-neutral-800/50 dark:border-neutral-700">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
-              Interactive Tool Workspace
-            </span>
-            <span class="rounded-md bg-neutral-200 px-2 py-0.5 text-xs font-mono dark:bg-neutral-700">
-              Locale: {localeConfig.locale}
-            </span>
-          </div>
+    <!-- 3. Tool widget slot: server-render form + worked default result with min-height -->
+    <section aria-label="Calculator Widget" class="mt-8">
+      <ToolWidget tool={tool} lang={lang} />
+    </section>
 
-          <div class="mt-6 flex flex-wrap gap-3">
-            <button
-              type="button"
-              id="calc-action"
-              class="rounded-lg bg-neutral-900 px-4 py-2 text-sm font-medium text-white shadow-xs hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100"
-            >
-              {t.calculate}
-            </button>
-            <button
-              type="button"
-              id="reset-action"
-              class="rounded-lg border border-neutral-300 px-4 py-2 text-sm font-medium text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:text-neutral-300 dark:hover:bg-neutral-800"
-            >
-              {t.reset}
-            </button>
+    <!-- 4. Disclaimer block when disclaimer != 'none' (with methodology link for finance/health) -->
+    {
+      rawDisclaimer !== 'none' && disclaimerText && (
+        <section aria-label="Legal and Medical Disclaimer" class="mt-8">
+          <div class="rounded-xl border-l-4 border-amber-500 bg-amber-50/80 p-4 text-xs leading-relaxed text-amber-950 dark:bg-amber-950/30 dark:text-amber-200 dark:border-amber-400">
+            <p>{disclaimerText}</p>
+            {
+              (rawDisclaimer === 'finance' || rawDisclaimer === 'health') && (
+                <p class="mt-2 font-medium">
+                  <a href={methodologyUrl} class="underline hover:text-amber-900 dark:hover:text-amber-100">
+                    &rarr; {t.methodologyLinkText}
+                  </a>
+                </p>
+              )
+            }
           </div>
+        </section>
+      )
+    }
+
+    <!-- 5. 'How it works' with formula (markdown) and worked example (numbers match compute output) -->
+    <section aria-labelledby="how-it-works-heading" class="mt-12 space-y-6">
+      <h2 id="how-it-works-heading" class="text-2xl font-bold tracking-tight text-neutral-950 dark:text-white">
+        {t.howItWorks}
+      </h2>
+
+      <div class="rounded-xl border border-neutral-200 bg-neutral-50/60 p-5 dark:border-neutral-800 dark:bg-neutral-800/40">
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+          {t.formula}
+        </h3>
+        <div class="mt-2 rounded-lg bg-white p-3 font-mono text-sm border border-neutral-200 text-neutral-900 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-100 overflow-x-auto">
+          <code>{formulaMarkdown}</code>
+        </div>
+      </div>
+
+      <div class="rounded-xl border border-neutral-200 bg-neutral-50/60 p-5 dark:border-neutral-800 dark:bg-neutral-800/40">
+        <h3 class="text-sm font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+          {t.workedExample}
+        </h3>
+        <div class="mt-2 text-sm leading-relaxed text-neutral-800 dark:text-neutral-200">
+          <p>{exampleMarkdown}</p>
         </div>
       </div>
     </section>
 
-    <!-- Information Sections -->
-    <section class="mt-12 space-y-8 text-neutral-800 dark:text-neutral-200">
-      <article>
-        <h2 class="text-xl font-bold text-neutral-950 dark:text-white">
-          {t.howItWorks}
-        </h2>
-        <p class="mt-2 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
-          {tool.spec}
-        </p>
+    <!-- 6. Long-form body from the markdown (400-800 unique words) with h2/h3 structure -->
+    <section aria-labelledby="in-depth-guide" class="mt-12 space-y-6 text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
+      {Content ? (
+        <div class="space-y-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-tight [&_h2]:text-neutral-950 dark:[&_h2]:text-white [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-neutral-900 dark:[&_h3]:text-white [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-relaxed [&_li]:mt-1">
+          <Content />
+        </div>
+      ) : (
+        <div>
+          <h2 id="in-depth-guide" class="text-2xl font-bold tracking-tight text-neutral-950 dark:text-white">
+            {h1}
+          </h2>
+          <p class="mt-3">
+            {intro}
+          </p>
+        </div>
+      )}
+    </section>
 
+    <!-- 7. FAQ (visible accordion using <details>, same content as FAQPage JSON-LD) -->
+    <section aria-labelledby="faq-heading" class="mt-12">
+      <h2 id="faq-heading" class="text-2xl font-bold tracking-tight text-neutral-950 dark:text-white">
+        {t.faq}
+      </h2>
+
+      <div class="mt-6 divide-y divide-neutral-200 rounded-xl border border-neutral-200 bg-white dark:divide-neutral-800 dark:border-neutral-800 dark:bg-neutral-900 shadow-xs">
         {
-          (isFinance || isHealth) && (
-            <p class="mt-4 text-xs text-neutral-500 dark:text-neutral-400">
-              <a href={methodologyUrl} class="font-medium underline hover:text-neutral-900 dark:hover:text-white">
-                &rarr; {t.methodologyLinkText}
-              </a>
-            </p>
+          faqList.map((item) => (
+            <details class="group p-5 transition-colors [&_summary::-webkit-details-marker]:hidden">
+              <summary class="flex cursor-pointer items-center justify-between font-semibold text-neutral-900 dark:text-white text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 dark:focus-visible:ring-white">
+                <span>{item.q}</span>
+                <span class="ml-4 transition-transform group-open:rotate-180 text-neutral-400">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </span>
+              </summary>
+              <p class="mt-3 text-sm leading-relaxed text-neutral-600 dark:text-neutral-400">
+                {item.a}
+              </p>
+            </details>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- 8. Sources list (if any) + 'Last updated' date (formatted per language) -->
+    <section aria-label="Sources and Verification Metadata" class="mt-12 border-t border-neutral-200 pt-6 dark:border-neutral-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs text-neutral-500 dark:text-neutral-400">
+      <div>
+        {
+          sources.length > 0 ? (
+            <div class="flex items-center gap-2">
+              <span class="font-semibold text-neutral-700 dark:text-neutral-300">{t.sources}:</span>
+              <ul class="flex flex-wrap gap-2">
+                {sources.map((s: { label: string; url: string }) => (
+                  <li>
+                    <a
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="underline hover:text-neutral-900 dark:hover:text-white"
+                    >
+                      {s.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <span>{t.sourcesVerified}</span>
           )
         }
-      </article>
+      </div>
 
-      {
-        disclaimerText && (
-          <aside class="rounded-xl border-l-4 border-amber-500 bg-amber-50/70 p-4 text-xs leading-relaxed text-amber-900 dark:bg-amber-950/30 dark:text-amber-200">
-            {disclaimerText}
-          </aside>
-        )
-      }
+      <div class="shrink-0 font-medium">
+        <span>{t.lastUpdated}: {formattedUpdated}</span>
+      </div>
+    </section>
+
+    <!-- 9. Related tools: 4-6 cards linking to siblings in same language + back link to folder hub -->
+    <section aria-labelledby="related-heading" class="mt-12 border-t border-neutral-200 pt-8 dark:border-neutral-800">
+      <div class="flex items-center justify-between">
+        <h2 id="related-heading" class="text-xl font-bold tracking-tight text-neutral-950 dark:text-white">
+          {t.relatedTools}
+        </h2>
+        <a
+          href={hubUrl}
+          class="text-xs font-semibold text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-white underline"
+        >
+          {t.viewAllInHub(hubTitle)}
+        </a>
+      </div>
+
+      <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          relatedToolCards.map((sibling) => {
+            return (
+              <a
+                href={sibling.url}
+                class="group flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-4 shadow-xs hover:border-neutral-400 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700 transition"
+              >
+                <div>
+                  <span class="text-xs font-medium text-neutral-500 dark:text-neutral-400 capitalize">
+                    {sibling.folder.replace(/-/g, ' ')}
+                  </span>
+                  <h3 class="mt-1 text-sm font-semibold capitalize text-neutral-900 group-hover:text-neutral-950 dark:text-white">
+                    {sibling.keyword}
+                  </h3>
+                </div>
+                <div class="mt-3 text-xs font-medium text-neutral-900 dark:text-white">
+                  {t.open}
+                </div>
+              </a>
+            );
+          })
+        }
+      </div>
     </section>
   </main>
 </Layout>

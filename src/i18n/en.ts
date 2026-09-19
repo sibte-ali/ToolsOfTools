@@ -47,4 +47,37 @@ export const en: UIStrings = {
     percentage: '%',
     currency: 'Currency',
   },
+  homeHeroHeading: 'Fast, Client-Side Online Tools',
+  homeHeroSubtitle: 'Accurate, privacy-friendly calculators and utilities that run 100% in your browser without tracking.',
+  valuePropositionTitle: 'Why Use ToolsOfTools?',
+  valueProps: [
+    {
+      title: '100% Client-Side Private',
+      desc: 'All computations execute in your local browser runtime. No figures, biometric data, or dates are ever sent to remote servers.',
+    },
+    {
+      title: 'Zero Latency & Instant Response',
+      desc: 'No network round trips or server processing delays. Calculations update instantaneously as you type or adjust values.',
+    },
+    {
+      title: 'Mathematically Verified',
+      desc: 'Formulas and calculation engines are benchmarked against official regulatory standards and academic specifications.',
+    },
+  ],
+  topTools: 'Popular Tools & Calculators',
+  calculadoraTitle: 'Basic & Scientific Calculator',
+  calculadoraSubtitle: 'Fast, private calculation directly in your browser with keyboard and keypad support.',
+  sources: 'Sources',
+  sourcesVerified: 'Formulas verified against standard mathematical and statutory baselines.',
+  viewAllInHub: (hub: string) => `← View all ${hub} tools`,
+  openTool: 'Open tool →',
+  open: 'Open →',
+  toolsAvailable: (count: number) => `${count} tools available`,
+  widget: {
+    primaryValue: 'Primary Value',
+    rateOrPct: 'Rate / Percentage (%)',
+    calculatedResult: 'Calculated Result',
+    standardFormulaNote: 'Based on standard mathematical formula',
+  },
 };
+
