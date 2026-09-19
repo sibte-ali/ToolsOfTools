@@ -11,6 +11,10 @@ import {
   computePace,
 } from '../lib/compute';
 
+import Calculator from './tools/Calculator.astro';
+import emiConfig from '../tools/emi-calculator';
+import sipConfig from '../tools/sip';
+
 interface Props {
   tool: Tool;
   lang: SupportedLanguage;
@@ -20,8 +24,9 @@ const { tool, lang } = Astro.props;
 const t = getTranslations(lang);
 const localeConfig = resolveToolLocale(tool);
 
-// Determine widget configuration and server-rendered default results based on tool slug
 const slug = tool.slug;
+const isConfigEngineTool = slug === 'emi-calculator' || slug === 'sip';
+const engineConfig = slug === 'emi-calculator' ? emiConfig : slug === 'sip' ? sipConfig : null;
 let widgetType = 'general';
 let defaultInputs: { id: string; label: string; type: any; value: string | number; step?: string }[] = [];
 let defaultResult: { title: string; primary: string; secondary?: string } = {
@@ -131,12 +136,16 @@ if (slug === 'swp-calculator') {
 }
 ---
 
-<div
-  class="tool-widget-container min-h-[320px] rounded-2xl border border-neutral-200 bg-white p-6 shadow-xs dark:border-neutral-800 dark:bg-neutral-900 transition-all"
-  data-widget-type={widgetType}
-  data-currency={localeConfig.currency}
-  data-locale={localeConfig.locale}
->
+{
+  isConfigEngineTool && engineConfig ? (
+    <Calculator config={engineConfig} />
+  ) : (
+    <div
+      class="tool-widget-container min-h-[320px] rounded-2xl border border-neutral-200 bg-white p-6 shadow-xs dark:border-neutral-800 dark:bg-neutral-900 transition-all"
+      data-widget-type={widgetType}
+      data-currency={localeConfig.currency}
+      data-locale={localeConfig.locale}
+    >
   <form id="interactive-tool-form" class="space-y-5">
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
       {
@@ -202,6 +211,8 @@ if (slug === 'swp-calculator') {
     }
   </div>
 </div>
+  )
+}
 
 <script>
   // Plain client-side interactive handler (zero-framework, accessible live re-computation)

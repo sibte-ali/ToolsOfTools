@@ -1,0 +1,345 @@
+---
+import type { ToolConfig, OutputFormat } from '../../lib/engine/types';
+import { renderSvgChart } from '../../lib/engine/chart';
+
+interface Props {
+  config: ToolConfig;
+}
+
+const { config } = Astro.props;
+
+// Build-time default values
+const defaultValues: Record<string, any> = {};
+for (const input of config.inputs) {
+  defaultValues[input.key] = input.default;
+}
+
+// Compute initial result at build time
+const initialResult = config.compute(defaultValues);
+const initialOutputs: Record<string, any> =
+  initialResult instanceof Error ? {} : initialResult;
+
+// Initial table data
+const initialTableData = config.table ? config.table(defaultValues) : null;
+const tableRows = Array.isArray(initialTableData)
+  ? initialTableData
+  : initialTableData?.rows || [];
+const tableColumns =
+  initialTableData && !Array.isArray(initialTableData) && initialTableData.columns
+    ? initialTableData.columns
+    : tableRows.length > 0
+    ? Object.keys(tableRows[0]).map((k) => ({ key: k, label: k }))
+    : [];
+
+// Initial chart
+const initialChartSvg =
+  config.chart && config.chart !== 'none' && initialOutputs.chartData
+    ? renderSvgChart(initialOutputs.chartData)
+    : '';
+
+function formatOutput(
+  val: any,
+  format: OutputFormat,
+  locale: string,
+  currency = 'USD'
+): string {
+  if (val === undefined || val === null) return '';
+  if (typeof val === 'string') return val;
+
+  const num = Number(val);
+  if (isNaN(num)) return String(val);
+
+  switch (format) {
+    case 'currency':
+      try {
+        return new Intl.NumberFormat(locale, {
+          style: 'currency',
+          currency,
+          maximumFractionDigits: 2,
+        }).format(num);
+      } catch {
+        return `${currency} ${num.toLocaleString(locale, { maximumFractionDigits: 2 })}`;
+      }
+    case 'percent':
+      return `${num.toLocaleString(locale, { maximumFractionDigits: 2 })}%`;
+    case 'number':
+      return num.toLocaleString(locale, { maximumFractionDigits: 2 });
+    case 'duration':
+      return `${num} days`;
+    case 'date':
+      return new Date(val).toLocaleDateString(locale);
+    case 'text':
+    default:
+      return String(val);
+  }
+}
+---
+
+<div
+  class="calculator-engine-container min-h-[340px] rounded-2xl border border-neutral-200 bg-white p-6 shadow-xs dark:border-neutral-800 dark:bg-neutral-900 transition-all"
+  data-calculator-tool="true"
+  data-tool-id={config.id}
+  data-tool-lang={config.lang}
+  data-number-locale={config.numberLocale}
+  data-currency={config.currency || 'USD'}
+>
+  <form class="calculator-form space-y-6" onsubmit="return false;">
+    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+      {
+        config.inputs.map((input) => {
+          const inputId = `calc-input-${input.key}`;
+          return (
+            <div class="flex flex-col justify-between">
+              <div>
+                <label
+                  for={inputId}
+                  class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300"
+                >
+                  {input.label}
+                  {input.unit && (
+                    <span class="ml-1 text-neutral-400 dark:text-neutral-500 font-normal">
+                      ({input.unit})
+                    </span>
+                  )}
+                </label>
+
+                {input.type === 'number' && (
+                  <div class="relative mt-1.5">
+                    <input
+                      type="number"
+                      id={inputId}
+                      name={input.key}
+                      value={input.default}
+                      min={input.min}
+                      max={input.max}
+                      step={input.step || 'any'}
+                      required
+                      class="block w-full rounded-lg border border-neutral-300 bg-white px-3.5 py-2 text-sm text-neutral-900 shadow-xs focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:ring-white font-mono"
+                    />
+                  </div>
+                )}
+
+                {input.type === 'select' && (
+                  <select
+                    id={inputId}
+                    name={input.key}
+                    class="mt-1.5 block w-full rounded-lg border border-neutral-300 bg-white px-3.5 py-2 text-sm text-neutral-900 shadow-xs focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:ring-white"
+                  >
+                    {input.options?.map((opt) => (
+                      <option value={opt.value} selected={opt.value === input.default}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                )}
+
+                {input.type === 'date' && (
+                  <input
+                    type="date"
+                    id={inputId}
+                    name={input.key}
+                    value={input.default}
+                    required
+                    class="mt-1.5 block w-full rounded-lg border border-neutral-300 bg-white px-3.5 py-2 text-sm text-neutral-900 shadow-xs focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:ring-white font-mono"
+                  />
+                )}
+
+                {input.type === 'time' && (
+                  <input
+                    type="time"
+                    id={inputId}
+                    name={input.key}
+                    value={input.default}
+                    required
+                    class="mt-1.5 block w-full rounded-lg border border-neutral-300 bg-white px-3.5 py-2 text-sm text-neutral-900 shadow-xs focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:ring-white font-mono"
+                  />
+                )}
+
+                {input.type === 'text' && (
+                  <input
+                    type="text"
+                    id={inputId}
+                    name={input.key}
+                    value={input.default}
+                    class="mt-1.5 block w-full rounded-lg border border-neutral-300 bg-white px-3.5 py-2 text-sm text-neutral-900 shadow-xs focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:ring-white"
+                  />
+                )}
+
+                {input.type === 'rows' && (
+                  <div class="mt-2 space-y-2">
+                    <div data-rows-for={input.key} class="space-y-2">
+                      {Array.isArray(input.default) &&
+                        input.default.map((row: any) => (
+                          <div class="calculator-row-item flex items-center gap-3 p-2 bg-neutral-50 dark:bg-neutral-800/50 rounded-lg border border-neutral-200 dark:border-neutral-700">
+                            {input.rowFields?.map((rf) => (
+                              <div class="flex-1">
+                                <input
+                                  type={rf.type}
+                                  data-row-field={rf.key}
+                                  value={row[rf.key] ?? rf.default ?? ''}
+                                  class="w-full text-xs font-mono rounded border border-neutral-300 dark:border-neutral-700 px-2 py-1 bg-white dark:bg-neutral-800 text-neutral-900 dark:text-white"
+                                  placeholder={rf.label}
+                                />
+                              </div>
+                            ))}
+                            <button
+                              type="button"
+                              data-remove-row="true"
+                              class="text-xs text-red-500 hover:text-red-700 p-1 cursor-pointer"
+                            >
+                              &times;
+                            </button>
+                          </div>
+                        ))}
+                    </div>
+                    <button
+                      type="button"
+                      data-add-row={input.key}
+                      class="mt-2 inline-flex items-center text-xs font-semibold text-neutral-700 hover:text-neutral-950 dark:text-neutral-300 dark:hover:text-white cursor-pointer"
+                    >
+                      + Add Item
+                    </button>
+                  </div>
+                )}
+
+                {input.help && (
+                  <p class="mt-1.5 text-xs text-neutral-500 dark:text-neutral-400">
+                    {input.help}
+                  </p>
+                )}
+              </div>
+
+              <div
+                data-error-for={input.key}
+                class="mt-1.5 text-xs text-red-600 dark:text-red-400 hidden font-medium"
+              />
+            </div>
+          );
+        })
+      }
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-neutral-100 dark:border-neutral-800">
+      <div class="flex items-center gap-3">
+        <button
+          type="submit"
+          class="rounded-lg bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 transition cursor-pointer"
+        >
+          Calculate
+        </button>
+        <button
+          type="button"
+          data-action="reset"
+          class="rounded-lg border border-neutral-300 bg-white px-4 py-2.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
+        >
+          Reset
+        </button>
+      </div>
+
+      <button
+        type="button"
+        data-action="copy-result"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-neutral-50 px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-750 transition cursor-pointer"
+      >
+        <span>Copy Result</span>
+      </button>
+    </div>
+
+    <div
+      data-global-error
+      class="rounded-lg bg-red-50 p-3 text-xs text-red-700 dark:bg-red-950/40 dark:text-red-300 hidden"
+    />
+  </form>
+
+  <!-- Server-rendered default result container with aria-live="polite" -->
+  <div
+    role="region"
+    aria-live="polite"
+    aria-label="Calculation results"
+    class="mt-8 rounded-xl border border-neutral-200 bg-neutral-50/80 p-6 dark:border-neutral-800 dark:bg-neutral-800/40 min-h-[100px]"
+  >
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {
+        config.outputs.map((out) => {
+          const rawVal = initialOutputs[out.key];
+          const formattedVal = formatOutput(
+            rawVal,
+            out.format,
+            config.numberLocale,
+            config.currency
+          );
+          return (
+            <div
+              class={
+                out.highlight
+                  ? 'sm:col-span-2 lg:col-span-1 rounded-xl bg-white p-4 shadow-xs border border-neutral-200 dark:bg-neutral-900 dark:border-neutral-700'
+                  : 'p-1'
+              }
+            >
+              <div class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                {out.label}
+              </div>
+              <div
+                data-output-key={out.key}
+                class={
+                  out.highlight
+                    ? 'mt-1 text-3xl font-extrabold tracking-tight text-neutral-950 dark:text-white font-mono'
+                    : 'mt-1 text-xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100 font-mono'
+                }
+              >
+                {formattedVal}
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </div>
+
+  <!-- Chart Region -->
+  {
+    config.chart && config.chart !== 'none' && (
+      <div data-chart-container class="mt-8 overflow-hidden rounded-xl border border-neutral-200 bg-white p-4 dark:border-neutral-800 dark:bg-neutral-900">
+        <Fragment set:html={initialChartSvg} />
+      </div>
+    )
+  }
+
+  <!-- Table Region (Amortization / Schedule) -->
+  {
+    config.table && tableRows.length > 0 && (
+      <div data-table-container class="mt-8">
+        <div class="overflow-x-auto rounded-xl border border-neutral-200 dark:border-neutral-800">
+          <table class="w-full text-left text-xs font-mono">
+            <thead class="bg-neutral-100 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">
+              <tr>
+                {tableColumns.map((col: any) => (
+                  <th class="px-4 py-2.5 font-semibold capitalize">{col.label}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-neutral-200 dark:divide-neutral-800 bg-white dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200">
+              {tableRows.map((row: any) => (
+                <tr class="hover:bg-neutral-50 dark:hover:bg-neutral-800/50 transition">
+                  {tableColumns.map((col: any) => (
+                    <td class="px-4 py-2">
+                      {formatOutput(
+                        row[col.key],
+                        col.format || 'number',
+                        config.numberLocale,
+                        config.currency
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    )
+  }
+</div>
+
+<script src="../../lib/engine/client.ts"></script>

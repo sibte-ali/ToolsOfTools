@@ -104,33 +104,43 @@ const isSpanish = lang === 'es';
             </div>
           </div>
           <script>
+            import { evaluateMathExpression } from '../lib/engine/math';
+
             let currentExpr = '0';
             const display = document.getElementById('calc-display');
             function updateDisplay(val: string) {
               if (display) display.textContent = val;
             }
+
+            function calculateExpression() {
+              try {
+                const res = evaluateMathExpression(currentExpr);
+                currentExpr = Number.isFinite(res) ? String(res) : 'Error';
+              } catch {
+                currentExpr = 'Error';
+              }
+              updateDisplay(currentExpr);
+            }
+
             document.querySelectorAll('.calc-btn').forEach((btn) => {
               btn.addEventListener('click', () => {
                 const val = btn.getAttribute('data-val');
                 if (val === 'C') {
                   currentExpr = '0';
+                  updateDisplay(currentExpr);
                 } else if (val === '=') {
-                  try {
-                    const sanitized = currentExpr.replace(/[^0-9+\-*/().]/g, '');
-                    currentExpr = String(Function(`'use strict'; return (${sanitized})`)());
-                  } catch {
-                    currentExpr = 'Error';
-                  }
+                  calculateExpression();
                 } else {
                   if (currentExpr === '0' || currentExpr === 'Error') {
                     currentExpr = val || '';
                   } else {
                     currentExpr += val;
                   }
+                  updateDisplay(currentExpr);
                 }
-                updateDisplay(currentExpr);
               });
             });
+
             // Keyboard listener
             window.addEventListener('keydown', (e) => {
               if (['0','1','2','3','4','5','6','7','8','9','+','-','*','/','.','(',')'].includes(e.key)) {
@@ -142,13 +152,7 @@ const isSpanish = lang === 'es';
                 updateDisplay(currentExpr);
               } else if (e.key === 'Enter') {
                 e.preventDefault();
-                try {
-                  const sanitized = currentExpr.replace(/[^0-9+\-*/().]/g, '');
-                  currentExpr = String(Function(`'use strict'; return (${sanitized})`)());
-                } catch {
-                  currentExpr = 'Error';
-                }
-                updateDisplay(currentExpr);
+                calculateExpression();
               } else if (e.key === 'Escape' || e.key === 'c' || e.key === 'C') {
                 currentExpr = '0';
                 updateDisplay(currentExpr);

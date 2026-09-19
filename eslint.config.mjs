@@ -4,7 +4,7 @@ import tsParser from '@typescript-eslint/parser';
 export default [
   ...eslintPluginAstro.configs.recommended,
   {
-    files: ['**/*.ts', '**/*.tsx'],
+    files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.mjs'],
     languageOptions: {
       parser: tsParser,
       parserOptions: {
@@ -12,7 +12,12 @@ export default [
         ecmaVersion: 'latest',
       },
     },
-    rules: {},
+  },
+  {
+    rules: {
+      'no-eval': 'error',
+      'no-new-func': 'error',
+    },
   },
   {
     ignores: ['dist/**', '.astro/**', 'node_modules/**'],
