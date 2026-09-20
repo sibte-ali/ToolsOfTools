@@ -76,3 +76,78 @@ export function formatDate(
     ...opts,
   }).format(d);
 }
+
+/**
+ * Converts raw LaTeX mathematical expressions into clean, human-readable Unicode math.
+ * E.g.: "\\text{WHR} = \\frac{\\text{Waist}}{\\text{Hip}}, \\quad \\text{Hourglass: } \\frac{|\\text{Bust} - \\text{Hip}|}{\\max(\\text{Bust}, \\text{Hip})} \\le 0.05"
+ * -> "WHR = Waist / Hip, Hourglass: |Bust - Hip| / max(Bust, Hip) ≤ 0.05"
+ */
+export function cleanLatexMath(str: string): string {
+  if (!str) return '';
+  let res = str;
+
+  // Remove $$ wrappers or inline $
+  res = res.replace(/\$\$/g, '').replace(/\$/g, '');
+
+  // Handle \frac{num}{den} recursively (handles nested braces)
+  const fracRegex = /\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g;
+  while (fracRegex.test(res)) {
+    res = res.replace(fracRegex, (_match, num, den) => {
+      const cleanNum = num.trim();
+      const cleanDen = den.trim();
+      const needsParenNum = cleanNum.includes(' ') && !cleanNum.startsWith('(') && !cleanNum.startsWith('|');
+      const needsParenDen = cleanDen.includes(' ') && !cleanDen.startsWith('(') && !cleanDen.startsWith('|');
+      const n = needsParenNum ? `(${cleanNum})` : cleanNum;
+      const d = needsParenDen ? `(${cleanDen})` : cleanDen;
+      return `${n} / ${d}`;
+    });
+  }
+
+  // Handle \text{...}, \mathbf{...}, \mathrm{...}, \mathit{...}
+  res = res.replace(/\\(text|mathbf|mathrm|mathit)\s*\{([^{}]+)\}/g, '$2');
+
+  // Relational and arithmetic operators
+  res = res.replace(/\\le\b/g, '≤');
+  res = res.replace(/\\ge\b/g, '≥');
+  res = res.replace(/\\times\b/g, '×');
+  res = res.replace(/\\approx\b/g, '≈');
+  res = res.replace(/\\neq\b/g, '≠');
+  res = res.replace(/\\pm\b/g, '±');
+  res = res.replace(/\\div\b/g, '÷');
+  res = res.replace(/\\cdot\b/g, '·');
+  res = res.replace(/\\Delta\b/g, 'Δ');
+  res = res.replace(/\\sum\b/g, 'Σ');
+  res = res.replace(/\\bigcup\b/g, '∪');
+  res = res.replace(/\\implies\b/g, '⇒');
+  res = res.replace(/\\(to|rightarrow)\b/g, '→');
+  res = res.replace(/\\max\b/g, 'max');
+  res = res.replace(/\\min\b/g, 'min');
+
+  // Spacing
+  res = res.replace(/\\(quad|qquad)/g, ', ');
+  res = res.replace(/\\([,;:!])/g, ' ');
+
+  // Delimiters
+  res = res.replace(/\\left\s*([(\[{|])/g, '$1');
+  res = res.replace(/\\right\s*([)\]}|])/g, '$1');
+
+  // Escaped characters: \%, \$, \_, \{, \}
+  res = res.replace(/\\([%$#&_{}])/g, '$1');
+
+  // Superscripts and exponents
+  res = res.replace(/\^\{([^{}]+)\}/g, '^($1)');
+  res = res.replace(/\^2\b/g, '²');
+  res = res.replace(/\^3\b/g, '³');
+
+  // Subscripts
+  res = res.replace(/_\{([^{}]+)\}/g, '_$1');
+
+  // Remaining standalone macro prefixes
+  res = res.replace(/\\([a-zA-Z]+)/g, '$1');
+
+  // Clean duplicate spaces and commas
+  res = res.replace(/,\s*,/g, ',');
+  res = res.replace(/\s+/g, ' ').trim();
+
+  return res;
+}

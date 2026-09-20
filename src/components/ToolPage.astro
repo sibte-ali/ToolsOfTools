@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import ToolWidget from './ToolWidget.astro';
 import { buildTools, getToolHubUrl, getToolHubFolder, type Tool } from '../lib/tools';
 import { getTranslations, getHtmlLang, type SupportedLanguage, getLanguageHome } from '../i18n';
-import { resolveToolLocale, formatDate } from '../lib/format';
+import { resolveToolLocale, formatDate, cleanLatexMath } from '../lib/format';
 import { getEntry, render } from 'astro:content';
 import {
   generateWebApplicationSchema,
@@ -30,23 +30,41 @@ const currentPath = Astro.url.pathname;
 const canonical = `${siteUrl}${currentPath}`;
 const localeConfig = resolveToolLocale(tool);
 
-// Load content collection entry if not passed directly
-const entry = propEntry || (await getEntry('tools', `${lang}/${tool.slug}`));
-const rendered = entry ? await render(entry) : null;
-const Content = rendered?.Content;
+let entry = propEntry;
+if (!entry) {
+  try {
+    entry = await getEntry('tools', `${lang}/${tool.slug}`);
+    if (!entry && lang !== 'en') {
+      entry = await getEntry('tools', `en/${tool.slug}`);
+    }
+  } catch (e) {
+    // entry missing
+  }
+}
+
+let Content: any = null;
+if (entry) {
+  try {
+    const rendered = await render(entry);
+    Content = rendered.Content;
+  } catch (e) {
+    // render error
+  }
+}
+
 const data = entry?.data;
 
-// 1. Text metadata fallbacks
+// 1. Tool title, h1, intro from content or fallback to metadata
 const title = data?.title || `${tool.keyword.charAt(0).toUpperCase() + tool.keyword.slice(1)} - ToolsOfTools`;
 const h1 = data?.h1 || tool.keyword.charAt(0).toUpperCase() + tool.keyword.slice(1);
 const intro = data?.intro || tool.spec || `Calculate ${tool.keyword} accurately and instantly with our free online calculator.`;
 const description = data?.description || (intro.length >= 140 && intro.length <= 160 ? intro : `${intro.slice(0, 145)}...`);
 
-// 2. Disclaimer type resolution
-const rawDisclaimer: 'none' | 'finance' | 'health' | 'entertainment' = (data?.disclaimer as any) || (
-  tool.folder.includes('finance') || tool.folder.includes('financas') || tool.risk_flags.toLowerCase().includes('money')
+// 2. Disclaimer computation
+const rawDisclaimer: string = data?.disclaimer || (
+  tool.folder === 'finance' || tool.folder === 'financas'
     ? 'finance'
-    : tool.folder.includes('health') || tool.folder.includes('saude') || tool.risk_flags.toLowerCase().includes('health')
+    : tool.folder === 'health' || tool.folder === 'saude'
     ? 'health'
     : tool.template === 'fun'
     ? 'entertainment'
@@ -59,8 +77,10 @@ if (rawDisclaimer !== 'none') {
 }
 
 // 3. Formula and worked example
-const formulaMarkdown = data?.formula || `Result = f(${tool.keyword})`;
-const exampleMarkdown = data?.example || `For standard inputs, the calculation computes: Expected Value = 100 based on standard variables.`;
+const rawFormula = data?.formula || `Result = f(${tool.keyword})`;
+const formulaMarkdown = cleanLatexMath(rawFormula);
+const rawExample = data?.example || `For standard inputs, the calculation computes: Expected Value = 100 based on standard variables.`;
+const exampleMarkdown = cleanLatexMath(rawExample);
 
 // 4. FAQ list
 const defaultFaq: FaqItem[] = [
@@ -218,7 +238,7 @@ const isWideTool = tool.slug === 'json-beautifier' || tool.slug === 'json-to-exc
     <!-- 6. Long-form body from the markdown (400-800 unique words) with h2/h3 structure -->
     <section aria-labelledby="in-depth-guide" class="mt-12 space-y-6 text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
       {Content ? (
-        <div class="space-y-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-tight [&_h2]:text-[#0D47A1] dark:[&_h2]:text-white [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-[#1565C0] dark:[&_h3]:text-sky-200 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-relaxed [&_li]:mt-1">
+        <div id="tool-guide-content" class="space-y-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-tight [&_h2]:text-[#0D47A1] dark:[&_h2]:text-white [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-[#1565C0] dark:[&_h3]:text-sky-200 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-relaxed [&_li]:mt-1">
           <Content />
         </div>
       ) : (
@@ -333,4 +353,53 @@ const isWideTool = tool.slug === 'json-beautifier' || tool.slug === 'json-to-exc
       </div>
     </section>
   </main>
+
+  <script is:inline>
+    (function () {
+      function cleanLatexString(str) {
+        if (!str) return str;
+        var res = str.replace(/\$\$/g, '').replace(/\$/g, '');
+        var fracRegex = /\\frac\s*\{([^{}]+)\}\s*\{([^{}]+)\}/g;
+        while (fracRegex.test(res)) {
+          res = res.replace(fracRegex, function (_m, num, den) {
+            var n = num.trim().indexOf(' ') !== -1 && !num.trim().startsWith('(') && !num.trim().startsWith('|') ? '(' + num.trim() + ')' : num.trim();
+            var d = den.trim().indexOf(' ') !== -1 && !den.trim().startsWith('(') && !den.trim().startsWith('|') ? '(' + den.trim() + ')' : den.trim();
+            return n + ' / ' + d;
+          });
+        }
+        res = res.replace(/\\(text|mathbf|mathrm|mathit)\s*\{([^{}]+)\}/g, '$2');
+        res = res.replace(/\\le\b/g, '≤').replace(/\\ge\b/g, '≥').replace(/\\times\b/g, '×');
+        res = res.replace(/\\approx\b/g, '≈').replace(/\\neq\b/g, '≠').replace(/\\pm\b/g, '±');
+        res = res.replace(/\\Delta\b/g, 'Δ').replace(/\\sum\b/g, 'Σ').replace(/\\implies\b/g, '⇒');
+        res = res.replace(/\\(to|rightarrow)\b/g, '→').replace(/\\max\b/g, 'max').replace(/\\min\b/g, 'min');
+        res = res.replace(/\\(quad|qquad)/g, ', ').replace(/\\left\s*([(\[{|])/g, '$1').replace(/\\right\s*([)\]}|])/g, '$1');
+        res = res.replace(/\\([%$#&_{}])/g, '$1').replace(/\^\{([^{}]+)\}/g, '^($1)').replace(/\^2\b/g, '²');
+        res = res.replace(/_\{([^{}]+)\}/g, '_$1').replace(/\\([a-zA-Z]+)/g, '$1');
+        return res.replace(/\s+/g, ' ').trim();
+      }
+
+      var guide = document.getElementById('tool-guide-content');
+      if (guide) {
+        var walker = document.createTreeWalker(guide, NodeFilter.SHOW_TEXT, null, false);
+        var node;
+        var nodes = [];
+        while ((node = walker.nextNode())) {
+          if (
+            node.nodeValue &&
+            (node.nodeValue.indexOf('\\text{') !== -1 ||
+              node.nodeValue.indexOf('\\frac{') !== -1 ||
+              node.nodeValue.indexOf('\\le') !== -1 ||
+              node.nodeValue.indexOf('\\ge') !== -1 ||
+              node.nodeValue.indexOf('$$') !== -1 ||
+              node.nodeValue.indexOf('\\times') !== -1)
+          ) {
+            nodes.push(node);
+          }
+        }
+        for (var i = 0; i < nodes.length; i++) {
+          nodes[i].nodeValue = cleanLatexString(nodes[i].nodeValue);
+        }
+      }
+    })();
+  </script>
 </Layout>

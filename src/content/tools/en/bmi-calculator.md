@@ -4,7 +4,7 @@ description: "Calculate Body Mass Index (BMI) using metric or imperial units. Fr
 h1: "BMI Calculator"
 intro: "Calculate your Body Mass Index (BMI), clinical weight classification, and healthy weight range for your height using official World Health Organization standards."
 primaryKeyword: "bmi calculator"
-formula: "\\text{BMI} = \\frac{\\text{weight}_{kg}}{(\\text{height}_m)^2} = \\frac{703 \\times \\text{weight}_{lb}}{(\\text{height}_{in})^2}"
+formula: "BMI = weight_kg / (height_m)² = (703 × weight_lb) / (height_in)²"
 example: "For an adult standing 175 cm tall and weighing 70 kg, the calculated BMI is 22.9, falling inside the standard WHO Normal Weight category with a healthy range of 56.7 to 76.3 kg."
 faq:
   - q: "What is considered a normal BMI for adults?"
@@ -42,42 +42,42 @@ While BMI is not a direct measure of body fat percentage, its strong statistical
 BMI is defined as an individual's body mass divided by the square of their height:
 
 #### Metric System:
-$$\text{BMI} = \frac{\text{Weight (kg)}}{[\text{Height (m)}]^2}$$
+BMI = Weight (kg) / [Height (m)]²
 
 #### Imperial System:
-$$\text{BMI} = \frac{703 \times \text{Weight (lbs)}}{[\text{Height (inches)}]^2}$$
+BMI = (703 × Weight (lbs)) / [Height (inches)]²
 
 ### Diagnostic Classification Thresholds
 
 The World Health Organization (WHO) divides adult BMI scores into clinical categories:
 
-| BMI Range ($\text{kg/m}^2$) | WHO International Standard | Asian Population Standard |
+| BMI Range (kg/m²) | WHO International Standard | Asian Population Standard |
 |---|---|---|
-| **$< 18.5$** | Underweight | Underweight |
-| **$18.5 - 22.9$** | Normal weight | Normal weight (Optimal) |
-| **$23.0 - 24.9$** | Normal weight | Overweight (Increased risk) |
-| **$25.0 - 27.4$** | Overweight (Pre-obese) | Overweight (High risk) |
-| **$27.5 - 29.9$** | Overweight (Pre-obese) | Obese Class I |
-| **$30.0 - 34.9$** | Obesity Class I (Moderate) | Obese Class I |
-| **$35.0 - 39.9$** | Obesity Class II (Severe) | Obese Class II |
-| **$\ge 40.0$** | Obesity Class III (Morbid) | Obese Class III |
+| **< 18.5** | Underweight | Underweight |
+| **18.5 - 22.9** | Normal weight | Normal weight (Optimal) |
+| **23.0 - 24.9** | Normal weight | Overweight (Increased risk) |
+| **25.0 - 27.4** | Overweight (Pre-obese) | Overweight (High risk) |
+| **27.5 - 29.9** | Overweight (Pre-obese) | Obese Class I |
+| **30.0 - 34.9** | Obesity Class I (Moderate) | Obese Class I |
+| **35.0 - 39.9** | Obesity Class II (Severe) | Obese Class II |
+| **≥ 40.0** | Obesity Class III (Morbid) | Obese Class III |
 
 ### Step-by-Step Worked Demonstration
 
-Consider an adult measuring $175\text{ cm}$ ($1.75\text{ m}$) in height and weighing $70\text{ kg}$:
+Consider an adult measuring 175 cm (1.75 m) in height and weighing 70 kg:
 
 1. **Calculate Height Squared**:
-   $$1.75 \times 1.75 = 3.0625\text{ m}^2$$
+   1.75 × 1.75 = 3.0625 m²
 
 2. **Compute BMI**:
-   $$\text{BMI} = \frac{70}{3.0625} \approx 22.857 \to \mathbf{22.9\text{ kg/m}^2}$$
+   BMI = 70 / 3.0625 ≈ 22.857 → **22.9 kg/m²**
 
-3. **Determine Healthy Weight Range ($18.5 - 24.9$)**:
-   $$\text{Minimum: } 18.5 \times 3.0625 = \mathbf{56.7\text{ kg}}\text{ (125.0 lbs)}$$
-   $$\text{Maximum: } 24.9 \times 3.0625 = \mathbf{76.3\text{ kg}}\text{ (168.2 lbs)}$$
+3. **Determine Healthy Weight Range (18.5 - 24.9)**:
+   Minimum: 18.5 × 3.0625 = **56.7 kg** (125.0 lbs)
+   Maximum: 24.9 × 3.0625 = **76.3 kg** (168.2 lbs)
 
 4. **Assessment**:
-   At $22.9\text{ kg/m}^2$, the score lies safely inside the normal weight bracket under both the WHO international scale and the Asian population guidelines ($< 23.0$).
+   At 22.9 kg/m², the score lies safely inside the normal weight bracket under both the WHO international scale and the Asian population guidelines (< 23.0).
 
 ### Key Limitations of the BMI Metric
 

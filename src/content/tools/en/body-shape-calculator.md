@@ -4,7 +4,7 @@ description: "Classify your body shape with our free silhouette calculator. Find
 h1: "Body Shape Calculator"
 intro: "Discover your body silhouette shape and waist-to-hip proportions by entering bust, waist, high hip, and hip circumferences for customized styling guidance."
 primaryKeyword: "body shape calculator"
-formula: "\\text{WHR} = \\frac{\\text{Waist}}{\\text{Hip}}, \\quad \\text{Hourglass: } \\frac{|\\text{Bust} - \\text{Hip}|}{\\max(\\text{Bust}, \\text{Hip})} \\le 0.05 \\text{ and } \\frac{\\text{Waist}}{\\text{Bust}} \\le 0.75"
+formula: "WHR = Waist / Hip, Hourglass: |Bust - Hip| / max(Bust, Hip) ≤ 0.05 and Waist / Bust ≤ 0.75"
 example: "For measurements of 92 cm bust, 68 cm waist, 84 cm high hip, and 94 cm hips, the calculated waist-to-hip ratio is 0.72, categorizing the silhouette as a classic Hourglass."
 faq:
   - q: "How do I take accurate body measurements for this calculator?"
@@ -42,19 +42,19 @@ Beyond fashion aesthetics, measuring anatomical circumferences provides actionab
 Our algorithm evaluates proportional relationships between your upper torso, natural waistline, and pelvic circumference:
 
 #### 1. The Hourglass Figure
-- **Geometry**: The bust and hip circumferences are closely balanced (within 5% variance), while the waist is sharply defined ($\text{Waist} \le 0.75 \times \text{Bust}$ and $\text{Waist} \le 0.75 \times \text{Hip}$).
+- **Geometry**: The bust and hip circumferences are closely balanced (within 5% variance), while the waist is sharply defined (Waist ≤ 0.75 × Bust and Waist ≤ 0.75 × Hip).
 - **Styling Focus**: Fitted knitwear, wrap dresses, belted coats, and high-rise bottoms that follow natural curves without adding boxy volume.
 
 #### 2. The Pear (Triangle / Spoon) Figure
-- **Geometry**: The hips are noticeably broader than the bust and shoulders ($\text{Hip} \ge 1.05 \times \text{Bust}$), accompanied by a distinct waistline.
+- **Geometry**: The hips are noticeably broader than the bust and shoulders (Hip ≥ 1.05 × Bust), accompanied by a distinct waistline.
 - **Styling Focus**: Boat necklines, shoulder pads, statement sleeves, and A-line skirts that draw visual attention upward toward the collarbone.
 
 #### 3. The Rectangle (Banana / Athletic) Figure
-- **Geometry**: Bust, waist, and hips share roughly similar dimensions without a dramatically tapered waist ($\text{Waist} > 0.75 \times \text{Bust}$).
+- **Geometry**: Bust, waist, and hips share roughly similar dimensions without a dramatically tapered waist (Waist > 0.75 × Bust).
 - **Styling Focus**: Cinched belts, peplum tops, sweetheart necklines, and fit-and-flare skirts to create optical curve dimensions.
 
 #### 4. The Inverted Triangle Figure
-- **Geometry**: The shoulders or bust are significantly broader than the hips ($\text{Bust} \ge 1.05 \times \text{Hip}$), tapering to a narrow waist and hips.
+- **Geometry**: The shoulders or bust are significantly broader than the hips (Bust ≥ 1.05 × Hip), tapering to a narrow waist and hips.
 - **Styling Focus**: Deep V-necks, wide-leg trousers, flared palazzo pants, and pocket detailing on skirts to build visual volume in the lower body.
 
 #### 5. The Apple (Round) Figure
@@ -64,19 +64,19 @@ Our algorithm evaluates proportional relationships between your upper torso, nat
 ### Practical Worked Demonstration
 
 Consider an individual recording the following body measurements:
-- **Bust**: $92\text{ cm}$
-- **Waist**: $68\text{ cm}$
-- **High Hip**: $84\text{ cm}$
-- **Full Hip**: $94\text{ cm}$
+- **Bust**: 92 cm
+- **Waist**: 68 cm
+- **High Hip**: 84 cm
+- **Full Hip**: 94 cm
 
 1. **Calculate Ratios**:
-   - Bust-to-Hip Variance: $|92 - 94| / 94 = 2 / 94 = 2.13\%$ ($\le 5\%$).
-   - Waist-to-Bust Ratio: $68 / 92 = 0.739$ ($\le 0.75$).
-   - Waist-to-Hip Ratio (WHR): $68 / 94 = \mathbf{0.723}$ ($\le 0.75$).
+   - Bust-to-Hip Variance: |92 - 94| / 94 = 2 / 94 = 2.13% (≤ 5%).
+   - Waist-to-Bust Ratio: 68 / 92 = 0.739 (≤ 0.75).
+   - Waist-to-Hip Ratio (WHR): 68 / 94 = **0.723** (≤ 0.75).
 
 2. **Classification**:
    - Because bust and hip match within 2.1% and the waist is under 74% of both circumferences, this represents a **Classic Hourglass** silhouette.
-   - The WHR of $0.72$ falls squarely in the healthy range recommended by the World Health Organization ($< 0.80$ for low cardiometabolic risk).
+   - The WHR of 0.72 falls squarely in the healthy range recommended by the World Health Organization (< 0.80 for low cardiometabolic risk).
 
 ### Clinical Considerations: WHR vs. Overall Weight
 
