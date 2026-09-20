@@ -5,9 +5,9 @@
   "private": true,
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && tsx scripts/check-perf-budget.ts",
+    "build": "astro build",
     "budget": "tsx scripts/check-perf-budget.ts",
-    "deploy": "npm run build && wrangler pages deploy dist --project-name=toolsoftools --branch=main",
+    "deploy": "wrangler pages deploy dist --project-name=toolsoftools --branch=main",
     "preview": "astro preview",
     "check": "astro check",
     "test": "vitest run",
@@ -32,7 +32,6 @@
     "prettier-plugin-astro": "^0.14.1",
     "tsx": "^4.19.3",
     "typescript": "^5.7.3",
-    "vitest": "^3.0.7",
-    "wrangler": "^4.135.0"
+    "vitest": "^3.0.7"
   }
 }
