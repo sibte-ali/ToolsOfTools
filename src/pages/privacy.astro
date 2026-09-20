@@ -6,23 +6,101 @@ import InfoPage from '../components/InfoPage.astro';
   lang="en"
   title="Privacy Policy"
   heading="Privacy Policy"
-  description="ToolsOfTools privacy commitment: zero tracking scripts, browser-based execution, and complete user privacy."
+  description="ToolsOfTools privacy commitment: zero tracking scripts, browser-based execution, no server storage, and complete user data protection."
+  lastUpdated="2026-03-20"
 >
-  <section class="space-y-4">
-    <p>
-      At <strong>ToolsOfTools</strong>, privacy is built directly into our technical architecture. We operate on a simple principle: <em>your data never leaves your device</em>.
+  <section class="space-y-6">
+    <p class="text-base leading-relaxed">
+      At <strong>ToolsOfTools</strong> ("we," "our," or "us"), accessible at <a href="/" class="text-[#2196F3] font-medium hover:underline">toolsoftools.com</a>, we consider the privacy of our visitors and users to be of paramount importance. This Privacy Policy outlines the types of information that are (and are not) received, collected, and recorded by ToolsOfTools and how we prioritize your digital autonomy.
     </p>
-    <h2 class="text-xl font-bold text-neutral-900 dark:text-white">1. Client-Side Execution</h2>
+
+    <!-- Core Privacy Guarantee Card -->
+    <div class="rounded-2xl border border-emerald-200 bg-emerald-50/70 p-5 dark:border-emerald-900/50 dark:bg-emerald-950/20">
+      <div class="flex items-start gap-3">
+        <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-white text-sm font-bold">✓</span>
+        <div>
+          <h3 class="text-sm font-bold text-emerald-900 dark:text-emerald-300">The ToolsOfTools Zero-Knowledge Guarantee</h3>
+          <p class="mt-1 text-xs leading-relaxed text-emerald-800 dark:text-emerald-400">
+            Every calculator, JSON formatter, font converter, unit translator, and image tool on ToolsOfTools executes <strong>100% client-side inside your web browser</strong>. Your numbers, financial figures, medical metrics, uploaded files, and pasted texts never leave your device. We do not store, log, inspect, or transmit your calculation payloads to our servers.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h2>1. Information We Do NOT Collect</h2>
     <p>
-      All calculations, unit conversions, and text transformations are performed locally in your web browser using client-side TypeScript. None of the values, numbers, or text you input into any tool are sent to our servers or third parties.
+      Unlike conventional web portals that transmit your form submissions to backend databases, our computational tools run using client-side TypeScript, WebAssembly, and native browser APIs (such as the Canvas API and DOMParser). Specifically:
     </p>
-    <h2 class="text-xl font-bold text-neutral-900 dark:text-white">2. No Tracking or Fingerprinting</h2>
+    <ul class="list-disc pl-5 space-y-2 text-neutral-600 dark:text-neutral-300">
+      <li><strong>No Financial Data Collection:</strong> Loan amounts, interest rates, salary figures, investment amounts, and bank balance estimates remain exclusively in your local device RAM.</li>
+      <li><strong>No Health or Biometric Tracking:</strong> Weight, height, BMI measurements, and caloric figures are processed client-side and immediately discarded upon tab closure.</li>
+      <li><strong>No File Storage:</strong> Uploaded images (JPEG, PNG, WebP) or JSON/XML/text files converted through our tools are processed in memory and never uploaded to any cloud storage or remote server.</li>
+      <li><strong>No User Account or Identity Tracking:</strong> We do not require you to register, log in, or provide phone numbers or passwords to use our utilities.</li>
+    </ul>
+
+    <h2>2. Technical Log Files and Infrastructure</h2>
     <p>
-      We do not use invasive third-party analytics, behavioral profiling pixels, or advertising fingerprinting libraries.
+      Like all standard web servers and content delivery networks (CDNs), our hosting infrastructure may automatically record standard web server request logs when your browser requests static HTML, CSS, JavaScript, and font assets. These log files typically include:
     </p>
-    <h2 class="text-xl font-bold text-neutral-900 dark:text-white">3. Local Storage</h2>
+    <ul class="list-disc pl-5 space-y-2 text-neutral-600 dark:text-neutral-300">
+      <li>Internet Protocol (IP) address (anonymized for DDoS mitigation and geolocation routing);</li>
+      <li>Browser type and version (User-Agent);</li>
+      <li>Referring and exit pages;</li>
+      <li>Date and timestamp of static asset requests.</li>
+    </ul>
     <p>
-      Where tools offer memory or history (such as the calculator memory keys), that data is kept strictly inside your browser's local storage and can be wiped by you at any time.
+      These technical server logs are strictly utilized for infrastructure health monitoring, DDoS mitigation, bandwidth optimization, and resolving server crashes. They are not linked to any personally identifiable information.
+    </p>
+
+    <h2>3. Cookies and Local Browser Storage</h2>
+    <p>
+      ToolsOfTools does not deploy intrusive tracking cookies, behavioral tracking pixels, or cross-site fingerprinting mechanisms.
+    </p>
+    <ul class="list-disc pl-5 space-y-2 text-neutral-600 dark:text-neutral-300">
+      <li><strong>Local Storage for UI Preferences:</strong> We use the browser's standard <code>localStorage</code> API solely to store your light/dark theme preference and calculator memory keys (e.g., <code>M+</code> / <code>MR</code> values) so they persist between visits on your own device.</li>
+      <li><strong>Control:</strong> You have complete control over this data. You can clear your browser's local storage or cookies at any time through your browser settings without affecting tool availability.</li>
+    </ul>
+
+    <h2>4. Advertising and Third-Party Services</h2>
+    <p>
+      We do not sell, trade, rent, or monetize your personal information or calculation inputs to third-party data brokers. Should third-party privacy-respecting advertising partners be utilized in the future to support free hosting costs, standard non-personalized programmatic banners may be served in accordance with strict Do-Not-Track (DNT) headers and CCPA/GDPR compliance frameworks.
+    </p>
+
+    <h2>5. Compliance with Global Privacy Regulations</h2>
+
+    <h3 class="text-base font-semibold text-[#0D47A1] dark:text-sky-300">GDPR (General Data Protection Regulation - EU/UK)</h3>
+    <p>
+      Because we operate on a zero-collection architecture and do not process personally identifiable information on our servers, users within the European Union and the United Kingdom enjoy complete inherent privacy. You have the right to request clarification on any operational procedures by emailing our Data Protection Officer.
+    </p>
+
+    <h3 class="text-base font-semibold text-[#0D47A1] dark:text-sky-300">CCPA / CPRA (California Consumer Privacy Act)</h3>
+    <p>
+      Under the California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA), California residents are entitled to know what personal data is collected and to opt out of the sale or sharing of personal data. <strong>ToolsOfTools does not sell, rent, or share personal information with third parties.</strong>
+    </p>
+
+    <h2>6. Children's Privacy (COPPA Compliance)</h2>
+    <p>
+      Protecting the privacy of children online is especially important to us. ToolsOfTools is a general audience computational platform suitable for academic and everyday mathematical learning. We do not knowingly collect or solicit any personal information from children under the age of 13 in compliance with the Children's Online Privacy Protection Act (COPPA).
+    </p>
+
+    <h2>7. Data Security and HTTPS Everywhere</h2>
+    <p>
+      All communication between your device and ToolsOfTools is secured using modern TLS/SSL encryption (HTTPS). Furthermore, we enforce strict security headers, including Content Security Policy (CSP), HTTP Strict Transport Security (HSTS), and X-Content-Type-Options to protect against cross-site scripting and unauthorized script injection.
+    </p>
+
+    <h2>8. Changes to This Privacy Policy</h2>
+    <p>
+      We may periodically update our Privacy Policy to reflect technical improvements, new security standards, or legislative updates. We encourage users to review this page periodically. Any modifications will be posted here with an updated "Last Updated" date.
+    </p>
+
+    <h2>9. Contact Us Regarding Privacy</h2>
+    <p>
+      If you have questions, comments, or concerns about our Privacy Policy or our client-side architecture, please reach out to our privacy compliance team at:
+      <br />
+      <a href="mailto:privacy@toolsoftools.com" class="font-mono text-[#0D47A1] underline dark:text-sky-300">
+        privacy@toolsoftools.com
+      </a>
+      or visit our <a href="/contact/" class="text-[#2196F3] underline">Contact Us page</a>.
     </p>
   </section>
 </InfoPage>

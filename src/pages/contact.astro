@@ -5,24 +5,208 @@ import InfoPage from '../components/InfoPage.astro';
 <InfoPage
   lang="en"
   title="Contact Us"
-  heading="Contact & Feedback"
-  description="Get in touch with the ToolsOfTools team for inquiries, bug reports, and formula corrections."
+  heading="Contact & Support"
+  description="Get in touch with the ToolsOfTools team for technical support, feature requests, formula verification inquiries, and partnership proposals."
+  lastUpdated="2026-03-20"
 >
-  <section class="space-y-4">
-    <p>
-      We welcome questions, formula verification inquiries, suggestions for new calculators, or bug reports.
+  <section class="space-y-8">
+    <p class="text-base leading-relaxed">
+      Have a question, feedback, or need assistance? We are here to help. Whether you want to propose a new calculator, report a formula discrepancy, or discuss business partnerships, our team responds to all inquiries promptly.
     </p>
-    <h2 class="text-xl font-bold text-neutral-900 dark:text-white">Email</h2>
+
+    <!-- Support Channel Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div class="rounded-xl border border-neutral-200 bg-white p-5 shadow-2xs dark:border-neutral-800 dark:bg-neutral-900">
+        <div class="flex items-center gap-2.5">
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-[#E3F2FD] text-[#0D47A1] dark:bg-neutral-800 dark:text-sky-300 font-bold text-sm">✉️</span>
+          <h3 class="text-sm font-bold text-neutral-900 dark:text-white">General Support</h3>
+        </div>
+        <p class="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+          General questions, suggestions, feedback, and user assistance.
+        </p>
+        <a href="mailto:support@toolsoftools.com" class="mt-3 inline-block font-mono text-xs font-semibold text-[#0D47A1] underline dark:text-sky-300">
+          support@toolsoftools.com
+        </a>
+      </div>
+
+      <div class="rounded-xl border border-neutral-200 bg-white p-5 shadow-2xs dark:border-neutral-800 dark:bg-neutral-900">
+        <div class="flex items-center gap-2.5">
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-amber-800 dark:bg-neutral-800 dark:text-amber-300 font-bold text-sm">🔍</span>
+          <h3 class="text-sm font-bold text-neutral-900 dark:text-white">Formula Audits</h3>
+        </div>
+        <p class="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+          Discrepancy reports, tax slab updates, and mathematical corrections.
+        </p>
+        <a href="mailto:audit@toolsoftools.com" class="mt-3 inline-block font-mono text-xs font-semibold text-[#0D47A1] underline dark:text-sky-300">
+          audit@toolsoftools.com
+        </a>
+      </div>
+
+      <div class="rounded-xl border border-neutral-200 bg-white p-5 shadow-2xs dark:border-neutral-800 dark:bg-neutral-900">
+        <div class="flex items-center gap-2.5">
+          <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-800 dark:bg-neutral-800 dark:text-emerald-300 font-bold text-sm">⚖️</span>
+          <h3 class="text-sm font-bold text-neutral-900 dark:text-white">Privacy & Legal</h3>
+        </div>
+        <p class="mt-2 text-xs text-neutral-600 dark:text-neutral-400">
+          Inquiries regarding data practices, GDPR/CCPA, and terms of service.
+        </p>
+        <a href="mailto:privacy@toolsoftools.com" class="mt-3 inline-block font-mono text-xs font-semibold text-[#0D47A1] underline dark:text-sky-300">
+          privacy@toolsoftools.com
+        </a>
+      </div>
+    </div>
+
+    <!-- Contact Form Section -->
+    <div class="rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+      <h2 class="!mt-0 text-xl font-bold text-[#0D47A1] dark:text-white">Send Us a Direct Message</h2>
+      <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
+        Fill out the form below. Messages open directly into your preferred email client with all details formatted for our review team.
+      </p>
+
+      <form id="contact-form" class="mt-6 space-y-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="contact-name" class="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+              Your Name <span class="text-rose-500">*</span>
+            </label>
+            <input
+              type="text"
+              id="contact-name"
+              required
+              placeholder="e.g. John Doe"
+              class="w-full rounded-xl border border-neutral-300 bg-neutral-50 px-3.5 py-2 text-sm text-neutral-900 placeholder-neutral-400 focus:border-[#2196F3] focus:bg-white focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:border-[#2196F3]"
+            />
+          </div>
+
+          <div>
+            <label for="contact-email" class="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+              Email Address <span class="text-rose-500">*</span>
+            </label>
+            <input
+              type="email"
+              id="contact-email"
+              required
+              placeholder="e.g. john@example.com"
+              class="w-full rounded-xl border border-neutral-300 bg-neutral-50 px-3.5 py-2 text-sm text-neutral-900 placeholder-neutral-400 focus:border-[#2196F3] focus:bg-white focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:border-[#2196F3]"
+            />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label for="contact-topic" class="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+              Inquiry Topic <span class="text-rose-500">*</span>
+            </label>
+            <select
+              id="contact-topic"
+              class="w-full rounded-xl border border-neutral-300 bg-neutral-50 px-3.5 py-2 text-sm text-neutral-900 focus:border-[#2196F3] focus:bg-white focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+            >
+              <option value="Formula Verification / Discrepancy">Formula Verification / Discrepancy</option>
+              <option value="Bug Report">Technical Bug Report</option>
+              <option value="New Tool Proposal / Feature Request">New Tool Proposal / Feature Request</option>
+              <option value="General Question / Feedback">General Question / Feedback</option>
+              <option value="Business / Partnership">Business / Partnership</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="contact-url" class="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+              Related Tool URL <span class="text-neutral-400">(Optional)</span>
+            </label>
+            <input
+              type="url"
+              id="contact-url"
+              placeholder="e.g. https://toolsoftools.com/finance/emi-calculator/"
+              class="w-full rounded-xl border border-neutral-300 bg-neutral-50 px-3.5 py-2 text-sm text-neutral-900 placeholder-neutral-400 focus:border-[#2196F3] focus:bg-white focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label for="contact-message" class="block text-xs font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+            Your Message <span class="text-rose-500">*</span>
+          </label>
+          <textarea
+            id="contact-message"
+            rows="5"
+            required
+            placeholder="Please describe your question, proposed tool, or calculation observation with as much detail as possible..."
+            class="w-full rounded-xl border border-neutral-300 bg-neutral-50 p-3.5 text-sm text-neutral-900 placeholder-neutral-400 focus:border-[#2196F3] focus:bg-white focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+          ></textarea>
+        </div>
+
+        <div class="flex items-center justify-between pt-2">
+          <p class="text-xs text-neutral-500 dark:text-neutral-400">
+            ⚡ We typically respond within 24 to 48 business hours.
+          </p>
+          <button
+            type="submit"
+            class="inline-flex items-center gap-2 rounded-xl bg-[#0D47A1] px-5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-[#1565C0] active:scale-95 transition cursor-pointer"
+          >
+            <span>Send Message</span>
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="22" y1="2" x2="11" y2="13"></line>
+              <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+            </svg>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Instructions for Discrepancies -->
+    <h2>Reporting Calculation Discrepancies</h2>
     <p>
-      You can reach our engineering team directly at:
-      <br />
-      <a href="mailto:support@toolsoftools.com" class="font-mono text-neutral-900 underline dark:text-white">
-        support@toolsoftools.com
-      </a>
+      To help our quantitative review team verify and rectify a mathematical formula quickly, please include:
     </p>
-    <h2 class="text-xl font-bold text-neutral-900 dark:text-white">Reporting Calculation Discrepancies</h2>
-    <p>
-      If you discover a formula discrepancy or outdated tax slab/financial rule, please include the relevant tool URL, the inputs tested, and the official regulatory or statutory reference so our audit team can swiftly review and verify the math.
-    </p>
+    <ul class="list-disc pl-5 space-y-2 text-neutral-600 dark:text-neutral-300">
+      <li><strong>Tool URL:</strong> The exact calculator or converter page you were using.</li>
+      <li><strong>Input Parameters:</strong> The precise numbers, currencies, dates, or texts entered.</li>
+      <li><strong>Expected vs. Observed Result:</strong> What output our tool generated versus what your manual derivation or statutory schedule indicates.</li>
+      <li><strong>Authoritative Citation:</strong> An official regulatory link, textbook reference, or statutory tax slab documentation so we can verify the update against primary sources.</li>
+    </ul>
+
+    <!-- FAQ Section -->
+    <h2>Frequently Asked Questions</h2>
+    <div class="space-y-4">
+      <div class="rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-850">
+        <h3 class="text-sm font-bold text-neutral-900 dark:text-white">Can I request a new tool or calculator?</h3>
+        <p class="mt-1 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          Yes! We prioritize new tools based on user demand. Send us the formula, use cases, and desired input variables, and our engineering team will evaluate it for our upcoming release cycle.
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-neutral-200 bg-neutral-50 p-4 dark:border-neutral-800 dark:bg-neutral-850">
+        <h3 class="text-sm font-bold text-neutral-900 dark:text-white">Do you offer API access or embeddable widgets?</h3>
+        <p class="mt-1 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          Because our tools run entirely client-side, we do not maintain a rate-limited remote API. However, if you are an educational institution or non-profit interested in embedding our calculators, contact our team to discuss integration options.
+        </p>
+      </div>
+    </div>
   </section>
+
+  <script>
+    const form = document.getElementById('contact-form') as HTMLFormElement | null;
+    if (form) {
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = (document.getElementById('contact-name') as HTMLInputElement)?.value || '';
+        const email = (document.getElementById('contact-email') as HTMLInputElement)?.value || '';
+        const topic = (document.getElementById('contact-topic') as HTMLSelectElement)?.value || 'General Support';
+        const url = (document.getElementById('contact-url') as HTMLInputElement)?.value || '';
+        const message = (document.getElementById('contact-message') as HTMLTextAreaElement)?.value || '';
+
+        const subject = encodeURIComponent(`[ToolsOfTools] ${topic} - from ${name}`);
+        const body = encodeURIComponent(
+          `Name: ${name}\nEmail: ${email}\nTopic: ${topic}\nRelated Tool: ${url || 'N/A'}\n\nMessage:\n${message}\n`
+        );
+
+        let targetEmail = 'support@toolsoftools.com';
+        if (topic.includes('Formula') || topic.includes('Discrepancy')) {
+          targetEmail = 'audit@toolsoftools.com';
+        }
+
+        window.location.href = `mailto:${targetEmail}?subject=${subject}&body=${body}`;
+      });
+    }
+  </script>
 </InfoPage>

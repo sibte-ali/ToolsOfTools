@@ -6,19 +6,127 @@ import InfoPage from '../components/InfoPage.astro';
   lang="en"
   title="About Us"
   heading="About ToolsOfTools"
-  description="Learn about ToolsOfTools, our mission to build transparent, client-side, privacy-focused calculators and utilities."
+  description="Learn about ToolsOfTools, our mission to build fast, transparent, client-side, privacy-first calculators and digital utilities for everyone."
+  lastUpdated="2026-03-20"
 >
-  <section class="space-y-4">
-    <p>
-      Welcome to <strong>ToolsOfTools</strong>. Our mission is to provide fast, completely private, and highly accessible utilities and calculators for everyday mathematical, financial, engineering, and unit conversion problems.
+  <section class="space-y-6">
+    <p class="text-base leading-relaxed">
+      <strong>ToolsOfTools</strong> was created with a clear and uncompromising mission: <strong>to build the cleanest, fastest, and most transparent suite of online calculators, converters, and digital developer utilities on the web.</strong>
     </p>
-    <h2 class="text-xl font-bold text-neutral-900 dark:text-white">Zero Data Collection</h2>
+
+    <!-- Mission Statement Card -->
+    <div class="rounded-2xl border border-[#90CAF9] bg-[#E3F2FD]/50 p-6 dark:border-neutral-700 dark:bg-neutral-850">
+      <h2 class="!mt-0 text-lg font-bold text-[#0D47A1] dark:text-sky-300">Our Mission</h2>
+      <p class="mt-2 text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
+        We believe that calculating an EMI loan schedule, beautifying a JSON payload, converting legacy fonts, or sizing an image should not require navigating through aggressive pop-ups, slow server reloads, misleading ads, or sacrificing your confidential financial and personal data. ToolsOfTools brings enterprise-grade performance and uncompromising privacy directly into your browser.
+      </p>
+    </div>
+
+    <h2>Why We Built ToolsOfTools</h2>
     <p>
-      Unlike traditional web utilities that upload your numbers to external servers or track your inputs with third-party tracking scripts, ToolsOfTools executes 100% of calculations right inside your browser. No forms submitted, no server logging, and no personal data stored.
+      For decades, the web's calculator and conversion landscape has been dominated by outdated, slow websites built on legacy server-side form submissions. Every button click submitted confidential numbers to unknown servers, accompanied by intrusive tracking scripts, bloated analytics, and delayed page reloads.
     </p>
-    <h2 class="text-xl font-bold text-neutral-900 dark:text-white">Transparent & Open</h2>
     <p>
-      Every single tool includes clear formulas, explained worked examples, and source documentation so you can independently verify every result.
+      We engineered ToolsOfTools from the ground up using modern static architecture, client-side TypeScript, and WebAssembly. The result is instant, real-time computational feedback with zero network latency and total user sovereignty.
+    </p>
+
+    <h2>Our Core Architectural Pillars</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+      <div class="rounded-xl border border-neutral-200 bg-white p-5 shadow-2xs dark:border-neutral-800 dark:bg-neutral-900">
+        <div class="flex items-center gap-3">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#E3F2FD] text-[#0D47A1] dark:bg-neutral-800 dark:text-sky-300 font-bold text-lg">⚡</span>
+          <h3 class="text-base font-bold text-[#0D47A1] dark:text-white">Instant Client-Side Speed</h3>
+        </div>
+        <p class="mt-2 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          Calculations execute locally in your browser's V8 or JavaScript runtime. There are no backend roundtrips, no loading spinners, and no server timeouts. Results update dynamically in real time as you adjust numbers or sliders.
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-neutral-200 bg-white p-5 shadow-2xs dark:border-neutral-800 dark:bg-neutral-900">
+        <div class="flex items-center gap-3">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-100 text-emerald-800 dark:bg-neutral-800 dark:text-emerald-300 font-bold text-lg">🔒</span>
+          <h3 class="text-base font-bold text-[#0D47A1] dark:text-white">Zero-Knowledge Privacy</h3>
+        </div>
+        <p class="mt-2 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          Your private financial balances, medical measurements, uploaded spreadsheets, and text strings remain strictly on your local device. Nothing is saved to a cloud database or sold to third-party data aggregators.
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-neutral-200 bg-white p-5 shadow-2xs dark:border-neutral-800 dark:bg-neutral-900">
+        <div class="flex items-center gap-3">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-100 text-indigo-800 dark:bg-neutral-800 dark:text-indigo-300 font-bold text-lg">📐</span>
+          <h3 class="text-base font-bold text-[#0D47A1] dark:text-white">Mathematical Transparency</h3>
+        </div>
+        <p class="mt-2 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          We never treat calculations as a black box. Every tool provides the underlying algebraic formula, fully worked step-by-step mathematical examples, and citations from authoritative statutory bodies and standards institutions.
+        </p>
+      </div>
+
+      <div class="rounded-xl border border-neutral-200 bg-white p-5 shadow-2xs dark:border-neutral-800 dark:bg-neutral-900">
+        <div class="flex items-center gap-3">
+          <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-100 text-sky-800 dark:bg-neutral-800 dark:text-sky-300 font-bold text-lg">🌍</span>
+          <h3 class="text-base font-bold text-[#0D47A1] dark:text-white">Global & Accessible</h3>
+        </div>
+        <p class="mt-2 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          Optimized for responsive mobile, tablet, and desktop viewing. Designed to comply with Web Content Accessibility Guidelines (WCAG 2.1 AA) and available in multiple international languages and localized formats.
+        </p>
+      </div>
+    </div>
+
+    <h2>Tool Categories We Support</h2>
+    <p>
+      Our directory spans over 100 dedicated calculators and interactive digital utilities categorized into specialized hubs:
+    </p>
+    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-neutral-700 dark:text-neutral-300 text-xs">
+      <li class="flex items-center gap-2 p-2 rounded-lg bg-neutral-50 dark:bg-neutral-850 border border-neutral-200 dark:border-neutral-800">
+        <span class="text-base">💰</span>
+        <div><strong>Finance:</strong> EMI, SIP, Compound Interest, SWP, XIRR, Mortgage, GST</div>
+      </li>
+      <li class="flex items-center gap-2 p-2 rounded-lg bg-neutral-50 dark:bg-neutral-850 border border-neutral-200 dark:border-neutral-800">
+        <span class="text-base">🗂️</span>
+        <div><strong>JSON & Data:</strong> Beautifier, Parser, Editor, Viewer, Minifier, JSON to XML</div>
+      </li>
+      <li class="flex items-center gap-2 p-2 rounded-lg bg-neutral-50 dark:bg-neutral-850 border border-neutral-200 dark:border-neutral-800">
+        <span class="text-base">🔤</span>
+        <div><strong>Font Converters:</strong> Kruti Dev, Shree Lipi, AMS Calligraphy, Bamini, Fancy Text</div>
+      </li>
+      <li class="flex items-center gap-2 p-2 rounded-lg bg-neutral-50 dark:bg-neutral-850 border border-neutral-200 dark:border-neutral-800">
+        <span class="text-base">🖼️</span>
+        <div><strong>Image Processing:</strong> Resize, Compress, Crop, DPI Converter, Passport Photo, Format Converters</div>
+      </li>
+      <li class="flex items-center gap-2 p-2 rounded-lg bg-neutral-50 dark:bg-neutral-850 border border-neutral-200 dark:border-neutral-800">
+        <span class="text-base">🏃</span>
+        <div><strong>Health & Wellness:</strong> BMI, Calorie Burn, Pace, Body Fat, Healthy Weight Bands</div>
+      </li>
+      <li class="flex items-center gap-2 p-2 rounded-lg bg-neutral-50 dark:bg-neutral-850 border border-neutral-200 dark:border-neutral-800">
+        <span class="text-base">⚙️</span>
+        <div><strong>Engineering & Math:</strong> Pipe Weight, Concrete Volume, Combinations, Standard Deviation</div>
+      </li>
+      <li class="flex items-center gap-2 p-2 rounded-lg bg-neutral-50 dark:bg-neutral-850 border border-neutral-200 dark:border-neutral-800">
+        <span class="text-base">🔄</span>
+        <div><strong>Converters:</strong> Metric, Imperial, Grams to Lbs, Hectare to Acre, Data Storage Units</div>
+      </li>
+      <li class="flex items-center gap-2 p-2 rounded-lg bg-neutral-50 dark:bg-neutral-850 border border-neutral-200 dark:border-neutral-800">
+        <span class="text-base">⏱️</span>
+        <div><strong>Date & Time:</strong> Time Zone Converters, Day Counters, Date of Birth, Age Calculations</div>
+      </li>
+    </ul>
+
+    <h2>Our Review & Accuracy Standards</h2>
+    <p>
+      Accuracy is our highest priority. Every formula implemented on ToolsOfTools is checked against academic textbooks, statutory definitions, or technical RFC specifications. In multi-step compounding and financial rounding algorithms, we enforce convergence standards to eliminate floating-point arithmetic drift.
+    </p>
+    <p>
+      To learn more about how we verify our mathematical formulas and citations, visit our dedicated <a href="/methodology/" class="text-[#2196F3] font-medium hover:underline">Calculation Methodology Guide</a>.
+    </p>
+
+    <h2>Community & Feedback</h2>
+    <p>
+      ToolsOfTools is built for the global community of students, engineers, developers, accountants, designers, and everyday users. If you have an idea for a new tool or would like to report an improvement, we'd love to hear from you.
+    </p>
+    <p>
+      Visit our <a href="/contact/" class="text-[#2196F3] font-medium hover:underline">Contact Page</a> or email us directly at <a href="mailto:support@toolsoftools.com" class="font-mono text-[#0D47A1] underline dark:text-sky-300">support@toolsoftools.com</a>.
     </p>
   </section>
 </InfoPage>
