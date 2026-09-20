@@ -1,0 +1,549 @@
+---
+import type { Tool } from '../../lib/tools';
+import type { SupportedLanguage } from '../../i18n';
+
+interface Props {
+  tool: Tool;
+  lang?: SupportedLanguage;
+}
+
+const { tool } = Astro.props;
+const slug = tool.slug;
+
+interface FontToolConfig {
+  sourceName: string;
+  targetName: string;
+  sourceSample: string;
+  targetSample: string;
+  isFancyUnicode?: boolean;
+}
+
+const CONFIGS: Record<string, FontToolConfig> = {
+  'krutidev-to-unicode': {
+    sourceName: 'Kruti Dev 010',
+    targetName: 'Unicode Devanagari (Hindi)',
+    sourceSample: 'Hkkjr ,d egku ns\'k gSA ;gk¡ fofo/krk esa ,drk gSA',
+    targetSample: 'भारत एक महान देश है। यहाँ विविधता में एकता है।',
+  },
+  'ams-font': {
+    sourceName: 'AMS Calligraphy Font',
+    targetName: 'Unicode Devanagari',
+    sourceSample: 'Hkkjr dkWfyxzkQh vkesfjdk',
+    targetSample: 'नमस्कार! एएमएस फॉन्ट से यूनिकोड कनवर्टर।',
+  },
+  'unicode-to-shree-lipi': {
+    sourceName: 'Unicode Devanagari',
+    targetName: 'Shree-Lipi (Shree-Dev)',
+    sourceSample: 'श्री गणेशाय नमः। महाराष्ट्र राज्य आणि मुंबई.',
+    targetSample: 'X m Y Z a b c',
+  },
+  'bamini-to-unicode': {
+    sourceName: 'Bamini Font (Tamil Typewriter)',
+    targetName: 'Tamil Unicode',
+    sourceSample: 'jkpo; ehL jkpo; nkhop thofa',
+    targetSample: 'தமிழ் வாழ்க! தமிழ் ஒரு தொன்மையான மொழி.',
+  },
+  'unicode-text-converter': {
+    sourceName: 'Plain Text',
+    targetName: 'Fancy Styled Unicode',
+    sourceSample: 'ToolsOfTools Font Converter',
+    targetSample: '𝗧𝗼𝗼𝗹𝘀𝗢𝗳𝗧𝗼𝗼𝗹𝘀 𝗙𝗼𝗻𝘁 𝗖𝗼𝗻𝘃𝗲𝗿𝘁𝗲𝗿',
+    isFancyUnicode: true,
+  }
+};
+
+const config = CONFIGS[slug] || CONFIGS['krutidev-to-unicode'];
+const isFancyUnicode = config.isFancyUnicode || slug === 'unicode-text-converter';
+---
+
+<div id="fc-app" class="relative flex flex-col gap-6 font-sans" data-slug={slug}>
+
+  <!-- Top Direction & Quick Action Bar -->
+  <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
+    <div class="flex flex-wrap items-center gap-3">
+      <!-- Source Badge -->
+      <span id="fc-src-badge" class="inline-flex items-center gap-1.5 rounded-xl bg-[#E3F2FD] border border-[#90CAF9] px-3.5 py-1.5 text-xs font-bold text-[#0D47A1] dark:bg-neutral-800 dark:border-neutral-700 dark:text-sky-300">
+        <span class="h-2 w-2 rounded-full bg-[#2196F3] animate-pulse"></span>
+        <span id="fc-src-label">{config.sourceName}</span>
+      </span>
+
+      <!-- Swap Direction Button -->
+      <button
+        type="button"
+        id="fc-btn-swap"
+        title="Swap Conversion Direction"
+        class="group inline-flex items-center gap-1.5 rounded-xl border border-neutral-300 bg-neutral-50 px-3.5 py-1.5 text-xs font-semibold text-neutral-800 shadow-2xs hover:bg-[#E3F2FD] hover:border-[#90CAF9] hover:text-[#0D47A1] dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-750 transition cursor-pointer active:scale-95"
+      >
+        <svg id="fc-swap-icon" class="h-4 w-4 text-[#2196F3] transition-transform duration-300 group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m16 3 4 4-4 4"></path>
+          <path d="M20 7H4"></path>
+          <path d="m8 21-4-4 4-4"></path>
+          <path d="M4 17h16"></path>
+        </svg>
+        <span>Swap Direction</span>
+      </button>
+
+      <!-- Target Badge -->
+      <span id="fc-tgt-badge" class="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 text-xs font-bold text-emerald-800 dark:bg-neutral-800 dark:border-neutral-700 dark:text-emerald-300">
+        <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
+        <span id="fc-tgt-label">{config.targetName}</span>
+      </span>
+    </div>
+
+    <!-- Quick Utilities -->
+    <div class="flex flex-wrap items-center gap-2">
+      <button
+        type="button"
+        id="fc-btn-sample"
+        title="Load authentic sample text"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white transition cursor-pointer"
+      >
+        <svg class="h-3.5 w-3.5 text-[#2196F3]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+        <span>Load Sample</span>
+      </button>
+
+      <button
+        type="button"
+        id="fc-btn-clear"
+        title="Clear all text"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs hover:bg-rose-50 hover:border-rose-300 hover:text-rose-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-rose-950/40 dark:hover:border-rose-700 dark:hover:text-rose-300 transition cursor-pointer"
+      >
+        <svg class="h-3.5 w-3.5 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        <span>Clear</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Dual Converter Panels (Input & Output) -->
+  <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+
+    <!-- ==================== LEFT BOX: SOURCE INPUT ==================== -->
+    <div class="flex flex-col rounded-2xl border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-900 overflow-hidden transition-all">
+      <!-- Input Panel Header -->
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-200 bg-neutral-50 px-4 py-3 text-xs dark:border-neutral-800 dark:bg-neutral-850">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-[#0D47A1] dark:text-white">Input Text</span>
+          <span id="fc-in-stats" class="rounded-full bg-neutral-200/70 px-2 py-0.5 text-[11px] font-mono text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+            0 chars • 0 words
+          </span>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <button
+            type="button"
+            id="fc-btn-paste"
+            title="Paste text from clipboard"
+            class="inline-flex items-center gap-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1 text-[11px] font-medium text-neutral-700 shadow-2xs hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
+          >
+            <svg class="h-3 w-3 text-neutral-500 dark:text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            </svg>
+            <span>Paste</span>
+          </button>
+
+          <label
+            class="inline-flex items-center gap-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1 text-[11px] font-medium text-neutral-700 shadow-2xs hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
+          >
+            <svg class="h-3 w-3 text-neutral-500 dark:text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="17 8 12 3 7 8"></polyline>
+              <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            <span>Upload .txt</span>
+            <input type="file" id="fc-file-input" accept=".txt" class="hidden" />
+          </label>
+        </div>
+      </div>
+
+      <!-- Input Textarea -->
+      <div class="relative p-3">
+        <textarea
+          id="fc-input-text"
+          rows="10"
+          spellcheck="false"
+          placeholder={`Type or paste ${config.sourceName} text here...`}
+          class="w-full resize-y rounded-xl border border-neutral-200 bg-neutral-50/50 p-4 font-sans text-sm text-neutral-900 placeholder-neutral-400 focus:border-[#2196F3] focus:bg-white focus:outline-none focus:ring-1 focus:ring-[#2196F3] dark:border-neutral-800 dark:bg-neutral-950 dark:text-white dark:placeholder-neutral-600 min-h-[260px]"
+        >{config.sourceSample}</textarea>
+      </div>
+
+      <!-- Input Footer -->
+      <div class="flex items-center justify-between border-t border-neutral-200 bg-neutral-50 px-4 py-2 text-xs text-neutral-500 dark:border-neutral-800 dark:bg-neutral-850 dark:text-neutral-400">
+        <span>Instant real-time conversion as you type</span>
+        <span id="fc-input-lang-hint" class="font-medium text-[#1565C0] dark:text-sky-400">{config.sourceName}</span>
+      </div>
+    </div>
+
+    <!-- ==================== RIGHT BOX: CONVERTED OUTPUT ==================== -->
+    <div class="flex flex-col rounded-2xl border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-900 overflow-hidden transition-all">
+      <!-- Output Panel Header -->
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-200 bg-neutral-50 px-4 py-3 text-xs dark:border-neutral-800 dark:bg-neutral-850">
+        <div class="flex items-center gap-2">
+          <span class="font-bold text-emerald-800 dark:text-white">Converted Output</span>
+          <span id="fc-out-stats" class="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-mono text-emerald-800 dark:bg-neutral-800 dark:text-emerald-300">
+            0 chars • 0 words
+          </span>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <!-- Copy Button with Feedback -->
+          <button
+            type="button"
+            id="fc-btn-copy"
+            title="Copy converted text to clipboard"
+            class="inline-flex items-center gap-1.5 rounded-md bg-[#0D47A1] px-3 py-1 text-[11px] font-bold text-white shadow-xs hover:bg-[#1565C0] active:scale-95 transition cursor-pointer"
+          >
+            <svg id="fc-copy-icon" class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="fc-copy-label">Copy Converted</span>
+          </button>
+
+          <!-- Download Button -->
+          <button
+            type="button"
+            id="fc-btn-download"
+            title="Download converted text as .txt file"
+            class="inline-flex items-center gap-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1 text-[11px] font-medium text-neutral-700 shadow-2xs hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
+          >
+            <svg class="h-3 w-3 text-neutral-500 dark:text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Download</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Output Textarea -->
+      <div class="relative p-3">
+        <textarea
+          id="fc-output-text"
+          rows="10"
+          readonly
+          spellcheck="false"
+          placeholder="Converted text appears here automatically..."
+          class="w-full resize-y rounded-xl border border-neutral-200 bg-white p-4 font-sans text-sm text-neutral-900 placeholder-neutral-400 focus:outline-none dark:border-neutral-800 dark:bg-neutral-900 dark:text-white dark:placeholder-neutral-600 min-h-[260px]"
+        ></textarea>
+      </div>
+
+      <!-- Output Footer -->
+      <div class="flex items-center justify-between border-t border-neutral-200 bg-neutral-50 px-4 py-2 text-xs text-neutral-500 dark:border-neutral-800 dark:bg-neutral-850 dark:text-neutral-400">
+        <span class="inline-flex items-center gap-1">
+          <span class="text-emerald-600 font-bold">✓</span>
+          <span>100% In-Browser Private Conversion</span>
+        </span>
+        <span id="fc-output-lang-hint" class="font-medium text-emerald-700 dark:text-emerald-400">{config.targetName}</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SPECIALIZED FANCY UNICODE TEXT STYLES GRID ==================== -->
+  {isFancyUnicode && (
+    <div id="fc-fancy-container" class="mt-4 flex flex-col gap-4 rounded-2xl border border-neutral-200 bg-white p-6 shadow-xl dark:border-neutral-800 dark:bg-neutral-900">
+      <div class="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 pb-4 dark:border-neutral-800">
+        <div>
+          <h2 class="text-lg font-bold text-[#0D47A1] dark:text-white">Fancy Unicode Text Styles</h2>
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">Click "Copy" on any style to use in Instagram, WhatsApp, Discord, X/Twitter, or TikTok bios.</p>
+        </div>
+        <input
+          type="text"
+          id="fc-search-styles"
+          placeholder="Filter styles (bold, gothic, script...)"
+          class="rounded-xl border border-neutral-300 bg-neutral-50 px-3.5 py-1.5 text-xs text-neutral-900 placeholder-neutral-400 focus:border-[#2196F3] focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white min-w-[220px]"
+        />
+      </div>
+
+      <!-- Styles Grid -->
+      <div id="fc-styles-grid" class="grid grid-cols-1 gap-3.5 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Dynamically injected via JavaScript -->
+      </div>
+    </div>
+  )}
+
+</div>
+
+<script>
+  import {
+    krutiDevToUnicode,
+    unicodeToKrutiDev,
+    baminiToUnicode,
+    unicodeToBamini,
+    amsToUnicode,
+    unicodeToAms,
+    shreeLipiToUnicode,
+    unicodeToShreeLipi,
+    generateFancyUnicodeStyles
+  } from '../../lib/fonts/converters';
+
+  function initFontConverter() {
+    const app = document.getElementById('fc-app');
+    if (!app) return;
+
+    const slug = app.getAttribute('data-slug') || 'krutidev-to-unicode';
+    const inputEl = document.getElementById('fc-input-text') as HTMLTextAreaElement | null;
+    const outputEl = document.getElementById('fc-output-text') as HTMLTextAreaElement | null;
+    const inStats = document.getElementById('fc-in-stats');
+    const outStats = document.getElementById('fc-out-stats');
+    const btnSwap = document.getElementById('fc-btn-swap');
+    const btnCopy = document.getElementById('fc-btn-copy');
+    const copyLabel = document.getElementById('fc-copy-label');
+    const btnClear = document.getElementById('fc-btn-clear');
+    const btnSample = document.getElementById('fc-btn-sample');
+    const btnPaste = document.getElementById('fc-btn-paste');
+    const fileInput = document.getElementById('fc-file-input') as HTMLInputElement | null;
+    const btnDownload = document.getElementById('fc-btn-download');
+    const srcLabel = document.getElementById('fc-src-label');
+    const tgtLabel = document.getElementById('fc-tgt-label');
+    const inHint = document.getElementById('fc-input-lang-hint');
+    const outHint = document.getElementById('fc-output-lang-hint');
+    const stylesGrid = document.getElementById('fc-styles-grid');
+    const searchStylesInput = document.getElementById('fc-search-styles') as HTMLInputElement | null;
+
+    if (!inputEl || !outputEl) return;
+
+    // State
+    let isReversed = false;
+
+    function getConverterFunction() {
+      switch (slug) {
+        case 'krutidev-to-unicode':
+          return isReversed ? unicodeToKrutiDev : krutiDevToUnicode;
+        case 'ams-font':
+          return isReversed ? unicodeToAms : amsToUnicode;
+        case 'unicode-to-shree-lipi':
+          return isReversed ? shreeLipiToUnicode : unicodeToShreeLipi;
+        case 'bamini-to-unicode':
+          return isReversed ? unicodeToBamini : baminiToUnicode;
+        case 'unicode-text-converter':
+        default:
+          return (val: string) => val;
+      }
+    }
+
+    function updateStats(str: string, targetEl: HTMLElement | null) {
+      if (!targetEl) return;
+      const chars = str.length;
+      const words = str.trim() ? str.trim().split(/\s+/).length : 0;
+      targetEl.textContent = `${chars} chars • ${words} words`;
+    }
+
+    function renderFancyStyles(text: string, filterQuery = '') {
+      if (!stylesGrid) return;
+      const styles = generateFancyUnicodeStyles(text || 'ToolsOfTools');
+      const filtered = filterQuery
+        ? styles.filter(s => s.name.toLowerCase().includes(filterQuery.toLowerCase()) || s.category.toLowerCase().includes(filterQuery.toLowerCase()))
+        : styles;
+
+      stylesGrid.innerHTML = filtered.map(s => `
+        <div class="fc-style-card flex flex-col justify-between rounded-xl border border-neutral-200 bg-neutral-50/50 p-3.5 hover:border-[#90CAF9] hover:bg-white dark:border-neutral-800 dark:bg-neutral-850 dark:hover:border-neutral-700 transition shadow-2xs">
+          <div class="flex items-center justify-between gap-2 mb-2">
+            <span class="text-[11px] font-bold uppercase tracking-wider text-[#1565C0] dark:text-sky-300">${s.name}</span>
+            <span class="rounded bg-neutral-200/60 px-1.5 py-0.5 text-[10px] font-medium text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">${s.category}</span>
+          </div>
+          <div class="my-2 min-h-[44px] break-words text-base text-neutral-900 dark:text-neutral-100 font-normal">
+            ${s.preview}
+          </div>
+          <div class="mt-2 pt-2 border-t border-neutral-200/80 dark:border-neutral-800 flex justify-end">
+            <button
+              type="button"
+              class="fc-style-copy-btn inline-flex items-center gap-1 rounded-lg bg-white border border-neutral-300 px-3 py-1 text-xs font-semibold text-neutral-800 hover:bg-[#E3F2FD] hover:border-[#90CAF9] hover:text-[#0D47A1] dark:bg-neutral-800 dark:border-neutral-700 dark:text-neutral-200 dark:hover:bg-neutral-700 transition cursor-pointer active:scale-95"
+              data-text="${encodeURIComponent(s.preview)}"
+            >
+              <span>Copy</span>
+            </button>
+          </div>
+        </div>
+      `).join('');
+
+      // Wire copy handlers on style cards
+      stylesGrid.querySelectorAll('.fc-style-copy-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const encoded = btn.getAttribute('data-text') || '';
+          const decoded = decodeURIComponent(encoded);
+          try {
+            await navigator.clipboard.writeText(decoded);
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="text-emerald-600 font-bold">✓ Copied!</span>';
+            setTimeout(() => {
+              btn.innerHTML = originalText;
+            }, 1800);
+          } catch {
+            // fallback
+          }
+        });
+      });
+    }
+
+    function doConvert() {
+      const inputVal = inputEl.value;
+      updateStats(inputVal, inStats);
+
+      const converter = getConverterFunction();
+      const outputVal = converter(inputVal);
+      outputEl.value = outputVal;
+      updateStats(outputVal, outStats);
+
+      if (stylesGrid) {
+        renderFancyStyles(inputVal, searchStylesInput?.value || '');
+      }
+    }
+
+    // Event Listeners
+    inputEl.addEventListener('input', doConvert);
+
+    if (searchStylesInput) {
+      searchStylesInput.addEventListener('input', () => {
+        renderFancyStyles(inputEl.value, searchStylesInput.value);
+      });
+    }
+
+    // Swap Direction
+    if (btnSwap) {
+      btnSwap.addEventListener('click', () => {
+        isReversed = !isReversed;
+        
+        // Swap values
+        const prevIn = inputEl.value;
+        const prevOut = outputEl.value;
+        inputEl.value = prevOut || prevIn;
+
+        // Swap Labels
+        if (srcLabel && tgtLabel) {
+          const temp = srcLabel.textContent;
+          srcLabel.textContent = tgtLabel.textContent;
+          tgtLabel.textContent = temp;
+        }
+
+        if (inHint && outHint) {
+          const tempH = inHint.textContent;
+          inHint.textContent = outHint.textContent;
+          outHint.textContent = tempH;
+        }
+
+        doConvert();
+      });
+    }
+
+    // Clear
+    if (btnClear) {
+      btnClear.addEventListener('click', () => {
+        inputEl.value = '';
+        outputEl.value = '';
+        updateStats('', inStats);
+        updateStats('', outStats);
+        if (stylesGrid) {
+          renderFancyStyles('', searchStylesInput?.value || '');
+        }
+        inputEl.focus();
+      });
+    }
+
+    // Load Sample
+    if (btnSample) {
+      btnSample.addEventListener('click', () => {
+        let sample = 'Hkkjr ,d egku ns\'k gSA ;gk¡ fofo/krk esa ,drk gSA';
+        if (slug === 'bamini-to-unicode') {
+          sample = isReversed ? 'தமிழ் வாழ்க! தமிழ் ஒரு தொன்மையான மொழி.' : 'jkpo; ehL jkpo; nkhop thofa';
+        } else if (slug === 'unicode-to-shree-lipi') {
+          sample = isReversed ? 'X m Y Z a b c' : 'श्री गणेशाय नमः। महाराष्ट्र राज्य आणि मुंबई.';
+        } else if (slug === 'unicode-text-converter') {
+          sample = 'ToolsOfTools Font Converter';
+        } else if (slug === 'ams-font') {
+          sample = isReversed ? 'नमस्कार! एएमएस फॉन्ट से यूनिकोड कनवर्टर।' : 'Hkkjr dkWfyxzkQh vkesfjdk';
+        } else if (slug === 'krutidev-to-unicode') {
+          sample = isReversed ? 'भारत एक महान देश है। यहाँ विविधता में एकता है।' : 'Hkkjr ,d egku ns\'k gSA ;gk¡ fofo/krk esa ,drk gSA';
+        }
+        inputEl.value = sample;
+        doConvert();
+      });
+    }
+
+    // Paste
+    if (btnPaste) {
+      btnPaste.addEventListener('click', async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text) {
+            inputEl.value = text;
+            doConvert();
+          }
+        } catch {
+          inputEl.focus();
+        }
+      });
+    }
+
+    // File Upload
+    if (fileInput) {
+      fileInput.addEventListener('change', () => {
+        const file = fileInput.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const content = e.target?.result as string;
+          if (content) {
+            inputEl.value = content;
+            doConvert();
+          }
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    // Copy Converted
+    if (btnCopy) {
+      btnCopy.addEventListener('click', async () => {
+        const val = outputEl.value;
+        if (!val) return;
+        try {
+          await navigator.clipboard.writeText(val);
+          if (copyLabel) copyLabel.textContent = 'Copied!';
+          btnCopy.classList.replace('bg-[#0D47A1]', 'bg-emerald-600');
+          setTimeout(() => {
+            if (copyLabel) copyLabel.textContent = 'Copy Converted';
+            btnCopy.classList.replace('bg-emerald-600', 'bg-[#0D47A1]');
+          }, 2000);
+        } catch {
+          // fallback
+        }
+      });
+    }
+
+    // Download
+    if (btnDownload) {
+      btnDownload.addEventListener('click', () => {
+        const val = outputEl.value;
+        if (!val) return;
+        const blob = new Blob([val], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${slug}-converted.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    // Initial conversion on page load
+    doConvert();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initFontConverter);
+  } else {
+    initFontConverter();
+  }
+</script>

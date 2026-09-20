@@ -15,6 +15,7 @@ import Calculator from './tools/Calculator.astro';
 import ImageToolWidget from './tools/ImageToolWidget.astro';
 import JsonBeautifierWidget from './tools/JsonBeautifierWidget.astro';
 import JsonToExcelWidget from './tools/JsonToExcelWidget.astro';
+import FontConverterWidget from './tools/FontConverterWidget.astro';
 import { getToolConfig } from '../tools/registry';
 
 interface Props {
@@ -30,6 +31,7 @@ const slug = tool.slug;
 const isImageTool = tool.folder === 'image-tools' || tool.template === 'image';
 const isJsonBeautifier = slug === 'json-beautifier';
 const isJsonToExcel = slug === 'json-to-excel';
+const isFontConverter = tool.folder === 'font-converters' || slug === 'krutidev-to-unicode' || slug === 'ams-font' || slug === 'unicode-to-shree-lipi' || slug === 'unicode-text-converter' || slug === 'bamini-to-unicode';
 const engineConfig = getToolConfig(lang, slug);
 const isConfigEngineTool = !!engineConfig;
 let widgetType = 'general';
@@ -268,6 +270,8 @@ if (slug === 'swp-calculator') {
     <JsonBeautifierWidget lang={lang} />
   ) : isJsonToExcel ? (
     <JsonToExcelWidget lang={lang} />
+  ) : isFontConverter ? (
+    <FontConverterWidget tool={tool} lang={lang} />
   ) : isConfigEngineTool && engineConfig ? (
     <Calculator config={engineConfig} lang={lang} />
   ) : (
