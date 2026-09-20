@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { getEffectiveHubs } from '../lib/tools';
+import { getEffectiveHubs, toolsByLang } from '../lib/tools';
 import { getTranslations, getHtmlLang, type SupportedLanguage } from '../i18n';
 import { generateWebSiteSchema, generateOrganizationSchema } from '../lib/schema';
 
@@ -9,8 +9,10 @@ interface Props {
 }
 
 const { lang } = Astro.props;
+const isSpanish = lang === 'es';
 const t = getTranslations(lang);
 const hubs = getEffectiveHubs(lang);
+const allTools = toolsByLang(lang).length > 0 ? toolsByLang(lang) : toolsByLang('en');
 
 const siteUrl = Astro.site ? Astro.site.origin : 'https://toolsoftools.com';
 const currentPath = Astro.url.pathname;
@@ -35,7 +37,23 @@ const jsonLd = [
   }),
 ];
 
-const isSpanish = lang === 'es';
+const popularTagsByLang: Record<string, string[]> = {
+  en: ['Attendance', 'SIP', 'BMI', 'Marks Percentage', 'EMI', 'CGPA to Percentage', 'Discount', 'GST'],
+  'pt-br': ['Contador de Dias', 'Calculadora de Horas', 'Investimentos', 'Calorias', 'Pace', 'IMC'],
+  es: ['Calculadora', 'Interés Compuesto', 'Calcular Porcentaje', 'Ritmos', 'IMC', 'Descuento'],
+  it: ['Calcolatore', 'Percentuale', 'BMI', 'Stipendio', 'Sconto', 'Data'],
+  fr: ['Calculateur', 'Pourcentage', 'IMC', 'Salaire', 'Remise', 'Date'],
+  de: ['Rechner', 'Prozent', 'BMI', 'Gehalt', 'Rabatt', 'Datum'],
+  nl: ['Rekenmachine', 'Percentage', 'BMI', 'Salaris', 'Korting', 'Datum'],
+  ru: ['Калькулятор', 'Проценты', 'ИМТ', 'Зарплата', 'Скидка', 'Дата'],
+  jp: ['計算機', 'パーセント', 'BMI', '給与', '割引', '日付'],
+  cn: ['计算器', '百分比', 'BMI', '工资', '折扣', '日期'],
+  kr: ['계산기', '백분율', 'BMI', '급여', '할인', '날짜'],
+  sa: ['حاسبة', 'نسبة مئوية', 'مؤشر كتلة الجسم', 'راتب', 'خصم', 'تاريخ'],
+  il: ['Calcolatore', 'Percentuale', 'BMI', 'Stipendio', 'Sconto', 'Data'],
+};
+
+const popularTags = popularTagsByLang[lang] || popularTagsByLang['en'];
 ---
 
 <Layout
@@ -54,7 +72,92 @@ const isSpanish = lang === 'es';
       <p class="mt-4 text-lg text-neutral-600 dark:text-neutral-300">
         {t.homeHeroSubtitle}
       </p>
+
+      <!-- Live Search Bar -->
+      <div class="mt-8 max-w-2xl mx-auto">
+        <div class="relative flex items-center">
+          <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-neutral-400 dark:text-neutral-500">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
+          <input
+            type="search"
+            id="tool-search-input"
+            class="block w-full rounded-2xl border border-neutral-300 bg-white py-4 pl-12 pr-20 text-base text-neutral-900 shadow-sm placeholder:text-neutral-400 focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:placeholder:text-neutral-500 dark:focus:ring-white transition"
+            placeholder={lang === 'en' ? "Search tools & calculators (e.g. attendance, sip, bmi)..." : t.nav.search}
+            autocomplete="off"
+            spellcheck="false"
+            aria-label="Search tools and calculators"
+          />
+          <div class="absolute inset-y-0 right-0 flex items-center pr-3 gap-1.5">
+            <button
+              type="button"
+              id="clear-search-btn"
+              class="hidden rounded-lg p-1.5 text-neutral-400 hover:text-neutral-700 dark:hover:text-neutral-200 transition cursor-pointer"
+              aria-label="Clear search"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+              </svg>
+            </button>
+            <kbd class="hidden sm:inline-flex items-center rounded border border-neutral-300 bg-neutral-100 px-2 py-0.5 text-[11px] font-mono text-neutral-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-400">
+              /
+            </kbd>
+          </div>
+        </div>
+
+        <!-- Popular Quick Searches -->
+        <div class="mt-3.5 flex flex-wrap items-center justify-center gap-1.5 text-xs text-neutral-500 dark:text-neutral-400">
+          <span class="font-medium mr-1">{lang === 'en' ? 'Popular:' : 'Populares:'}</span>
+          {
+            popularTags.map((tag) => (
+              <button
+                type="button"
+                class="popular-search-tag rounded-full border border-neutral-200 bg-white px-3 py-1 text-xs font-medium text-neutral-700 hover:border-neutral-400 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer shadow-2xs"
+                data-search-term={tag}
+              >
+                {tag}
+              </button>
+            ))
+          }
+        </div>
+      </div>
     </div>
+
+    <!-- Live Search Results Section (Revealed when query is active) -->
+    <section id="search-results-section" class="mt-12 hidden" aria-label="Search Results">
+      <div class="flex items-center justify-between border-b border-neutral-200 pb-3 dark:border-neutral-800">
+        <h2 class="text-2xl font-bold tracking-tight text-neutral-950 dark:text-white" id="search-results-heading">
+          {lang === 'en' ? 'Search Results' : lang === 'es' ? 'Resultados de Búsqueda' : 'Resultados da Pesquisa'}
+        </h2>
+        <span id="search-count-badge" class="rounded-full bg-neutral-200 px-3 py-1 text-xs font-semibold text-neutral-800 dark:bg-neutral-800 dark:text-neutral-200 font-mono">
+          0 found
+        </span>
+      </div>
+
+      <div id="search-results-grid" class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <!-- Injected via JavaScript -->
+      </div>
+
+      <div id="no-search-results" class="hidden mt-8 rounded-2xl border border-dashed border-neutral-300 p-10 text-center dark:border-neutral-700 bg-neutral-50/50 dark:bg-neutral-900/50">
+        <p class="text-base font-semibold text-neutral-900 dark:text-white">
+          {lang === 'en' ? 'No tools found matching' : 'No se encontraron herramientas para'} "<span id="no-results-query" class="font-bold"></span>"
+        </p>
+        <p class="mt-2 text-xs text-neutral-500 dark:text-neutral-400 max-w-md mx-auto">
+          {lang === 'en'
+            ? 'Try a broader keyword such as "percentage", "loan", "calculator", or explore the categories below.'
+            : 'Prueba buscando un término más amplio o explora las categorías a continuación.'}
+        </p>
+        <button
+          type="button"
+          id="reset-search-btn"
+          class="mt-5 inline-flex items-center rounded-lg bg-neutral-900 px-4 py-2 text-xs font-semibold text-white hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 transition cursor-pointer"
+        >
+          {lang === 'en' ? 'Clear Search & Browse All Categories' : 'Borrar búsqueda y ver todo'}
+        </button>
+      </div>
+    </section>
 
     <!-- Spanish Calculadora Mounted Above the Fold -->
     {
@@ -166,32 +269,8 @@ const isSpanish = lang === 'es';
       )
     }
 
-    <!-- Value Proposition Section -->
-    <section aria-labelledby="value-prop-heading" class="mt-16">
-      <div class="text-center max-w-2xl mx-auto">
-        <h2 id="value-prop-heading" class="text-2xl font-bold tracking-tight text-neutral-950 dark:text-white">
-          {t.valuePropositionTitle}
-        </h2>
-      </div>
-
-      <div class="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          t.valueProps.map((prop) => (
-            <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-xs dark:border-neutral-800 dark:bg-neutral-900">
-              <h3 class="text-base font-bold text-neutral-900 dark:text-white">
-                {prop.title}
-              </h3>
-              <p class="mt-2 text-xs leading-relaxed text-neutral-600 dark:text-neutral-400">
-                {prop.desc}
-              </p>
-            </div>
-          ))
-        }
-      </div>
-    </section>
-
     <!-- Top Tools by Volume in Each Hub + Links to Hubs -->
-    <section aria-labelledby="hubs-heading" class="mt-20 space-y-16">
+    <section id="hubs-section" aria-labelledby="hubs-heading" class="mt-16 space-y-16">
       <div class="border-b border-neutral-200 pb-4 dark:border-neutral-800 flex items-center justify-between">
         <h2 id="hubs-heading" class="text-2xl font-bold tracking-tight text-neutral-950 dark:text-white">
           {t.topTools}
@@ -223,7 +302,7 @@ const isSpanish = lang === 'es';
                   topTools.map((tool) => {
                     return (
                       <a
-                        href={tool.url}
+                        href={lang === 'en' ? tool.url : (tool.url.startsWith(`/${lang}/`) ? tool.url : `/${lang}${tool.url}`)}
                         class="group flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-5 shadow-xs transition hover:border-neutral-400 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700"
                       >
                         <div>
@@ -247,5 +326,195 @@ const isSpanish = lang === 'es';
         })
       }
     </section>
+
+    <!-- Tools Search Index for Instant Client-Side Live Search -->
+    <script id="tools-search-index" type="application/json" data-lang={lang} data-open-tool={t.openTool} set:html={JSON.stringify(
+      allTools.map((t) => ({
+        keyword: t.keyword,
+        folder: t.folder,
+        url: t.url,
+        spec: t.spec || '',
+      }))
+    )} />
+
+    <script is:inline>
+      function initToolSearch() {
+        const searchInput = document.getElementById('tool-search-input');
+        const clearBtn = document.getElementById('clear-search-btn');
+        const searchSection = document.getElementById('search-results-section');
+        const searchGrid = document.getElementById('search-results-grid');
+        const countBadge = document.getElementById('search-count-badge');
+        const noResults = document.getElementById('no-search-results');
+        const noResultsQuery = document.getElementById('no-results-query');
+        const resetBtn = document.getElementById('reset-search-btn');
+        const hubsSection = document.getElementById('hubs-section');
+        const indexEl = document.getElementById('tools-search-index');
+
+        if (!searchInput || !indexEl) return;
+
+        let tools = [];
+        try {
+          tools = JSON.parse(indexEl.textContent || '[]');
+        } catch {
+          tools = [];
+        }
+
+        function escapeHtml(str) {
+          return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+        }
+
+        function highlightMatch(text, query) {
+          if (!query) return escapeHtml(text);
+          const escapedText = escapeHtml(text);
+          const escapedQuery = escapeHtml(query);
+          const reg = new RegExp(`(${escapedQuery.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&')})`, 'gi');
+          return escapedText.replace(reg, '<mark class="bg-amber-200 dark:bg-amber-800/80 text-neutral-950 dark:text-white rounded-xs px-0.5 font-semibold">$1</mark>');
+        }
+
+        function performSearch(query) {
+          const q = (query || '').trim().toLowerCase();
+
+          if (!q) {
+            if (clearBtn) clearBtn.classList.add('hidden');
+            if (searchSection) searchSection.classList.add('hidden');
+            if (hubsSection) hubsSection.classList.remove('hidden');
+            return;
+          }
+
+          if (clearBtn) clearBtn.classList.remove('hidden');
+          if (searchSection) searchSection.classList.remove('hidden');
+          if (hubsSection) hubsSection.classList.add('hidden');
+
+          const terms = q.split(/\s+/).filter(Boolean);
+
+          const matches = tools.filter((tool) => {
+            const kw = (tool.keyword || '').toLowerCase();
+            const fol = (tool.folder || '').toLowerCase().replace(/-/g, ' ');
+            const spec = (tool.spec || '').toLowerCase();
+            const haystack = `${kw} ${fol} ${spec}`;
+            return terms.every((term) => haystack.includes(term));
+          });
+
+          // Sort matches: keyword starts with query first, then keyword contains query, then folder
+          matches.sort((a, b) => {
+            const aKw = (a.keyword || '').toLowerCase();
+            const bKw = (b.keyword || '').toLowerCase();
+            const aStarts = aKw.startsWith(q);
+            const bStarts = bKw.startsWith(q);
+            if (aStarts && !bStarts) return -1;
+            if (!aStarts && bStarts) return 1;
+            const aHas = aKw.includes(q);
+            const bHas = bKw.includes(q);
+            if (aHas && !bHas) return -1;
+            if (!aHas && bHas) return 1;
+            return 0;
+          });
+
+          if (countBadge) {
+            countBadge.textContent = `${matches.length} ${matches.length === 1 ? 'tool' : 'tools'} found`;
+          }
+
+          if (matches.length === 0) {
+            if (searchGrid) searchGrid.innerHTML = '';
+            if (noResults) {
+              noResults.classList.remove('hidden');
+              if (noResultsQuery) noResultsQuery.textContent = query;
+            }
+          } else {
+            if (noResults) noResults.classList.add('hidden');
+            if (searchGrid) {
+              const pageLang = indexEl.getAttribute('data-lang') || document.documentElement.lang || 'en';
+              const openToolText = indexEl.getAttribute('data-open-tool') || 'Open Tool';
+              searchGrid.innerHTML = matches.map((tool) => {
+                const folderName = (tool.folder || '').replace(/-/g, ' ');
+                const cleanUrl = tool.url.startsWith('/') ? tool.url : '/' + tool.url;
+                const toolUrl = pageLang === 'en'
+                  ? cleanUrl
+                  : (cleanUrl.startsWith('/' + pageLang + '/') ? cleanUrl : '/' + pageLang + cleanUrl);
+                return `
+                  <a
+                    href="${escapeHtml(toolUrl)}"
+                    class="group flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-5 shadow-xs transition hover:border-neutral-400 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700"
+                  >
+                    <div>
+                      <div class="flex items-center justify-between gap-2 mb-2">
+                        <span class="inline-flex items-center rounded-md bg-neutral-100 px-2 py-0.5 text-[11px] font-semibold uppercase tracking-wider text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400">
+                          ${escapeHtml(folderName)}
+                        </span>
+                      </div>
+                      <h3 class="text-base font-bold capitalize text-neutral-900 group-hover:text-neutral-950 dark:text-neutral-100">
+                        ${highlightMatch(tool.keyword, q)}
+                      </h3>
+                      <p class="mt-2 text-xs leading-relaxed text-neutral-500 line-clamp-2 dark:text-neutral-400">
+                        ${escapeHtml(tool.spec || '')}
+                      </p>
+                    </div>
+                    <div class="mt-4 flex items-center text-xs font-semibold text-neutral-900 dark:text-white">
+                      <span>${escapeHtml(openToolText)} &rarr;</span>
+                    </div>
+                  </a>
+                `;
+              }).join('');
+            }
+          }
+        }
+
+        searchInput.addEventListener('input', function(e) {
+          performSearch(e.target.value);
+        });
+
+        if (clearBtn) {
+          clearBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            performSearch('');
+            searchInput.focus();
+          });
+        }
+
+        if (resetBtn) {
+          resetBtn.addEventListener('click', function() {
+            searchInput.value = '';
+            performSearch('');
+            searchInput.focus();
+          });
+        }
+
+        document.querySelectorAll('.popular-search-tag').forEach(function(tagBtn) {
+          tagBtn.addEventListener('click', function() {
+            const term = tagBtn.getAttribute('data-search-term') || '';
+            searchInput.value = term;
+            performSearch(term);
+            searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            searchInput.focus();
+          });
+        });
+
+        window.addEventListener('keydown', function(e) {
+          const isInputFocused = ['input', 'textarea', 'select'].includes((document.activeElement?.tagName || '').toLowerCase());
+          if (e.key === '/' && !isInputFocused) {
+            e.preventDefault();
+            searchInput.focus();
+            searchInput.select();
+          } else if (e.key === 'Escape' && document.activeElement === searchInput) {
+            searchInput.value = '';
+            performSearch('');
+            searchInput.blur();
+          }
+        });
+      }
+
+      if (typeof document !== 'undefined') {
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', initToolSearch);
+        } else {
+          initToolSearch();
+        }
+        document.addEventListener('astro:page-load', initToolSearch);
+      }
+    </script>
   </main>
 </Layout>

@@ -48,8 +48,8 @@ export const ptBr: UIStrings = {
     percentage: '%',
     currency: 'Moeda',
   },
-  homeHeroHeading: 'Ferramentas e Calculadoras Rápidas',
-  homeHeroSubtitle: 'Calculadoras e utilitários precisos e privados que rodam direto no seu navegador sem rastreamento.',
+  homeHeroHeading: 'Pesquisar Ferramentas e Calculadoras',
+  homeHeroSubtitle: 'Encontre calculadoras e utilitários rápidos e gratuitos que rodam direto no seu navegador.',
   valuePropositionTitle: 'Por que usar o ToolsOfTools?',
   valueProps: [
     {

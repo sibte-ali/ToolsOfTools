@@ -1,4 +1,18 @@
-export type SupportedLanguage = 'en' | 'pt-br' | 'es';
+export type SupportedLanguage =
+  | 'en'
+  | 'pt-br'
+  | 'es'
+  | 'fr'
+  | 'de'
+  | 'it'
+  | 'nl'
+  | 'ru'
+  | 'jp'
+  | 'cn'
+  | 'kr'
+  | 'sa'
+  | 'il';
+
 
 export interface UIStrings {
   nav: {

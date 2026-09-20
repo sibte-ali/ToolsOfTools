@@ -6,17 +6,33 @@ import { getEntry } from 'astro:content';
 export async function getStaticPaths() {
   const esTools = toolsByLang('es');
   // Exclude 'calculadora' mounted on /es/ homepage
-  return Promise.all(
-    esTools
-      .filter((tool) => !(tool.slug === 'calculadora' && tool.folder === 'otras-calculadoras'))
-      .map(async (tool) => {
-        const entry = await getEntry('tools', `es/${tool.slug}`);
-        return {
-          params: { folder: tool.folder, slug: tool.slug },
-          props: { tool, entry },
-        };
-      })
+  const dedicatedEs = esTools.filter((tool) => !(tool.slug === 'calculadora' && tool.folder === 'otras-calculadoras'));
+  const esSlugs = new Set(dedicatedEs.map((t) => t.slug));
+  const enTools = toolsByLang('en').filter((t) => !esSlugs.has(t.slug));
+
+  const paths = await Promise.all(
+    dedicatedEs.map(async (tool) => {
+      const entry = await getEntry('tools', `es/${tool.slug}`);
+      return {
+        params: { folder: tool.folder, slug: tool.slug },
+        props: { tool, entry },
+      };
+    })
   );
+
+  for (const tool of enTools) {
+    const localizedTool: Tool = {
+      ...tool,
+      lang: 'es',
+      url: `/es${tool.url}`,
+    };
+    paths.push({
+      params: { folder: tool.folder, slug: tool.slug },
+      props: { tool: localizedTool, entry: undefined },
+    });
+  }
+
+  return paths;
 }
 
 interface Props {

@@ -1,51 +1,229 @@
 ---
 import { getHreflang } from '../lib/hreflang';
-import { supportedLanguages, getHtmlLang, getLanguageHome } from '../i18n';
+import { getLanguageHome, type SupportedLanguage } from '../i18n';
 
 interface Props {
   currentUrl: string;
   currentLang: string;
 }
 
-const { currentUrl, currentLang } = Astro.props;
+const { currentUrl = '/', currentLang = 'en' } = Astro.props;
 
+// Compute hreflang alternates and x-default fallback URL
 const alternates = getHreflang(currentUrl, currentLang);
+const xDefaultTarget = alternates.find((a) => a.lang.toLowerCase() === 'x-default');
+const englishTarget = alternates.find((a) => a.lang.toLowerCase() === 'en');
+const xDefaultUrl = xDefaultTarget ? xDefaultTarget.url : (englishTarget ? englishTarget.url : '/');
 
-const languageLabels: Record<string, string> = {
-  en: 'English',
-  'pt-br': 'Português',
-  es: 'Español',
-};
+export interface LanguageItem {
+  code: SupportedLanguage;
+  displayCode: string;
+  label: string;
+  hreflangCodes: string[];
+}
 
-const items = supportedLanguages.map((lang) => {
-  const htmlCode = getHtmlLang(lang);
-  const match = alternates.find((a) => a.lang === htmlCode);
-  const targetUrl = match ? match.url : getLanguageHome(lang);
-  const isCurrent = lang === currentLang;
+// 13 languages requested by user
+const LANGUAGES: LanguageItem[] = [
+  { code: 'en', displayCode: 'EN', label: 'English', hreflangCodes: ['en', 'en-us', 'en-gb'] },
+  { code: 'es', displayCode: 'ES', label: 'Español', hreflangCodes: ['es', 'es-es', 'es-mx'] },
+  { code: 'fr', displayCode: 'FR', label: 'Français', hreflangCodes: ['fr', 'fr-fr'] },
+  { code: 'de', displayCode: 'DE', label: 'Deutsch', hreflangCodes: ['de', 'de-de'] },
+  { code: 'pt-br', displayCode: 'PT', label: 'Português', hreflangCodes: ['pt-br', 'pt', 'pt-pt'] },
+  { code: 'it', displayCode: 'IT', label: 'Italiano', hreflangCodes: ['it', 'it-it'] },
+  { code: 'nl', displayCode: 'NL', label: 'Nederlands', hreflangCodes: ['nl', 'nl-nl'] },
+  { code: 'ru', displayCode: 'RU', label: 'Русский', hreflangCodes: ['ru', 'ru-ru'] },
+  { code: 'jp', displayCode: 'JP', label: '日本語', hreflangCodes: ['ja', 'ja-jp', 'jp'] },
+  { code: 'cn', displayCode: 'CN', label: '简体中文', hreflangCodes: ['zh', 'zh-cn', 'zh-hans', 'cn'] },
+  { code: 'kr', displayCode: 'KR', label: '한국어', hreflangCodes: ['ko', 'ko-kr', 'kr'] },
+  { code: 'sa', displayCode: 'SA', label: 'العربية', hreflangCodes: ['ar', 'ar-sa', 'sa'] },
+  { code: 'il', displayCode: 'IL', label: 'Italiano (IL)', hreflangCodes: ['il', 'it-il'] },
+];
+
+// Check if on a tool page: e.g. /education/attendance-calculator/ or /it/education/attendance-calculator/
+const cleanPath = currentUrl.split('?')[0].replace(/^\/+|\/+$/g, '');
+const parts = cleanPath.split('/');
+
+let toolFolder = '';
+let toolSlug = '';
+const knownLangs = ['es', 'pt-br', 'fr', 'de', 'it', 'nl', 'ru', 'jp', 'cn', 'kr', 'sa', 'il'];
+
+if (parts.length === 2 && !knownLangs.includes(parts[0])) {
+  // e.g. education/attendance-calculator
+  toolFolder = parts[0];
+  toolSlug = parts[1];
+} else if (parts.length === 3 && knownLangs.includes(parts[0])) {
+  // e.g. it/education/attendance-calculator
+  toolFolder = parts[1];
+  toolSlug = parts[2];
+}
+
+const isToolPage = !!(toolFolder && toolSlug);
+
+const items = LANGUAGES.map((item) => {
+  // Determine if this is the active language of the current page
+  const isCurrent = currentLang === item.code;
+
+  // Check if an explicit alternate exists in hreflang
+  const alternateMatch = alternates.find((a) => {
+    const l = a.lang.toLowerCase();
+    return item.hreflangCodes.some((c) => c.toLowerCase() === l);
+  });
+
+  let targetUrl: string;
+  let isDedicated = false;
+
+  if (alternateMatch) {
+    targetUrl = alternateMatch.url;
+    isDedicated = true;
+  } else if (isToolPage) {
+    // Preserve tool navigation across all languages
+    targetUrl = item.code === 'en' ? `/${toolFolder}/${toolSlug}/` : `/${item.code}/${toolFolder}/${toolSlug}/`;
+    isDedicated = true;
+  } else {
+    // Navigate directly to that language's dedicated HTML route
+    targetUrl = getLanguageHome(item.code);
+    isDedicated = true;
+  }
 
   return {
-    lang,
-    label: languageLabels[lang] || lang,
+    ...item,
     url: targetUrl,
     isCurrent,
+    isDedicated,
   };
 });
+
+const currentItem = items.find((i) => i.isCurrent) || items[0];
 ---
 
-<nav aria-label="Language selection" class="flex items-center gap-1.5 text-xs font-medium">
-  {
-    items.map((item) => (
-      <a
-        href={item.url}
-        class={`rounded-md px-2.5 py-1.5 transition-colors ${
-          item.isCurrent
-            ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 font-semibold shadow-xs'
-            : 'text-neutral-600 hover:bg-neutral-100 hover:text-neutral-900 dark:text-neutral-400 dark:hover:bg-neutral-800 dark:hover:text-white'
-        }`}
-        aria-current={item.isCurrent ? 'true' : undefined}
-      >
-        {item.label}
-      </a>
-    ))
+<div class="relative inline-block text-left" id="lang-switcher-root">
+  <button
+    type="button"
+    id="lang-dropdown-btn"
+    class="flex h-9 items-center gap-1.5 px-2.5 rounded-xl border border-neutral-300 bg-white text-xs font-semibold text-neutral-800 hover:bg-neutral-100 hover:text-neutral-950 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 dark:hover:text-white transition cursor-pointer shadow-xs"
+    aria-expanded="false"
+    aria-haspopup="true"
+    aria-controls="lang-dropdown-menu"
+    title="Change language (renders HTML via hreflang & x-default)"
+  >
+    <svg class="h-4 w-4 text-neutral-500 dark:text-neutral-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2" fill="none" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M3.6 9h16.8M3.6 15h16.8" />
+      <path stroke-linecap="round" stroke-linejoin="round" d="M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18" />
+    </svg>
+    <span class="font-bold tracking-wide uppercase">{currentItem.displayCode}</span>
+    <svg id="lang-dropdown-arrow" class="h-3 w-3 text-neutral-400 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
+    </svg>
+  </button>
+
+  <!-- Dropdown Menu (Navigates directly to HTML without translation scripts) -->
+  <div
+    id="lang-dropdown-menu"
+    class="hidden absolute right-0 mt-2 w-64 origin-top-right rounded-2xl border border-neutral-200 bg-white p-1.5 shadow-2xl ring-1 ring-black/5 focus:outline-none dark:border-neutral-800 dark:bg-neutral-900 dark:ring-white/10 z-50 max-h-80 overflow-y-auto"
+    role="menu"
+    aria-orientation="vertical"
+    aria-labelledby="lang-dropdown-btn"
+    tabindex="-1"
+  >
+    <div class="px-2.5 py-1.5 border-b border-neutral-100 dark:border-neutral-800 mb-1 flex items-center justify-between text-[11px] font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">
+      <span>Language / Idioma</span>
+      <span class="text-[9px] font-normal normal-case opacity-80">hreflang &bull; HTML</span>
+    </div>
+
+    <div class="space-y-0.5">
+      {items.map((item) => (
+        <a
+          href={item.url}
+          role="menuitem"
+          class={`flex items-center justify-between px-2.5 py-1.5 rounded-xl text-xs transition-colors ${
+            item.isCurrent
+              ? 'bg-neutral-900 text-white font-bold shadow-xs dark:bg-white dark:text-neutral-950'
+              : 'text-neutral-700 hover:bg-neutral-100 hover:text-neutral-950 dark:text-neutral-300 dark:hover:bg-neutral-800 dark:hover:text-white'
+          }`}
+          aria-current={item.isCurrent ? 'true' : undefined}
+        >
+          <div class="flex items-center gap-2">
+            <span class={`w-6 text-center text-[10px] font-mono font-bold py-0.5 rounded ${
+              item.isCurrent
+                ? 'bg-white/20 text-white dark:bg-black/10 dark:text-neutral-950'
+                : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400'
+            }`}>
+              {item.displayCode}
+            </span>
+            <span>{item.label}</span>
+          </div>
+
+          <div class="flex items-center gap-1.5">
+            {item.isCurrent ? (
+              <span class="text-[11px] font-bold">✓</span>
+            ) : item.isDedicated ? (
+              <span class="text-[9px] font-semibold px-1.5 py-0.2 rounded bg-emerald-50 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800/60">
+                HTML
+              </span>
+            ) : (
+              <span class="text-[9px] font-mono text-neutral-400 dark:text-neutral-500">
+                x-default
+              </span>
+            )}
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  function initLanguageDropdown() {
+    const btn = document.getElementById('lang-dropdown-btn');
+    const menu = document.getElementById('lang-dropdown-menu');
+    const arrow = document.getElementById('lang-dropdown-arrow');
+    const root = document.getElementById('lang-switcher-root');
+
+    if (!btn || !menu || !root) return;
+
+    function openMenu() {
+      menu.classList.remove('hidden');
+      if (arrow) arrow.classList.add('rotate-180');
+      btn.setAttribute('aria-expanded', 'true');
+    }
+
+    function closeMenu() {
+      menu.classList.add('hidden');
+      if (arrow) arrow.classList.remove('rotate-180');
+      btn.setAttribute('aria-expanded', 'false');
+    }
+
+    btn.onclick = function (e) {
+      e.stopPropagation();
+      const isClosed = menu.classList.contains('hidden');
+      if (isClosed) {
+        openMenu();
+      } else {
+        closeMenu();
+      }
+    };
+
+    document.addEventListener('click', function (e) {
+      if (!root.contains(e.target)) {
+        closeMenu();
+      }
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && !menu.classList.contains('hidden')) {
+        closeMenu();
+        btn.focus();
+      }
+    });
   }
-</nav>
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLanguageDropdown);
+    } else {
+      initLanguageDropdown();
+    }
+    document.addEventListener('astro:page-load', initLanguageDropdown);
+  }
+</script>

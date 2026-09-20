@@ -8,6 +8,7 @@ export type InputType =
   | 'date'
   | 'time'
   | 'text'
+  | 'textarea'
   | 'radio'
   | 'rows';
 
@@ -47,7 +48,8 @@ export type OutputFormat =
   | 'percent'
   | 'date'
   | 'text'
-  | 'duration';
+  | 'duration'
+  | 'code';
 
 export interface ToolOutput {
   key: string;

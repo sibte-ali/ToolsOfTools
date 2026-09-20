@@ -47,8 +47,8 @@ export const en: UIStrings = {
     percentage: '%',
     currency: 'Currency',
   },
-  homeHeroHeading: 'Fast, Client-Side Online Tools',
-  homeHeroSubtitle: 'Accurate, privacy-friendly calculators and utilities that run 100% in your browser without tracking.',
+  homeHeroHeading: 'Search Online Tools & Calculators',
+  homeHeroSubtitle: 'Find and use free calculators, converters, and student utilities that run directly in your browser.',
   valuePropositionTitle: 'Why Use ToolsOfTools?',
   valueProps: [
     {

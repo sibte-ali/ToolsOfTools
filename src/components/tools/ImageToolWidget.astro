@@ -1,0 +1,1379 @@
+---
+import type { Tool } from '../../lib/tools';
+import type { SupportedLanguage } from '../../i18n';
+import { PASSPORT_PRESETS } from '../../lib/image/image-engine';
+
+interface Props {
+  tool: Tool;
+  lang: SupportedLanguage;
+}
+
+const { tool, lang } = Astro.props;
+const slug = tool.slug;
+
+const isConversionTool = slug === 'webp-to-jpg' || slug === 'image-to-jpg' || slug === 'avif-to-jpg';
+const isCompressTool = slug === 'compress-image' || slug === 'reduce-image-size';
+const isResizeTool = slug === 'resize-image' || slug === 'resize-pixel' || slug === 'web-resizer';
+const isCropTool = slug === 'crop-image';
+const isPassportTool = slug === 'passport-size-photo-maker';
+const isDpiTool = slug === 'dpi-converter';
+const imageTextByLang: Record<string, { uploadTitle: string; uploadDesc: string; selectBtn: string }> = {
+  it: {
+    uploadTitle: "Fai clic per scegliere un'immagine o trascinala qui",
+    uploadDesc: 'Supporta PNG, JPG, WebP, AVIF, BMP, GIF. Elaborazione 100% privata nel tuo browser con zero caricamenti su server.',
+    selectBtn: 'Seleziona Immagine',
+  },
+  fr: {
+    uploadTitle: 'Cliquez pour choisir une image ou glissez-déposez ici',
+    uploadDesc: 'Prend en charge PNG, JPG, WebP, AVIF, BMP, GIF. Traité à 100% de manière privée dans votre navigateur.',
+    selectBtn: 'Sélectionner une Image',
+  },
+  de: {
+    uploadTitle: 'Klicken Sie zum Auswählen oder ziehen Sie das Bild hierher',
+    uploadDesc: 'Unterstützt PNG, JPG, WebP, AVIF, BMP, GIF. 100 % privat in Ihrem Browser ohne Server-Upload verarbeitet.',
+    selectBtn: 'Bild Auswählen',
+  },
+  es: {
+    uploadTitle: 'Haz clic para seleccionar una imagen o arrástrala aquí',
+    uploadDesc: 'Soporta PNG, JPG, WebP, AVIF, BMP, GIF. Procesado 100% de forma privada en tu navegador sin subidas a servidores.',
+    selectBtn: 'Seleccionar Imagen',
+  },
+  'pt-br': {
+    uploadTitle: 'Clique para escolher a imagem ou arraste para cá',
+    uploadDesc: 'Suporta PNG, JPG, WebP, AVIF, BMP, GIF. Processado 100% privado no seu navegador sem envio para servidores.',
+    selectBtn: 'Selecionar Imagem',
+  },
+};
+
+const imgText = imageTextByLang[lang] || {
+  uploadTitle: 'Click to choose image or drag & drop here',
+  uploadDesc: 'Supports PNG, JPG, WebP, AVIF, BMP, GIF. Processed 100% privately in your browser with zero server uploads.',
+  selectBtn: 'Select Image',
+};
+---
+
+<div
+  id="image-tool-container"
+  class="min-h-[380px] rounded-2xl border border-neutral-200 bg-white p-6 shadow-xs dark:border-neutral-800 dark:bg-neutral-900 transition-all"
+  data-slug={slug}
+  data-lang={lang}
+>
+  <!-- 1. Drag & Drop Upload Zone (Visible initially) -->
+  <div id="image-dropzone" class="relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-300 bg-neutral-50/70 p-10 text-center hover:border-neutral-500 hover:bg-neutral-100/50 dark:border-neutral-700 dark:bg-neutral-800/40 dark:hover:border-neutral-500 dark:hover:bg-neutral-800/80 transition-all cursor-pointer">
+    <input
+      type="file"
+      id="image-file-input"
+      class="absolute inset-0 h-full w-full opacity-0 cursor-pointer"
+      accept="image/png, image/jpeg, image/webp, image/avif, image/bmp, image/gif, .jpg, .jpeg, .png, .webp, .avif, .bmp, .gif"
+      aria-label="Upload Image File"
+    />
+    
+    <div class="flex h-16 w-16 items-center justify-center rounded-2xl bg-neutral-200 text-neutral-800 dark:bg-neutral-750 dark:text-neutral-200 mb-4 shadow-2xs">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+    </div>
+
+    <h3 class="text-base font-bold text-neutral-900 dark:text-white">
+      {imgText.uploadTitle}
+    </h3>
+    <p class="mt-1.5 text-xs text-neutral-500 dark:text-neutral-400 max-w-sm">
+      {imgText.uploadDesc}
+    </p>
+
+    <div class="mt-4 inline-flex items-center gap-2 rounded-lg bg-neutral-900 px-4 py-2 text-xs font-semibold text-white dark:bg-white dark:text-neutral-900 shadow-xs pointer-events-none">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+      </svg>
+      <span>{imgText.selectBtn}</span>
+    </div>
+  </div>
+
+  <!-- 2. Processing Workspace (Visible after image upload) -->
+  <div id="image-workspace" class="hidden space-y-6">
+    <!-- Top Info Bar -->
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-neutral-200 pb-4 dark:border-neutral-800">
+      <div class="flex items-center gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <div>
+          <div id="orig-filename" class="text-sm font-bold text-neutral-900 dark:text-white truncate max-w-xs sm:max-w-md">
+            image.jpg
+          </div>
+          <div class="flex items-center gap-2 text-xs text-neutral-500 dark:text-neutral-400 font-mono">
+            <span id="orig-dims">0 × 0 px</span>
+            <span>•</span>
+            <span id="orig-size">0 KB</span>
+          </div>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        id="btn-upload-another"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-750 transition cursor-pointer"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        <span>Change Image</span>
+      </button>
+    </div>
+
+    <!-- Controls Region (Adapts based on tool) -->
+    <div class="rounded-xl border border-neutral-200 bg-neutral-50/50 p-5 dark:border-neutral-800 dark:bg-neutral-850/40 space-y-4">
+      
+      <!-- Conversion Controls -->
+      {
+        (isConversionTool || slug === 'web-resizer') && (
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label for="ctrl-quality" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                JPEG Quality: <span id="val-quality" class="font-mono text-neutral-900 dark:text-white font-bold">90%</span>
+              </label>
+              <input
+                type="range"
+                id="ctrl-quality"
+                min="10"
+                max="100"
+                value="90"
+                step="5"
+                class="mt-2 w-full accent-neutral-900 dark:accent-white cursor-pointer"
+              />
+            </div>
+            <div>
+              <label for="ctrl-bg-color" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                Background Color for Transparency:
+              </label>
+              <div class="mt-2 flex items-center gap-3">
+                <input
+                  type="color"
+                  id="ctrl-bg-color"
+                  value="#ffffff"
+                  class="h-9 w-14 rounded border border-neutral-300 dark:border-neutral-700 bg-white p-1 cursor-pointer"
+                />
+                <span class="text-xs text-neutral-500 dark:text-neutral-400">White default (prevents black background in JPG)</span>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      <!-- Compression / Reduce Size Controls -->
+      {
+        isCompressTool && (
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label for="ctrl-quality" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                  Compression Level / Quality: <span id="val-quality" class="font-mono text-neutral-900 dark:text-white font-bold">80%</span>
+                </label>
+                <input
+                  type="range"
+                  id="ctrl-quality"
+                  min="10"
+                  max="100"
+                  value="80"
+                  step="5"
+                  class="mt-2 w-full accent-neutral-900 dark:accent-white cursor-pointer"
+                />
+              </div>
+
+              <div>
+                <label for="ctrl-max-width" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                  Max Dimension (Optional Limit):
+                </label>
+                <select
+                  id="ctrl-max-width"
+                  class="mt-2 block w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                >
+                  <option value="0">Original Resolution (No downscale)</option>
+                  <option value="1920">Max 1920 px (Full HD)</option>
+                  <option value="1280">Max 1280 px (HD)</option>
+                  <option value="800">Max 800 px (Web/Email)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Target KB presets (especially for reduce-image-size) -->
+            <div>
+              <span class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-2">
+                Quick Target Size Presets:
+              </span>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" class="preset-kb-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 cursor-pointer transition" data-kb="20">Target 20 KB</button>
+                <button type="button" class="preset-kb-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 cursor-pointer transition" data-kb="50">Target 50 KB</button>
+                <button type="button" class="preset-kb-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 cursor-pointer transition" data-kb="100">Target 100 KB</button>
+                <button type="button" class="preset-kb-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 cursor-pointer transition" data-kb="200">Target 200 KB</button>
+                <button type="button" class="preset-kb-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 cursor-pointer transition" data-kb="500">Target 500 KB</button>
+                <button type="button" class="preset-kb-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 cursor-pointer transition" data-kb="1000">Target 1 MB</button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      <!-- Resize Controls -->
+      {
+        isResizeTool && (
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div>
+                <label for="ctrl-resize-w" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                  Width (px)
+                </label>
+                <input
+                  type="number"
+                  id="ctrl-resize-w"
+                  min="10"
+                  max="10000"
+                  step="1"
+                  class="mt-1.5 block w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 font-mono text-sm text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                />
+              </div>
+
+              <div>
+                <label for="ctrl-resize-h" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                  Height (px)
+                </label>
+                <input
+                  type="number"
+                  id="ctrl-resize-h"
+                  min="10"
+                  max="10000"
+                  step="1"
+                  class="mt-1.5 block w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 font-mono text-sm text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                />
+              </div>
+
+              <div class="flex items-end pb-2">
+                <label class="flex items-center gap-2 text-xs font-medium text-neutral-800 dark:text-neutral-200 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id="ctrl-aspect-lock"
+                    checked
+                    class="h-4 w-4 rounded border-neutral-300 text-neutral-900 dark:border-neutral-700 accent-neutral-900 dark:accent-white"
+                  />
+                  <span>Lock Aspect Ratio</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Resize scale slider -->
+            <div>
+              <label for="ctrl-resize-scale" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                Scale Percentage: <span id="val-scale" class="font-mono text-neutral-900 dark:text-white font-bold">100%</span>
+              </label>
+              <input
+                type="range"
+                id="ctrl-resize-scale"
+                min="10"
+                max="200"
+                value="100"
+                step="5"
+                class="mt-2 w-full accent-neutral-900 dark:accent-white cursor-pointer"
+              />
+            </div>
+
+            <!-- Quick resolution presets -->
+            <div>
+              <span class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-2">
+                Resolution Presets:
+              </span>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" class="preset-res-btn rounded-lg border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 cursor-pointer" data-w="1920" data-h="1080">1920 × 1080 (1080p)</button>
+                <button type="button" class="preset-res-btn rounded-lg border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 cursor-pointer" data-w="1280" data-h="720">1280 × 720 (720p)</button>
+                <button type="button" class="preset-res-btn rounded-lg border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 cursor-pointer" data-w="1080" data-h="1080">1080 × 1080 (Square)</button>
+                <button type="button" class="preset-res-btn rounded-lg border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 cursor-pointer" data-w="768" data-h="0">768 px (Tablet)</button>
+                <button type="button" class="preset-res-btn rounded-lg border border-neutral-200 bg-white px-3 py-1 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 cursor-pointer" data-w="480" data-h="0">480 px (Mobile)</button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      <!-- Crop Image Controls -->
+      {
+        isCropTool && (
+          <div class="space-y-4">
+            <div>
+              <span class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-2">
+                Crop Aspect Ratio:
+              </span>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" class="crop-ratio-btn rounded-lg border-2 border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900 px-3 py-1.5 text-xs font-bold cursor-pointer" data-ratio="1:1">1:1 Square</button>
+                <button type="button" class="crop-ratio-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer" data-ratio="4:3">4:3 Standard</button>
+                <button type="button" class="crop-ratio-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer" data-ratio="16:9">16:9 Widescreen</button>
+                <button type="button" class="crop-ratio-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer" data-ratio="3:2">3:2 Photo</button>
+                <button type="button" class="crop-ratio-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer" data-ratio="35:45">35:45 (Passport)</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label for="ctrl-crop-zoom" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                  Zoom / Framing: <span id="val-crop-zoom" class="font-mono text-neutral-900 dark:text-white font-bold">1.0×</span>
+                </label>
+                <input
+                  type="range"
+                  id="ctrl-crop-zoom"
+                  min="0.5"
+                  max="3.0"
+                  step="0.05"
+                  value="1.0"
+                  class="mt-2 w-full accent-neutral-900 dark:accent-white cursor-pointer"
+                />
+              </div>
+              <div class="flex items-center gap-2 pt-4">
+                <button type="button" id="btn-rotate-90" class="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer">
+                  ↻ Rotate 90°
+                </button>
+                <button type="button" id="btn-flip-h" class="rounded-lg border border-neutral-300 bg-white px-3 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer">
+                  ⇄ Flip Horizontal
+                </button>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      <!-- Passport Size Photo Maker Controls -->
+      {
+        isPassportTool && (
+          <div class="space-y-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label for="ctrl-passport-preset" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                  Passport Standard & Dimensions:
+                </label>
+                <select
+                  id="ctrl-passport-preset"
+                  class="mt-2 block w-full rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white font-medium"
+                >
+                  {
+                    PASSPORT_PRESETS.map((preset) => (
+                      <option value={preset.id} data-w={preset.widthPx} data-h={preset.heightPx} data-dpi={preset.dpi} data-label={preset.name}>
+                        {preset.name}
+                      </option>
+                    ))
+                  }
+                </select>
+                <p id="passport-preset-desc" class="mt-1.5 text-[11px] text-neutral-500 dark:text-neutral-400">
+                  Standard 35x45mm at 300 DPI for Indian passports, Schengen visa, UK, and Australian travel.
+                </p>
+              </div>
+
+              <div class="space-y-3">
+                <div>
+                  <label for="ctrl-passport-zoom" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                    Zoom Face to Guidelines: <span id="val-passport-zoom" class="font-mono text-neutral-900 dark:text-white font-bold">1.0×</span>
+                  </label>
+                  <input
+                    type="range"
+                    id="ctrl-passport-zoom"
+                    min="0.5"
+                    max="3.0"
+                    step="0.05"
+                    value="1.0"
+                    class="mt-2 w-full accent-neutral-900 dark:accent-white cursor-pointer"
+                  />
+                </div>
+
+                <div class="flex flex-wrap items-center gap-4">
+                  <label class="flex items-center gap-2 text-xs font-medium text-neutral-800 dark:text-neutral-200 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      id="ctrl-passport-guides"
+                      checked
+                      class="h-4 w-4 rounded border-neutral-300 text-neutral-900 dark:border-neutral-700 accent-neutral-900 dark:accent-white"
+                    />
+                    <span>Show Face & Chin Alignment Guides</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      <!-- DPI Converter Controls -->
+      {
+        isDpiTool && (
+          <div class="space-y-4">
+            <!-- 1. Quick Presets -->
+            <div>
+              <span class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300 mb-2">
+                Standard DPI Presets:
+              </span>
+              <div class="flex flex-wrap gap-2">
+                <button type="button" class="dpi-preset-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer transition" data-dpi="72">72 DPI (Web)</button>
+                <button type="button" class="dpi-preset-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer transition" data-dpi="96">96 DPI (Screen)</button>
+                <button type="button" class="dpi-preset-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer transition" data-dpi="150">150 DPI (Newsprint)</button>
+                <button type="button" class="dpi-preset-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer transition" data-dpi="200">200 DPI (Scan / Document)</button>
+                <button type="button" class="dpi-preset-btn rounded-lg border-2 border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900 px-3 py-1.5 text-xs font-bold cursor-pointer transition" data-dpi="300">300 DPI (Standard Print / Passport)</button>
+                <button type="button" class="dpi-preset-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer transition" data-dpi="600">600 DPI (Fine Art / Commercial)</button>
+              </div>
+            </div>
+
+            <!-- 2. Custom DPI Input and Physical Print Calculation -->
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label for="ctrl-dpi-custom" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                  Target DPI (Customizable):
+                </label>
+                <div class="mt-1.5 flex rounded-lg shadow-2xs">
+                  <input
+                    type="number"
+                    id="ctrl-dpi-custom"
+                    min="1"
+                    max="9600"
+                    step="1"
+                    value="300"
+                    class="block w-full rounded-l-lg border border-neutral-300 bg-white px-3 py-2 font-mono text-sm font-bold text-neutral-900 focus:border-neutral-500 focus:outline-none dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                    placeholder="Enter any DPI, e.g. 300"
+                  />
+                  <span class="inline-flex items-center rounded-r-lg border border-l-0 border-neutral-300 bg-neutral-100 px-3 text-xs font-bold text-neutral-600 dark:border-neutral-700 dark:bg-neutral-750 dark:text-neutral-300">
+                    DPI
+                  </span>
+                </div>
+                <p class="mt-1 text-[11px] text-neutral-500 dark:text-neutral-400">
+                  Type any custom DPI value (e.g. 150, 200, 300, 350, 400, 600, 1200).
+                </p>
+              </div>
+
+              <!-- Output Format & Quality -->
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label for="ctrl-dpi-format" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                    Output Format:
+                  </label>
+                  <select
+                    id="ctrl-dpi-format"
+                    class="mt-1.5 block w-full rounded-lg border border-neutral-300 bg-white px-2.5 py-2 text-xs font-medium text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white"
+                  >
+                    <option value="image/jpeg" selected>JPEG (JFIF APP0)</option>
+                    <option value="image/png">PNG (pHYs Chunk)</option>
+                  </select>
+                </div>
+                <div id="dpi-quality-wrapper">
+                  <label for="ctrl-dpi-quality" class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300">
+                    Quality: <span id="val-dpi-quality" class="font-mono font-bold text-neutral-900 dark:text-white">95%</span>
+                  </label>
+                  <input
+                    type="range"
+                    id="ctrl-dpi-quality"
+                    min="50"
+                    max="100"
+                    value="95"
+                    step="5"
+                    class="mt-3 w-full accent-neutral-900 dark:accent-white cursor-pointer"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <!-- 3. Physical Print Dimensions Card -->
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div class="rounded-xl border border-neutral-200 bg-white p-3.5 shadow-2xs dark:border-neutral-700 dark:bg-neutral-800">
+                <span class="block text-[11px] font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
+                  Physical Print Size at Selected DPI:
+                </span>
+                <div class="mt-1 flex flex-col gap-0.5">
+                  <div class="font-mono text-base font-bold text-neutral-900 dark:text-white">
+                    <span id="dpi-calc-inches">0.00 × 0.00</span> <span class="text-xs font-normal text-neutral-500">inches</span>
+                  </div>
+                  <div class="font-mono text-xs font-semibold text-neutral-600 dark:text-neutral-300">
+                    <span id="dpi-calc-cm">0.00 × 0.00</span> cm &bull; <span id="dpi-calc-mm">0 × 0</span> mm
+                  </div>
+                </div>
+              </div>
+
+              <!-- Two-Way Dimension Formula Explanation -->
+              <div class="rounded-xl border border-neutral-200/80 bg-neutral-100/60 p-3.5 dark:border-neutral-700/60 dark:bg-neutral-850/60">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-neutral-800 dark:text-neutral-200">
+                    Print Conversion Formula:
+                  </span>
+                  <span class="font-mono text-[10px] text-neutral-500 dark:text-neutral-400">
+                    Inches = Pixels ÷ DPI
+                  </span>
+                </div>
+                <div class="mt-1 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+                  <span id="dpi-formula-px" class="font-mono font-bold text-neutral-900 dark:text-white">0 × 0 px</span> at <span id="dpi-formula-val" class="font-mono font-bold text-neutral-900 dark:text-white">300 DPI</span> yields <span id="dpi-formula-summary" class="font-mono font-bold text-neutral-900 dark:text-white">0" × 0"</span> on paper.
+                </div>
+                <div class="mt-1 flex items-center gap-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                  <span>✓</span>
+                  <span>Hardware metadata injection: changes DPI without degrading pixel quality.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+    </div>
+
+    <!-- Live Preview Canvas & Stats -->
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
+      <!-- Processed Image Preview -->
+      <div class="flex flex-col items-center justify-center rounded-xl border border-neutral-200 bg-neutral-100/60 p-4 dark:border-neutral-800 dark:bg-neutral-850/60 min-h-[280px]">
+        <div class="relative max-w-full overflow-hidden flex items-center justify-center">
+          <canvas
+            id="preview-canvas"
+            class="max-h-[320px] max-w-full rounded-lg border border-neutral-300 bg-white shadow-xs dark:border-neutral-700 object-contain"
+          ></canvas>
+          <!-- Passport alignment overlay guide -->
+          <div
+            id="passport-guide-overlay"
+            class="pointer-events-none absolute inset-0 hidden items-center justify-center"
+          >
+            <div class="relative h-4/5 w-3/5 rounded-full border-2 border-dashed border-emerald-500/80 shadow-xs">
+              <div class="absolute top-1/3 left-0 right-0 border-t border-emerald-400/60"></div>
+              <div class="absolute top-2/3 left-0 right-0 border-t border-emerald-400/60"></div>
+              <span class="absolute -top-5 left-1/2 -translate-x-1/2 rounded bg-emerald-700/90 px-1.5 py-0.5 text-[9px] font-bold text-white uppercase tracking-wider">
+                Crown
+              </span>
+              <span class="absolute -bottom-5 left-1/2 -translate-x-1/2 rounded bg-emerald-700/90 px-1.5 py-0.5 text-[9px] font-bold text-white uppercase tracking-wider">
+                Chin
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="mt-3 text-xs text-neutral-500 dark:text-neutral-400">
+          Live Render Preview
+        </div>
+      </div>
+
+      <!-- Output Details & Download Options -->
+      <div class="flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-6 shadow-xs dark:border-neutral-800 dark:bg-neutral-900">
+        <div>
+          <h4 class="text-base font-bold text-neutral-900 dark:text-white">
+            Output File Specifications
+          </h4>
+
+          <dl class="mt-4 divide-y divide-neutral-100 dark:divide-neutral-800 text-xs">
+            <div class="flex justify-between py-2.5">
+              <dt class="text-neutral-500 dark:text-neutral-400 font-medium">Output Dimensions</dt>
+              <dd id="stat-output-dims" class="font-mono font-bold text-neutral-900 dark:text-white">0 × 0 px</dd>
+            </div>
+            <div class="flex justify-between py-2.5">
+              <dt class="text-neutral-500 dark:text-neutral-400 font-medium">Estimated File Size</dt>
+              <dd id="stat-output-size" class="font-mono font-bold text-neutral-900 dark:text-white">0 KB</dd>
+            </div>
+            <div class="flex justify-between py-2.5">
+              <dt class="text-neutral-500 dark:text-neutral-400 font-medium">Output Format</dt>
+              <dd id="stat-output-format" class="font-mono font-bold text-neutral-900 dark:text-white uppercase">JPG</dd>
+            </div>
+            <div class="flex justify-between py-2.5">
+              <dt class="text-neutral-500 dark:text-neutral-400 font-medium">Resolution / DPI</dt>
+              <dd id="stat-output-dpi" class="font-mono font-bold text-neutral-900 dark:text-white">300 DPI</dd>
+            </div>
+          </dl>
+
+          <!-- Savings Badge for Compress/Reduce Tools -->
+          <div id="savings-badge-box" class="mt-4 hidden rounded-lg bg-emerald-50 p-3 border border-emerald-200 dark:bg-emerald-950/30 dark:border-emerald-800">
+            <div class="flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-200">
+              <span>✓</span>
+              <span id="savings-text">Reduced by 80% (Saved 1.1 MB)</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Download Action Buttons -->
+        <div class="mt-6 pt-4 border-t border-neutral-100 dark:border-neutral-800 space-y-3">
+          <a
+            id="btn-download-primary"
+            href="#"
+            role="button"
+            class="flex w-full items-center justify-center gap-2 rounded-xl bg-neutral-900 py-3.5 text-sm font-bold text-white shadow-xs hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 transition cursor-pointer"
+            download="processed-image.jpg"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            </svg>
+            <span id="btn-download-label">Download Processed Image</span>
+          </a>
+
+          <!-- For Passport Maker: Printable 4x6 Sheet Download Button -->
+          {
+            isPassportTool && (
+              <a
+                id="btn-download-sheet"
+                class="flex w-full items-center justify-center gap-2 rounded-xl border border-neutral-300 bg-white py-2.5 text-xs font-bold text-neutral-800 hover:bg-neutral-50 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-750 transition cursor-pointer"
+                download="passport-photos-4x6-sheet.jpg"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+                </svg>
+                <span>Download Printable 4 × 6 Inch Sheet (6 Photos)</span>
+              </a>
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Core Client-Side Image Processor Script -->
+<script is:inline>
+  // CRC-32 checksum utility for PNG chunks
+  function crc32(buf) {
+    let c = 0xffffffff;
+    for (let i = 0; i < buf.length; i++) {
+      c ^= buf[i];
+      for (let k = 0; k < 8; k++) {
+        c = (c >>> 1) ^ (0xedb88320 & -(c & 1));
+      }
+    }
+    return (c ^ 0xffffffff) >>> 0;
+  }
+
+  // Embeds or updates JFIF APP0 DPI metadata in JPEG Uint8Array
+  function setJpegDpi(buffer, dpi) {
+    if (buffer.length < 4 || buffer[0] !== 0xff || buffer[1] !== 0xd8) {
+      return buffer;
+    }
+    const dpiInt = Math.max(1, Math.min(65535, Math.round(dpi)));
+    const dpiHigh = (dpiInt >> 8) & 0xff;
+    const dpiLow = dpiInt & 0xff;
+
+    // Existing APP0 JFIF marker?
+    if (
+      buffer[2] === 0xff &&
+      buffer[3] === 0xe0 &&
+      buffer[6] === 0x4a && // 'J'
+      buffer[7] === 0x46 && // 'F'
+      buffer[8] === 0x49 && // 'I'
+      buffer[9] === 0x46 && // 'F'
+      buffer[10] === 0x00
+    ) {
+      const copy = new Uint8Array(buffer);
+      copy[13] = 1; // 1 = dots per inch (DPI)
+      copy[14] = dpiHigh;
+      copy[15] = dpiLow;
+      copy[16] = dpiHigh;
+      copy[17] = dpiLow;
+      return copy;
+    }
+
+    // Inject standard 18-byte JFIF APP0 header
+    const jfifHeader = new Uint8Array([
+      0xff, 0xe0,
+      0x00, 0x10,
+      0x4a, 0x46, 0x49, 0x46, 0x00,
+      0x01, 0x02,
+      0x01, // Units: 1 = dots per inch
+      dpiHigh, dpiLow,
+      dpiHigh, dpiLow,
+      0x00, 0x00,
+    ]);
+
+    const output = new Uint8Array(buffer.length + jfifHeader.length);
+    output.set(buffer.subarray(0, 2), 0);
+    output.set(jfifHeader, 2);
+    output.set(buffer.subarray(2), 2 + jfifHeader.length);
+    return output;
+  }
+
+  // Embeds or updates pHYs DPI metadata chunk in PNG Uint8Array
+  function setPngDpi(buffer, dpi) {
+    if (
+      buffer.length < 33 ||
+      buffer[0] !== 0x89 ||
+      buffer[1] !== 0x50 ||
+      buffer[2] !== 0x4e ||
+      buffer[3] !== 0x47 ||
+      buffer[4] !== 0x0d ||
+      buffer[5] !== 0x0a ||
+      buffer[6] !== 0x1a ||
+      buffer[7] !== 0x0a
+    ) {
+      return buffer;
+    }
+
+    const ppm = Math.max(1, Math.min(0xffffffff, Math.round(dpi / 0.0254)));
+    const ppmBytes = [
+      (ppm >>> 24) & 0xff,
+      (ppm >>> 16) & 0xff,
+      (ppm >>> 8) & 0xff,
+      ppm & 0xff,
+    ];
+
+    let pos = 33;
+    while (pos + 8 <= buffer.length) {
+      const chunkLen =
+        (buffer[pos] << 24) |
+        (buffer[pos + 1] << 16) |
+        (buffer[pos + 2] << 8) |
+        buffer[pos + 3];
+      const chunkType = String.fromCharCode(
+        buffer[pos + 4],
+        buffer[pos + 5],
+        buffer[pos + 6],
+        buffer[pos + 7]
+      );
+
+      if (chunkType === 'pHYs' && chunkLen === 9) {
+        const copy = new Uint8Array(buffer);
+        copy.set(ppmBytes, pos + 8);
+        copy.set(ppmBytes, pos + 12);
+        copy[pos + 16] = 1;
+        const crcVal = crc32(copy.subarray(pos + 4, pos + 17));
+        copy[pos + 17] = (crcVal >>> 24) & 0xff;
+        copy[pos + 18] = (crcVal >>> 16) & 0xff;
+        copy[pos + 19] = (crcVal >>> 8) & 0xff;
+        copy[pos + 20] = crcVal & 0xff;
+        return copy;
+      }
+
+      if (chunkType === 'IDAT' || chunkType === 'IEND') break;
+      pos += 12 + chunkLen;
+    }
+
+    const physChunk = new Uint8Array(21);
+    physChunk[3] = 9;
+    physChunk[4] = 0x70; // p
+    physChunk[5] = 0x48; // H
+    physChunk[6] = 0x59; // y
+    physChunk[7] = 0x73; // s
+    physChunk.set(ppmBytes, 8);
+    physChunk.set(ppmBytes, 12);
+    physChunk[16] = 1;
+    const crc = crc32(physChunk.subarray(4, 17));
+    physChunk[17] = (crc >>> 24) & 0xff;
+    physChunk[18] = (crc >>> 16) & 0xff;
+    physChunk[19] = (crc >>> 8) & 0xff;
+    physChunk[20] = crc & 0xff;
+
+    const output = new Uint8Array(buffer.length + 21);
+    output.set(buffer.subarray(0, 33), 0);
+    output.set(physChunk, 33);
+    output.set(buffer.subarray(33), 33 + 21);
+    return output;
+  }
+
+  // Cross-browser fail-safe programmatic download
+  function triggerFileDownload(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 2000);
+  }
+
+  function initImageTool() {
+    const container = document.getElementById('image-tool-container');
+    if (!container) return;
+
+    const slug = container.getAttribute('data-slug') || '';
+    const isConversionTool = slug === 'webp-to-jpg' || slug === 'image-to-jpg' || slug === 'avif-to-jpg';
+    const isCompressTool = slug === 'compress-image' || slug === 'reduce-image-size';
+    const isResizeTool = slug === 'resize-image' || slug === 'resize-pixel' || slug === 'web-resizer';
+    const isCropTool = slug === 'crop-image';
+    const isPassportTool = slug === 'passport-size-photo-maker';
+    const isDpiTool = slug === 'dpi-converter';
+    const fileInput = document.getElementById('image-file-input');
+    const dropzone = document.getElementById('image-dropzone');
+    const workspace = document.getElementById('image-workspace');
+    const origFilename = document.getElementById('orig-filename');
+    const origDims = document.getElementById('orig-dims');
+    const origSize = document.getElementById('orig-size');
+    const btnUploadAnother = document.getElementById('btn-upload-another');
+
+    const previewCanvas = document.getElementById('preview-canvas');
+    const statDims = document.getElementById('stat-output-dims');
+    const statSize = document.getElementById('stat-output-size');
+    const statFormat = document.getElementById('stat-output-format');
+    const statDpi = document.getElementById('stat-output-dpi');
+    const btnDownload = document.getElementById('btn-download-primary');
+    const btnDownloadLabel = document.getElementById('btn-download-label');
+    const btnDownloadSheet = document.getElementById('btn-download-sheet');
+    const savingsBox = document.getElementById('savings-badge-box');
+    const savingsText = document.getElementById('savings-text');
+
+    // Controls
+    const ctrlQuality = document.getElementById('ctrl-quality');
+    const valQuality = document.getElementById('val-quality');
+    const ctrlBgColor = document.getElementById('ctrl-bg-color');
+    const ctrlMaxWidth = document.getElementById('ctrl-max-width');
+    const ctrlResizeW = document.getElementById('ctrl-resize-w');
+    const ctrlResizeH = document.getElementById('ctrl-resize-h');
+    const ctrlAspectLock = document.getElementById('ctrl-aspect-lock');
+    const ctrlResizeScale = document.getElementById('ctrl-resize-scale');
+    const valScale = document.getElementById('val-scale');
+    const ctrlCropZoom = document.getElementById('ctrl-crop-zoom');
+    const valCropZoom = document.getElementById('val-crop-zoom');
+    const ctrlPassportPreset = document.getElementById('ctrl-passport-preset');
+    const passportPresetDesc = document.getElementById('passport-preset-desc');
+    const ctrlPassportZoom = document.getElementById('ctrl-passport-zoom');
+    const valPassportZoom = document.getElementById('val-passport-zoom');
+    const ctrlPassportGuides = document.getElementById('ctrl-passport-guides');
+    const passportGuidesOverlay = document.getElementById('passport-guide-overlay');
+
+    // DPI Controls
+    const ctrlDpiCustom = document.getElementById('ctrl-dpi-custom');
+    const ctrlDpiFormat = document.getElementById('ctrl-dpi-format');
+    const ctrlDpiQuality = document.getElementById('ctrl-dpi-quality');
+    const valDpiQuality = document.getElementById('val-dpi-quality');
+    const dpiQualityWrapper = document.getElementById('dpi-quality-wrapper');
+    const dpiCalcInches = document.getElementById('dpi-calc-inches');
+    const dpiCalcCm = document.getElementById('dpi-calc-cm');
+    const dpiCalcMm = document.getElementById('dpi-calc-mm');
+    const dpiFormulaPx = document.getElementById('dpi-formula-px');
+    const dpiFormulaVal = document.getElementById('dpi-formula-val');
+    const dpiFormulaSummary = document.getElementById('dpi-formula-summary');
+    const dpiPresetBtns = document.querySelectorAll('.dpi-preset-btn');
+
+    let loadedImage = null;
+    let originalFile = null;
+    let currentRotation = 0;
+    let isFlippedH = false;
+    let currentCropRatio = '1:1';
+    let targetDpi = 300;
+    let targetFormat = 'image/jpeg';
+    let currentBlobUrl = null;
+    let sheetBlobUrl = null;
+    let currentDownloadBlob = null;
+    let currentDownloadFilename = 'processed-image.jpg';
+    let shouldDownloadOnReady = false;
+
+    function formatBytes(bytes) {
+      if (bytes <= 0) return '0 B';
+      const k = 1024;
+      const sizes = ['B', 'KB', 'MB', 'GB'];
+      const i = Math.floor(Math.log(bytes) / Math.log(k));
+      return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + sizes[i];
+    }
+
+    function handleFile(file) {
+      if (!file) return;
+      if (!file.type.startsWith('image/') && !file.name.match(/\.(jpe?g|png|webp|avif|bmp|gif)$/i)) {
+        return;
+      }
+      originalFile = file;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          loadedImage = img;
+          currentRotation = 0;
+          isFlippedH = false;
+
+          // Populate original metadata
+          origFilename.textContent = file.name;
+          origDims.textContent = `${img.naturalWidth} × ${img.naturalHeight} px`;
+          origSize.textContent = formatBytes(file.size);
+
+          if (ctrlResizeW && ctrlResizeH) {
+            ctrlResizeW.value = img.naturalWidth;
+            ctrlResizeH.value = img.naturalHeight;
+          }
+
+          dropzone.classList.add('hidden');
+          workspace.classList.remove('hidden');
+
+          processAndRender();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    fileInput.addEventListener('change', function(e) {
+      if (e.target.files && e.target.files[0]) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    btnUploadAnother.addEventListener('click', function() {
+      dropzone.classList.remove('hidden');
+      workspace.classList.add('hidden');
+      fileInput.value = '';
+      currentDownloadBlob = null;
+    });
+
+    // Drag and drop events
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropzone.addEventListener(eventName, function(e) {
+        e.preventDefault();
+        dropzone.classList.add('border-neutral-900', 'dark:border-white');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropzone.addEventListener(eventName, function(e) {
+        e.preventDefault();
+        dropzone.classList.remove('border-neutral-900', 'dark:border-white');
+      });
+    });
+
+    dropzone.addEventListener('drop', function(e) {
+      if (e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]) {
+        handleFile(e.dataTransfer.files[0]);
+      }
+    });
+
+    // Controls listeners
+    if (ctrlQuality) {
+      ctrlQuality.addEventListener('input', function(e) {
+        if (valQuality) valQuality.textContent = e.target.value + '%';
+        processAndRender();
+      });
+    }
+
+    if (ctrlBgColor) {
+      ctrlBgColor.addEventListener('input', processAndRender);
+    }
+
+    if (ctrlMaxWidth) {
+      ctrlMaxWidth.addEventListener('change', processAndRender);
+    }
+
+    if (ctrlResizeScale) {
+      ctrlResizeScale.addEventListener('input', function(e) {
+        if (valScale) valScale.textContent = e.target.value + '%';
+        if (loadedImage && ctrlResizeW && ctrlResizeH) {
+          const pct = Number(e.target.value) / 100;
+          ctrlResizeW.value = Math.round(loadedImage.naturalWidth * pct);
+          ctrlResizeH.value = Math.round(loadedImage.naturalHeight * pct);
+        }
+        processAndRender();
+      });
+    }
+
+    if (ctrlResizeW && ctrlResizeH) {
+      ctrlResizeW.addEventListener('input', function() {
+        if (ctrlAspectLock && ctrlAspectLock.checked && loadedImage) {
+          const ratio = loadedImage.naturalHeight / loadedImage.naturalWidth;
+          ctrlResizeH.value = Math.round(Number(ctrlResizeW.value) * ratio);
+        }
+        processAndRender();
+      });
+
+      ctrlResizeH.addEventListener('input', function() {
+        if (ctrlAspectLock && ctrlAspectLock.checked && loadedImage) {
+          const ratio = loadedImage.naturalWidth / loadedImage.naturalHeight;
+          ctrlResizeW.value = Math.round(Number(ctrlResizeH.value) * ratio);
+        }
+        processAndRender();
+      });
+    }
+
+    // Preset resolution buttons
+    document.querySelectorAll('.preset-res-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const w = Number(btn.getAttribute('data-w'));
+        const h = Number(btn.getAttribute('data-h'));
+        if (ctrlResizeW) ctrlResizeW.value = w;
+        if (ctrlResizeH) {
+          if (h > 0) {
+            ctrlResizeH.value = h;
+          } else if (loadedImage) {
+            const ratio = loadedImage.naturalHeight / loadedImage.naturalWidth;
+            ctrlResizeH.value = Math.round(w * ratio);
+          }
+        }
+        processAndRender();
+      });
+    });
+
+    // Preset KB buttons
+    document.querySelectorAll('.preset-kb-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const kb = Number(btn.getAttribute('data-kb'));
+        if (ctrlQuality) {
+          if (kb <= 50) ctrlQuality.value = 40;
+          else if (kb <= 100) ctrlQuality.value = 60;
+          else if (kb <= 200) ctrlQuality.value = 75;
+          else ctrlQuality.value = 85;
+          if (valQuality) valQuality.textContent = ctrlQuality.value + '%';
+        }
+        processAndRender();
+      });
+    });
+
+    // Crop Aspect buttons
+    document.querySelectorAll('.crop-ratio-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.crop-ratio-btn').forEach(b => {
+          b.className = 'crop-ratio-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer';
+        });
+        btn.className = 'crop-ratio-btn rounded-lg border-2 border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900 px-3 py-1.5 text-xs font-bold cursor-pointer';
+        currentCropRatio = btn.getAttribute('data-ratio') || '1:1';
+        processAndRender();
+      });
+    });
+
+    if (ctrlCropZoom) {
+      ctrlCropZoom.addEventListener('input', function(e) {
+        if (valCropZoom) valCropZoom.textContent = Number(e.target.value).toFixed(1) + '×';
+        processAndRender();
+      });
+    }
+
+    const btnRotate = document.getElementById('btn-rotate-90');
+    if (btnRotate) {
+      btnRotate.addEventListener('click', function() {
+        currentRotation = (currentRotation + 90) % 360;
+        processAndRender();
+      });
+    }
+
+    const btnFlip = document.getElementById('btn-flip-h');
+    if (btnFlip) {
+      btnFlip.addEventListener('click', function() {
+        isFlippedH = !isFlippedH;
+        processAndRender();
+      });
+    }
+
+    // Passport controls
+    if (ctrlPassportPreset) {
+      ctrlPassportPreset.addEventListener('change', function() {
+        const opt = ctrlPassportPreset.selectedOptions[0];
+        if (passportPresetDesc) {
+          const presetId = opt.value;
+          if (presetId === 'us-visa') passportPresetDesc.textContent = 'Official 2x2 inch (51x51mm) square format for US Department of State visas and passports.';
+          else if (presetId === 'canada') passportPresetDesc.textContent = 'Official Government of Canada passport standard (50x70mm at 300 DPI).';
+          else if (presetId === 'pan-stamp') passportPresetDesc.textContent = 'Standard 25x35mm format for Indian PAN card, driving licence, and exam applications.';
+          else passportPresetDesc.textContent = 'Standard 35x45mm at 300 DPI for Indian passports, Schengen visa, UK, and Australian travel.';
+        }
+        processAndRender();
+      });
+    }
+
+    if (ctrlPassportZoom) {
+      ctrlPassportZoom.addEventListener('input', function(e) {
+        if (valPassportZoom) valPassportZoom.textContent = Number(e.target.value).toFixed(1) + '×';
+        processAndRender();
+      });
+    }
+
+    if (ctrlPassportGuides && passportGuidesOverlay) {
+      ctrlPassportGuides.addEventListener('change', function() {
+        passportGuidesOverlay.style.display = ctrlPassportGuides.checked ? 'flex' : 'none';
+      });
+    }
+
+    // DPI Converter Preset Buttons & Custom Input wiring
+    function syncDpiPresetButtons(activeDpi) {
+      dpiPresetBtns.forEach(btn => {
+        const btnDpi = Number(btn.getAttribute('data-dpi'));
+        if (btnDpi === activeDpi) {
+          btn.className = 'dpi-preset-btn rounded-lg border-2 border-neutral-900 bg-neutral-900 text-white dark:border-white dark:bg-white dark:text-neutral-900 px-3 py-1.5 text-xs font-bold cursor-pointer transition';
+        } else {
+          btn.className = 'dpi-preset-btn rounded-lg border border-neutral-200 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:border-neutral-400 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 cursor-pointer transition';
+        }
+      });
+    }
+
+    dpiPresetBtns.forEach(btn => {
+      btn.addEventListener('click', function() {
+        const dpiVal = Number(btn.getAttribute('data-dpi')) || 300;
+        targetDpi = dpiVal;
+        if (ctrlDpiCustom) ctrlDpiCustom.value = dpiVal;
+        syncDpiPresetButtons(dpiVal);
+        processAndRender();
+      });
+    });
+
+    if (ctrlDpiCustom) {
+      ['input', 'change'].forEach(evt => {
+        ctrlDpiCustom.addEventListener(evt, function() {
+          const val = parseInt(ctrlDpiCustom.value, 10);
+          if (val && val > 0 && val <= 9600) {
+            targetDpi = val;
+            syncDpiPresetButtons(val);
+            processAndRender();
+          }
+        });
+      });
+    }
+
+    if (ctrlDpiFormat) {
+      ctrlDpiFormat.addEventListener('change', function() {
+        targetFormat = ctrlDpiFormat.value;
+        if (dpiQualityWrapper) {
+          dpiQualityWrapper.style.display = targetFormat === 'image/jpeg' ? 'block' : 'none';
+        }
+        processAndRender();
+      });
+    }
+
+    if (ctrlDpiQuality) {
+      ctrlDpiQuality.addEventListener('input', function(e) {
+        if (valDpiQuality) valDpiQuality.textContent = e.target.value + '%';
+        processAndRender();
+      });
+    }
+
+    // Direct, reliable click handler on download button
+    btnDownload.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (currentDownloadBlob) {
+        triggerFileDownload(currentDownloadBlob, currentDownloadFilename);
+        const originalText = btnDownloadLabel.textContent;
+        btnDownloadLabel.textContent = '✓ Downloaded!';
+        setTimeout(() => {
+          btnDownloadLabel.textContent = originalText;
+        }, 1500);
+      } else if (loadedImage) {
+        shouldDownloadOnReady = true;
+        btnDownloadLabel.textContent = 'Preparing download...';
+        processAndRender();
+      }
+    });
+
+    // Core Canvas & DPI Processing Routine
+    function processAndRender() {
+      if (!loadedImage) return;
+
+      const imgW = loadedImage.naturalWidth;
+      const imgH = loadedImage.naturalHeight;
+      let outW = imgW;
+      let outH = imgH;
+      let quality = 0.92;
+      let bgColor = ctrlBgColor ? ctrlBgColor.value : '#ffffff';
+
+      if (slug === 'dpi-converter') {
+        if (ctrlDpiFormat) targetFormat = ctrlDpiFormat.value;
+        else targetFormat = 'image/jpeg';
+        if (ctrlDpiQuality) quality = Number(ctrlDpiQuality.value) / 100;
+        else quality = 0.95;
+      } else {
+        targetFormat = 'image/jpeg';
+        if (ctrlQuality) quality = Number(ctrlQuality.value) / 100;
+      }
+
+      if (slug === 'passport-size-photo-maker') {
+        const opt = ctrlPassportPreset.selectedOptions[0];
+        outW = Number(opt.getAttribute('data-w')) || 413;
+        outH = Number(opt.getAttribute('data-h')) || 531;
+        targetDpi = Number(opt.getAttribute('data-dpi')) || 300;
+        if (passportGuidesOverlay) {
+          passportGuidesOverlay.style.display = ctrlPassportGuides && ctrlPassportGuides.checked ? 'flex' : 'none';
+        }
+      } else if (slug === 'crop-image') {
+        let ratioW = 1, ratioH = 1;
+        if (currentCropRatio === '4:3') { ratioW = 4; ratioH = 3; }
+        else if (currentCropRatio === '16:9') { ratioW = 16; ratioH = 9; }
+        else if (currentCropRatio === '3:2') { ratioW = 3; ratioH = 2; }
+        else if (currentCropRatio === '35:45') { ratioW = 35; ratioH = 45; }
+
+        outW = 800;
+        outH = Math.round((outW * ratioH) / ratioW);
+      } else if (isResizeTool) {
+        outW = ctrlResizeW ? Number(ctrlResizeW.value) || imgW : imgW;
+        outH = ctrlResizeH ? Number(ctrlResizeH.value) || imgH : imgH;
+      } else if (isCompressTool) {
+        if (ctrlMaxWidth && Number(ctrlMaxWidth.value) > 0) {
+          const maxDim = Number(ctrlMaxWidth.value);
+          if (imgW > maxDim || imgH > maxDim) {
+            if (imgW >= imgH) {
+              outW = maxDim;
+              outH = Math.round((imgH * maxDim) / imgW);
+            } else {
+              outH = maxDim;
+              outW = Math.round((imgW * maxDim) / imgH);
+            }
+          }
+        }
+      }
+
+      previewCanvas.width = outW;
+      previewCanvas.height = outH;
+      const ctx = previewCanvas.getContext('2d');
+      ctx.imageSmoothingQuality = 'high';
+
+      // Fill background for transparency safety
+      ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, outW, outH);
+
+      // Transformations
+      ctx.save();
+      ctx.translate(outW / 2, outH / 2);
+      if (currentRotation !== 0) {
+        ctx.rotate((currentRotation * Math.PI) / 180);
+      }
+      if (isFlippedH) {
+        ctx.scale(-1, 1);
+      }
+
+      let zoom = 1.0;
+      if (slug === 'passport-size-photo-maker' && ctrlPassportZoom) {
+        zoom = Number(ctrlPassportZoom.value);
+      } else if (slug === 'crop-image' && ctrlCropZoom) {
+        zoom = Number(ctrlCropZoom.value);
+      }
+
+      // Draw image centered and scaled
+      const scale = Math.max(outW / imgW, outH / imgH) * zoom;
+      const drawW = imgW * scale;
+      const drawH = imgH * scale;
+
+      ctx.drawImage(loadedImage, -drawW / 2, -drawH / 2, drawW, drawH);
+      ctx.restore();
+
+      // Convert to Blob with hardware DPI metadata injection
+      previewCanvas.toBlob(async function(rawBlob) {
+        if (!rawBlob) return;
+
+        let finalBlob = rawBlob;
+        try {
+          const arrayBuf = await rawBlob.arrayBuffer();
+          if (targetFormat === 'image/jpeg') {
+            const withDpi = setJpegDpi(new Uint8Array(arrayBuf), targetDpi);
+            finalBlob = new Blob([withDpi], { type: 'image/jpeg' });
+          } else if (targetFormat === 'image/png') {
+            const withDpi = setPngDpi(new Uint8Array(arrayBuf), targetDpi);
+            finalBlob = new Blob([withDpi], { type: 'image/png' });
+          }
+        } catch (err) {
+          console.warn('DPI metadata injection note:', err);
+          finalBlob = rawBlob;
+        }
+
+        currentDownloadBlob = finalBlob;
+        if (currentBlobUrl) URL.revokeObjectURL(currentBlobUrl);
+        currentBlobUrl = URL.createObjectURL(finalBlob);
+        btnDownload.href = currentBlobUrl;
+
+        // Dynamic filename
+        const ext = targetFormat === 'image/png' ? 'png' : 'jpg';
+        const baseName = originalFile ? originalFile.name.replace(/\.[^/.]+$/, '') : 'photo';
+
+        if (slug === 'dpi-converter') {
+          currentDownloadFilename = `${baseName}-${targetDpi}dpi.${ext}`;
+          btnDownload.download = currentDownloadFilename;
+          btnDownloadLabel.textContent = `Download Image (${targetDpi} DPI)`;
+        } else if (slug === 'passport-size-photo-maker') {
+          currentDownloadFilename = `${baseName}-passport-${outW}x${outH}.${ext}`;
+          btnDownload.download = currentDownloadFilename;
+          btnDownloadLabel.textContent = `Download Passport Photo (${outW}×${outH} px)`;
+        } else if (slug === 'crop-image') {
+          currentDownloadFilename = `${baseName}-cropped.${ext}`;
+          btnDownload.download = currentDownloadFilename;
+          btnDownloadLabel.textContent = `Download Cropped Image`;
+        } else if (isCompressTool) {
+          currentDownloadFilename = `${baseName}-compressed.${ext}`;
+          btnDownload.download = currentDownloadFilename;
+          btnDownloadLabel.textContent = `Download Compressed Image`;
+        } else {
+          currentDownloadFilename = `${baseName}-converted.${ext}`;
+          btnDownload.download = currentDownloadFilename;
+          btnDownloadLabel.textContent = `Download Converted Image`;
+        }
+
+        // Stats updates
+        statDims.textContent = `${outW} × ${outH} px`;
+        statSize.textContent = formatBytes(finalBlob.size);
+        statFormat.textContent = targetFormat === 'image/png' ? 'PNG' : 'JPEG';
+        statDpi.textContent = `${targetDpi} DPI`;
+
+        // Savings indicator
+        if (isCompressTool && originalFile) {
+          savingsBox.classList.remove('hidden');
+          if (finalBlob.size < originalFile.size) {
+            const saved = originalFile.size - finalBlob.size;
+            const pct = Math.round((saved / originalFile.size) * 100);
+            savingsText.textContent = `Saved ${formatBytes(saved)} (${pct}% smaller)`;
+          } else {
+            savingsText.textContent = `Optimized at maximum quality`;
+          }
+        }
+
+        // DPI print size & formula calculations
+        if (dpiCalcInches && dpiCalcCm) {
+          const inW = (outW / targetDpi).toFixed(2);
+          const inH = (outH / targetDpi).toFixed(2);
+          const cmW = ((outW / targetDpi) * 2.54).toFixed(2);
+          const cmH = ((outH / targetDpi) * 2.54).toFixed(2);
+          const mmW = Math.round((outW / targetDpi) * 25.4);
+          const mmH = Math.round((outH / targetDpi) * 25.4);
+
+          dpiCalcInches.textContent = `${inW} × ${inH}`;
+          dpiCalcCm.textContent = `${cmW} × ${cmH}`;
+          if (dpiCalcMm) dpiCalcMm.textContent = `${mmW} × ${mmH}`;
+
+          if (dpiFormulaPx) dpiFormulaPx.textContent = `${outW} × ${outH} px`;
+          if (dpiFormulaVal) dpiFormulaVal.textContent = `${targetDpi} DPI`;
+          if (dpiFormulaSummary) dpiFormulaSummary.textContent = `${inW}" × ${inH}" (${cmW} × ${cmH} cm)`;
+        }
+
+        // Auto trigger download if user clicked while rendering
+        if (shouldDownloadOnReady) {
+          shouldDownloadOnReady = false;
+          triggerFileDownload(finalBlob, currentDownloadFilename);
+          btnDownloadLabel.textContent = '✓ Downloaded!';
+          setTimeout(() => {
+            btnDownloadLabel.textContent = `Download Image (${targetDpi} DPI)`;
+          }, 1500);
+        }
+
+        // Generate 4x6 sheet if passport maker
+        if (slug === 'passport-size-photo-maker' && btnDownloadSheet) {
+          renderPrintableSheet(previewCanvas);
+        }
+      }, targetFormat, quality);
+    }
+
+    // Tiling for 4x6 inch printable photo sheet
+    function renderPrintableSheet(singlePhotoCanvas) {
+      const sheetCanvas = document.createElement('canvas');
+      sheetCanvas.width = 1800;
+      sheetCanvas.height = 1200;
+      const sCtx = sheetCanvas.getContext('2d');
+      sCtx.fillStyle = '#ffffff';
+      sCtx.fillRect(0, 0, sheetCanvas.width, sheetCanvas.height);
+
+      const photoW = singlePhotoCanvas.width;
+      const photoH = singlePhotoCanvas.height;
+
+      const cols = Math.floor((sheetCanvas.width - 100) / (photoW + 30)) || 3;
+      const rows = Math.floor((sheetCanvas.height - 100) / (photoH + 30)) || 2;
+
+      const marginX = Math.round((sheetCanvas.width - cols * (photoW + 30) + 30) / 2);
+      const marginY = Math.round((sheetCanvas.height - rows * (photoH + 30) + 30) / 2);
+
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          const x = marginX + c * (photoW + 30);
+          const y = marginY + r * (photoH + 30);
+
+          sCtx.drawImage(singlePhotoCanvas, x, y, photoW, photoH);
+
+          sCtx.strokeStyle = '#d4d4d8';
+          sCtx.lineWidth = 1;
+          sCtx.strokeRect(x - 1, y - 1, photoW + 2, photoH + 2);
+        }
+      }
+
+      sheetCanvas.toBlob(function(sheetBlob) {
+        if (!sheetBlob) return;
+        if (sheetBlobUrl) URL.revokeObjectURL(sheetBlobUrl);
+        sheetBlobUrl = URL.createObjectURL(sheetBlob);
+        btnDownloadSheet.href = sheetBlobUrl;
+      }, 'image/jpeg', 0.95);
+    }
+  }
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initImageTool);
+    } else {
+      initImageTool();
+    }
+    document.addEventListener('astro:page-load', initImageTool);
+  }
+</script>

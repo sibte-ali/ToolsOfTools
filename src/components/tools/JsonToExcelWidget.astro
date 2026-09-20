@@ -1,0 +1,1049 @@
+---
+import type { SupportedLanguage } from '../../i18n';
+
+interface Props {
+  lang?: SupportedLanguage;
+}
+
+const { lang = 'en' } = Astro.props;
+
+const DEFAULT_SAMPLE_TABLE = [
+  {
+    id: 101,
+    name: "Alice Johnson",
+    department: "Engineering",
+    role: "Lead Architect",
+    salary: 115000,
+    contact: {
+      email: "alice@example.com",
+      phone: "+1-555-0192"
+    },
+    location: {
+      city: "San Francisco",
+      country: "USA"
+    },
+    active: true
+  },
+  {
+    id: 102,
+    name: "Bob Smith",
+    department: "Product",
+    role: "Product Manager",
+    salary: 98000,
+    contact: {
+      email: "bob@example.com",
+      phone: "+1-555-0144"
+    },
+    location: {
+      city: "Austin",
+      country: "USA"
+    },
+    active: true
+  },
+  {
+    id: 103,
+    name: "Carol Martinez",
+    department: "Design",
+    role: "UI/UX Designer",
+    salary: 87000,
+    contact: {
+      email: "carol@example.com",
+      phone: "+1-555-0177"
+    },
+    location: {
+      city: "London",
+      country: "UK"
+    },
+    active: true
+  },
+  {
+    id: 104,
+    name: "David Chen",
+    department: "Finance",
+    role: "Financial Analyst",
+    salary: 92000,
+    contact: {
+      email: "david@example.com",
+      phone: "+1-555-0188"
+    },
+    location: {
+      city: "Toronto",
+      country: "Canada"
+    },
+    active: false
+  }
+];
+
+const defaultJsonStr = JSON.stringify(DEFAULT_SAMPLE_TABLE, null, 2);
+---
+
+<div id="j2e-app" class="relative flex flex-col gap-6 font-sans">
+  
+  <!-- ==================== TOP BOX: JSON INPUT BOX (MATCHING BEAUTIFIER) ==================== -->
+  <div class="flex flex-col rounded-2xl border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-900 transition-all overflow-hidden">
+    
+    <!-- Top Global Toolbar -->
+    <div class="flex flex-wrap items-center justify-between gap-2.5 border-b border-neutral-200 bg-neutral-50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900/90">
+      <!-- Left Action Group: Presets & Tools -->
+      <div class="flex flex-wrap items-center gap-2">
+        <span class="text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Quick Actions:</span>
+        
+        <button
+          type="button"
+          id="j2e-btn-sample"
+          title="Load sample tabular JSON"
+          class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white transition cursor-pointer"
+        >
+          <svg class="h-3.5 w-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+          </svg>
+          <span>Sample Data</span>
+        </button>
+
+        <button
+          type="button"
+          id="j2e-btn-upload"
+          title="Upload JSON file"
+          class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white transition cursor-pointer"
+        >
+          <svg class="h-3.5 w-3.5 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span>Upload File</span>
+        </button>
+        <input type="file" id="j2e-file-input" accept=".json,.txt,application/json" class="hidden" />
+
+        <button
+          type="button"
+          id="j2e-btn-open-url"
+          title="Fetch JSON from public URL"
+          class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white transition cursor-pointer"
+        >
+          <svg class="h-3.5 w-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="2" y1="12" x2="22" y2="12"></line>
+            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+          </svg>
+          <span>Load URL</span>
+        </button>
+
+        <button
+          type="button"
+          id="j2e-btn-clear-all"
+          title="Clear input and preview table"
+          class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs hover:bg-rose-50 hover:border-rose-300 hover:text-rose-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-rose-950/40 dark:hover:border-rose-700 dark:hover:text-rose-300 transition cursor-pointer"
+        >
+          <svg class="h-3.5 w-3.5 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          <span>Clear</span>
+        </button>
+      </div>
+
+      <!-- Right Action Group -->
+      <div class="flex items-center gap-2">
+        <button
+          type="button"
+          id="j2e-btn-paste"
+          title="Paste from clipboard"
+          class="inline-flex items-center gap-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1.5 text-xs font-medium text-neutral-700 shadow-2xs hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
+        >
+          <svg class="h-3.5 w-3.5 text-neutral-500 dark:text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+          </svg>
+          <span>Paste JSON</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Inline URL Fetch Bar -->
+    <div id="j2e-url-bar" class="hidden border-b border-neutral-200 bg-indigo-50/80 px-4 py-2.5 dark:border-neutral-800 dark:bg-indigo-950/40">
+      <form id="j2e-url-form" class="flex flex-wrap items-center gap-2">
+        <span class="text-xs font-semibold text-indigo-900 dark:text-indigo-300">Public JSON URL:</span>
+        <input
+          type="url"
+          id="j2e-url-input"
+          placeholder="https://jsonplaceholder.typicode.com/users"
+          required
+          class="min-w-[280px] flex-1 rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-xs text-neutral-900 placeholder-neutral-400 shadow-2xs focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-indigo-800 dark:bg-neutral-800 dark:text-white"
+        />
+        <button
+          type="submit"
+          id="j2e-btn-fetch"
+          class="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-2xs hover:bg-indigo-500 transition cursor-pointer"
+        >
+          <span>Fetch</span>
+        </button>
+        <button
+          type="button"
+          id="j2e-btn-close-url"
+          class="inline-flex items-center rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 transition cursor-pointer"
+        >
+          Cancel
+        </button>
+        <span id="j2e-url-status" class="text-xs text-rose-600 dark:text-rose-400 font-medium"></span>
+      </form>
+    </div>
+
+    <!-- Input Box Sub-header -->
+    <div class="flex items-center justify-between border-b border-neutral-200 bg-neutral-100/60 px-3.5 py-2 text-xs dark:border-neutral-800 dark:bg-neutral-850">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 font-bold text-neutral-900 dark:text-white">
+          <svg class="h-4 w-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+            <path d="M7 8h10"></path>
+            <path d="M7 12h10"></path>
+            <path d="M7 16h6"></path>
+          </svg>
+          <span>JSON Input (Array or Object)</span>
+        </span>
+        <span id="j2e-in-badge" class="rounded-full bg-neutral-200/70 px-2 py-0.5 text-[11px] font-mono text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+          0 lines
+        </span>
+      </div>
+
+      <div class="flex items-center gap-1.5">
+        <button
+          type="button"
+          id="j2e-btn-clear-in"
+          title="Clear input text"
+          class="inline-flex items-center gap-1 rounded-md border border-neutral-300 bg-white px-2 py-0.5 text-[11px] font-medium text-neutral-700 shadow-2xs hover:bg-rose-50 hover:text-rose-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-rose-950/40 dark:hover:text-rose-300 transition cursor-pointer"
+        >
+          Clear Input
+        </button>
+      </div>
+    </div>
+
+    <!-- Left Box Editor Area: Exact Same Gutter & Textarea Metrics as Beautifier -->
+    <div class="relative flex flex-row overflow-hidden h-[340px] min-h-[280px] bg-white dark:bg-neutral-900 w-full">
+      <!-- Line Numbers Gutter -->
+      <div
+        id="j2e-gutter-in"
+        aria-hidden="true"
+        class="j2e-editor-gutter select-none border-r border-neutral-200 bg-neutral-50 text-right font-mono text-neutral-400 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-600 overflow-hidden shrink-0"
+      >
+        1
+      </div>
+
+      <!-- Input Textarea -->
+      <textarea
+        id="j2e-input"
+        spellcheck="false"
+        autocapitalize="off"
+        autocomplete="off"
+        placeholder="Paste or type JSON array or object here (e.g. [{ 'name': 'Alice', 'role': 'Admin' }])..."
+        class="j2e-editor-textarea flex-1 min-w-0 resize-none bg-transparent font-mono text-neutral-900 placeholder-neutral-400 focus:outline-none dark:text-neutral-100 dark:placeholder-neutral-600 overflow-auto"
+      >{defaultJsonStr}</textarea>
+
+      <!-- Drop Overlay -->
+      <div
+        id="j2e-drop-zone"
+        class="pointer-events-none absolute inset-0 hidden items-center justify-center border-2 border-dashed border-indigo-500 bg-indigo-50/90 text-indigo-900 font-semibold dark:bg-indigo-950/90 dark:text-indigo-200 z-10 text-sm"
+      >
+        📂 Drop JSON file to convert to Excel
+      </div>
+    </div>
+
+    <!-- Input Error Notification Banner -->
+    <div id="j2e-error-bar" class="hidden border-t border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/50 dark:text-rose-300">
+      <div class="flex items-start gap-2">
+        <svg class="h-4 w-4 shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <div class="flex-1">
+          <span class="font-bold">JSON Error: </span>
+          <span id="j2e-error-msg" class="font-mono text-[11px]"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MIDDLE ACTION BAR (CONVERT & EXPORT CONTROLS) ==================== -->
+  <div class="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-neutral-200 bg-neutral-50/90 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-850/90 shadow-xs">
+    <!-- Left: Convert Button & Status -->
+    <div class="flex flex-wrap items-center gap-3">
+      <button
+        type="button"
+        id="j2e-center-convert"
+        title="Convert JSON to Spreadsheet Table"
+        class="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-emerald-600/25 hover:bg-emerald-500 active:scale-95 transition cursor-pointer"
+      >
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+        <span>Convert to Excel Table</span>
+      </button>
+
+      <!-- Status Indicator -->
+      <div id="j2e-status-badge" class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 font-semibold text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300 text-xs">
+        <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span id="j2e-status-text">Valid Table Ready</span>
+      </div>
+
+      <span id="j2e-stats-summary" class="font-mono text-xs text-neutral-500 dark:text-neutral-400">
+        0 rows • 0 columns
+      </span>
+    </div>
+
+    <!-- Right: Export Action Buttons -->
+    <div class="flex flex-wrap items-center gap-2">
+      <!-- Copy TSV -->
+      <button
+        type="button"
+        id="j2e-btn-copy-tsv"
+        title="Copy table to clipboard (paste directly into Excel / Sheets with Ctrl+V)"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3.5 py-2 text-xs font-semibold text-neutral-800 shadow-2xs hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 transition cursor-pointer"
+      >
+        <svg class="h-3.5 w-3.5 text-neutral-500 dark:text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <span id="j2e-copy-tsv-label">Copy for Excel</span>
+      </button>
+
+      <!-- Download CSV -->
+      <button
+        type="button"
+        id="j2e-btn-download-csv"
+        title="Download CSV spreadsheet file (.csv)"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3.5 py-2 text-xs font-semibold text-neutral-800 shadow-2xs hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 transition cursor-pointer"
+      >
+        <svg class="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Download CSV</span>
+      </button>
+
+      <!-- Download XLSX -->
+      <button
+        type="button"
+        id="j2e-btn-download-xlsx"
+        title="Download native Excel workbook (.xlsx)"
+        class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-md shadow-emerald-600/20 hover:bg-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-neutral-900 transition cursor-pointer active:scale-95"
+      >
+        <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="8" y1="13" x2="16" y2="17"></line>
+          <line x1="16" y1="13" x2="8" y2="17"></line>
+        </svg>
+        <span id="j2e-xlsx-label">Download Excel (.xlsx)</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== BOTTOM BOX: EXCEL SPREADSHEET PREVIEW (FULL WIDTH) ==================== -->
+  <div class="flex flex-col rounded-2xl border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-900 transition-all overflow-hidden">
+    <!-- Preview Box Header Toolbar -->
+    <div class="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-200 bg-neutral-50 px-4 py-2.5 text-xs dark:border-neutral-800 dark:bg-neutral-850">
+      <div class="flex items-center gap-2">
+        <span class="inline-flex items-center gap-1.5 font-bold text-neutral-900 dark:text-white">
+          <svg class="h-4 w-4 text-emerald-600 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="3" y1="15" x2="21" y2="15"></line>
+            <line x1="9" y1="3" x2="9" y2="21"></line>
+            <line x1="15" y1="3" x2="15" y2="21"></line>
+          </svg>
+          <span>Excel Spreadsheet Preview</span>
+        </span>
+
+        <span id="j2e-table-badge" class="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-mono font-semibold text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
+          0 rows × 0 cols
+        </span>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <input
+          type="text"
+          id="j2e-search-table"
+          placeholder="Filter spreadsheet cells..."
+          class="rounded-md border border-neutral-300 bg-white px-3 py-1 text-xs text-neutral-800 placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 min-w-[200px]"
+        />
+      </div>
+    </div>
+
+    <!-- Spreadsheet Table Workspace Area -->
+    <div class="relative overflow-auto min-h-[350px] max-h-[560px] bg-neutral-50/20 dark:bg-neutral-950/30">
+      <!-- Table Element -->
+      <table id="j2e-preview-table" class="w-full text-left border-collapse font-sans text-xs">
+        <thead id="j2e-thead" class="sticky top-0 z-10 bg-neutral-100 text-neutral-800 shadow-2xs dark:bg-neutral-800 dark:text-neutral-200 select-none">
+          <!-- Dynamic Headers -->
+        </thead>
+        <tbody id="j2e-tbody" class="divide-y divide-neutral-200 dark:divide-neutral-800 bg-white dark:bg-neutral-900">
+          <!-- Dynamic Rows -->
+        </tbody>
+      </table>
+
+      <!-- Empty State -->
+      <div id="j2e-empty-state" class="hidden flex-col items-center justify-center p-12 text-center text-neutral-400 dark:text-neutral-600">
+        <svg class="h-10 w-10 mb-2 opacity-50" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+          <line x1="3" y1="9" x2="21" y2="9"></line>
+          <line x1="3" y1="15" x2="21" y2="15"></line>
+          <line x1="9" y1="3" x2="9" y2="21"></line>
+        </svg>
+        <p class="text-sm font-semibold">No Table Data</p>
+        <p class="text-xs mt-1">Paste a JSON array above and click Convert</p>
+      </div>
+    </div>
+
+    <!-- Bottom Info Footer -->
+    <div class="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-200 bg-neutral-50 px-4 py-2 text-xs text-neutral-500 dark:border-neutral-800 dark:bg-neutral-900/90 dark:text-neutral-400">
+      <span class="inline-flex items-center gap-1">
+        <span class="text-emerald-600 dark:text-emerald-400 font-bold">✓</span>
+        <span>Automatic Dot-Notation Flattening: Nested fields (e.g. `contact.email`, `location.city`) are formatted as separate spreadsheet columns.</span>
+      </span>
+      <span>100% Client-Side In-Memory Processing</span>
+    </div>
+  </div>
+
+</div>
+
+<style is:inline>
+  /* Pixel-Perfect Editor & Gutter Font Metrics Matching json-beautifier */
+  .j2e-editor-gutter,
+  .j2e-editor-textarea {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+    font-size: 13px !important;
+    line-height: 22px !important;
+    letter-spacing: 0px !important;
+    tab-size: 2 !important;
+    box-sizing: border-box !important;
+  }
+
+  .j2e-editor-gutter {
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    flex: 0 0 48px !important;
+    flex-shrink: 0 !important;
+    white-space: pre !important;
+    word-break: normal !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    text-align: right !important;
+    user-select: none !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    padding-left: 4px !important;
+    padding-right: 10px !important;
+  }
+
+  .j2e-editor-textarea {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    white-space: pre !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    outline: none !important;
+    border: none !important;
+  }
+
+  /* Spreadsheet Table Styling */
+  #j2e-preview-table th {
+    padding: 8px 14px;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    border-bottom: 1px solid rgba(120, 120, 120, 0.2);
+    border-right: 1px solid rgba(120, 120, 120, 0.15);
+    white-space: nowrap;
+  }
+
+  #j2e-preview-table td {
+    padding: 8px 14px;
+    border-bottom: 1px solid rgba(120, 120, 120, 0.1);
+    border-right: 1px solid rgba(120, 120, 120, 0.1);
+    white-space: nowrap;
+    font-family: ui-monospace, monospace;
+    font-size: 12px;
+  }
+
+  #j2e-preview-table tbody tr:hover {
+    background-color: rgba(16, 185, 129, 0.06);
+  }
+
+  .dark #j2e-preview-table tbody tr:hover {
+    background-color: rgba(16, 185, 129, 0.12);
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    // Input elements
+    const inputEl = document.getElementById('j2e-input');
+    const gutterIn = document.getElementById('j2e-gutter-in');
+    const inBadge = document.getElementById('j2e-in-badge');
+    const dropZone = document.getElementById('j2e-drop-zone');
+    const errorBar = document.getElementById('j2e-error-bar');
+    const errorMsg = document.getElementById('j2e-error-msg');
+
+    // Table elements
+    const thead = document.getElementById('j2e-thead');
+    const tbody = document.getElementById('j2e-tbody');
+    const tableBadge = document.getElementById('j2e-table-badge');
+    const emptyState = document.getElementById('j2e-empty-state');
+    const searchInput = document.getElementById('j2e-search-table');
+
+    // Status elements
+    const statusBadge = document.getElementById('j2e-status-badge');
+    const statusText = document.getElementById('j2e-status-text');
+    const statsSummary = document.getElementById('j2e-stats-summary');
+
+    // Action buttons
+    const btnSample = document.getElementById('j2e-btn-sample');
+    const btnUpload = document.getElementById('j2e-btn-upload');
+    const fileInput = document.getElementById('j2e-file-input');
+    const btnClearAll = document.getElementById('j2e-btn-clear-all');
+    const btnClearIn = document.getElementById('j2e-btn-clear-in');
+    const btnPaste = document.getElementById('j2e-btn-paste');
+    const btnConvert = document.getElementById('j2e-center-convert');
+
+    // Export buttons
+    const btnDownloadXlsx = document.getElementById('j2e-btn-download-xlsx');
+    const btnDownloadCsv = document.getElementById('j2e-btn-download-csv');
+    const btnCopyTsv = document.getElementById('j2e-btn-copy-tsv');
+    const copyTsvLabel = document.getElementById('j2e-copy-tsv-label');
+    const xlsxLabel = document.getElementById('j2e-xlsx-label');
+
+    // URL Fetcher
+    const btnOpenUrl = document.getElementById('j2e-btn-open-url');
+    const urlBar = document.getElementById('j2e-url-bar');
+    const urlForm = document.getElementById('j2e-url-form');
+    const urlInput = document.getElementById('j2e-url-input');
+    const btnCloseUrl = document.getElementById('j2e-btn-close-url');
+    const urlStatus = document.getElementById('j2e-url-status');
+
+    let currentHeaders = [];
+    let currentRows = [];
+
+    // Flatten nested objects with dot notation
+    function flattenObject(obj, prefix = '') {
+      const result = {};
+      if (obj === null || typeof obj !== 'object') {
+        return { [prefix || 'value']: obj };
+      }
+      for (const [key, value] of Object.entries(obj)) {
+        const newKey = prefix ? `${prefix}.${key}` : key;
+        if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+          Object.assign(result, flattenObject(value, newKey));
+        } else if (Array.isArray(value)) {
+          result[newKey] = JSON.stringify(value);
+        } else {
+          result[newKey] = value;
+        }
+      }
+      return result;
+    }
+
+    // Parse JSON into flattened rows and headers
+    function parseJsonData(raw) {
+      const parsed = JSON.parse(raw);
+      let arrayToUse = [];
+
+      if (Array.isArray(parsed)) {
+        arrayToUse = parsed;
+      } else if (parsed && typeof parsed === 'object') {
+        const innerArrayKey = Object.keys(parsed).find((k) => Array.isArray(parsed[k]));
+        if (innerArrayKey) {
+          arrayToUse = parsed[innerArrayKey];
+        } else {
+          arrayToUse = [parsed];
+        }
+      } else {
+        throw new Error('JSON input must be an array of objects or a valid JSON object.');
+      }
+
+      if (arrayToUse.length === 0) {
+        throw new Error('Input JSON array is empty.');
+      }
+
+      const flattenedRows = arrayToUse.map((item) => flattenObject(item));
+
+      // Collect all unique headers in encounter order
+      const headerSet = new Set();
+      flattenedRows.forEach((r) => {
+        Object.keys(r).forEach((k) => headerSet.add(k));
+      });
+      const headers = Array.from(headerSet);
+
+      return { headers, rows: flattenedRows };
+    }
+
+    // Render Line Numbers Gutter
+    function renderGutter(text) {
+      if (!text) return '1';
+      const lines = text.split('\n').length;
+      let res = '';
+      for (let i = 1; i <= lines; i++) {
+        res += i + '\n';
+      }
+      return res;
+    }
+
+    function updateGutter() {
+      if (gutterIn && inputEl) {
+        gutterIn.textContent = renderGutter(inputEl.value);
+      }
+      if (inBadge && inputEl) {
+        const lines = inputEl.value ? inputEl.value.split('\n').length : 0;
+        inBadge.textContent = `${lines} lines`;
+      }
+    }
+
+    // Render Table Preview
+    function renderTable(headers, rows) {
+      currentHeaders = headers;
+      currentRows = rows;
+
+      if (!thead || !tbody) return;
+      thead.innerHTML = '';
+      tbody.innerHTML = '';
+
+      if (headers.length === 0 || rows.length === 0) {
+        if (emptyState) emptyState.classList.remove('hidden');
+        if (tableBadge) tableBadge.textContent = '0 rows × 0 cols';
+        if (statsSummary) statsSummary.textContent = '0 rows • 0 columns';
+        return;
+      }
+
+      if (emptyState) emptyState.classList.add('hidden');
+      if (tableBadge) tableBadge.textContent = `${rows.length} rows × ${headers.length} cols`;
+      if (statsSummary) statsSummary.textContent = `${rows.length} rows • ${headers.length} columns`;
+
+      // Header row with row index header
+      const trHead = document.createElement('tr');
+      const thIdx = document.createElement('th');
+      thIdx.className = 'w-12 text-center font-mono text-neutral-400 bg-neutral-100 dark:bg-neutral-800';
+      thIdx.textContent = '#';
+      trHead.appendChild(thIdx);
+
+      headers.forEach((h) => {
+        const th = document.createElement('th');
+        th.textContent = h;
+        trHead.appendChild(th);
+      });
+      thead.appendChild(trHead);
+
+      // Body rows
+      rows.forEach((row, idx) => {
+        const tr = document.createElement('tr');
+        const tdIdx = document.createElement('td');
+        tdIdx.className = 'text-center font-mono text-neutral-400 dark:text-neutral-500 select-none bg-neutral-50/50 dark:bg-neutral-900/50';
+        tdIdx.textContent = String(idx + 1);
+        tr.appendChild(tdIdx);
+
+        headers.forEach((h) => {
+          const td = document.createElement('td');
+          const val = row[h];
+          if (val === undefined || val === null) {
+            td.className += ' text-neutral-400 italic';
+            td.textContent = 'null';
+          } else if (typeof val === 'boolean') {
+            td.className += val ? ' text-emerald-600 font-semibold' : ' text-rose-600 font-semibold';
+            td.textContent = String(val);
+          } else if (typeof val === 'number') {
+            td.className += ' text-amber-600 dark:text-amber-400';
+            td.textContent = String(val);
+          } else {
+            td.textContent = String(val);
+          }
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+    }
+
+    // Process conversion
+    function processConvert() {
+      const raw = inputEl ? inputEl.value.trim() : '';
+      if (!raw) {
+        renderTable([], []);
+        if (errorBar) errorBar.classList.add('hidden');
+        if (statusBadge) {
+          statusBadge.className = 'inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-2.5 py-0.5 font-semibold text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400';
+          statusText.textContent = 'Empty';
+        }
+        return;
+      }
+
+      try {
+        const { headers, rows } = parseJsonData(raw);
+        if (errorBar) errorBar.classList.add('hidden');
+        if (statusBadge) {
+          statusBadge.className = 'inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 font-semibold text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300';
+          statusText.textContent = 'Valid Table Ready';
+        }
+        renderTable(headers, rows);
+      } catch (err) {
+        if (errorBar) {
+          errorBar.classList.remove('hidden');
+          if (errorMsg) errorMsg.textContent = err.message;
+        }
+        if (statusBadge) {
+          statusBadge.className = 'inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-2.5 py-0.5 font-semibold text-rose-800 dark:bg-rose-950/70 dark:text-rose-300';
+          statusText.textContent = 'Invalid JSON';
+        }
+      }
+    }
+
+    // Filter Table Rows
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const trs = tbody ? tbody.querySelectorAll('tr') : [];
+        trs.forEach((tr) => {
+          if (!query) {
+            tr.style.display = '';
+            return;
+          }
+          const text = tr.textContent.toLowerCase();
+          tr.style.display = text.includes(query) ? '' : 'none';
+        });
+      });
+    }
+
+    // Input Gutter and Scroll Sync
+    if (inputEl && gutterIn) {
+      inputEl.addEventListener('scroll', () => {
+        gutterIn.scrollTop = inputEl.scrollTop;
+      });
+
+      let timer;
+      inputEl.addEventListener('input', () => {
+        clearTimeout(timer);
+        updateGutter();
+        timer = setTimeout(processConvert, 250);
+      });
+
+      // Tab Key handling
+      inputEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
+          this.value = this.value.substring(0, start) + '  ' + this.value.substring(end);
+          this.selectionStart = this.selectionEnd = start + 2;
+          updateGutter();
+          processConvert();
+        } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          processConvert();
+        }
+      });
+    }
+
+    // Button: Convert
+    if (btnConvert) {
+      btnConvert.addEventListener('click', processConvert);
+    }
+
+    // Button: Clear Input
+    if (btnClearIn && inputEl) {
+      btnClearIn.addEventListener('click', () => {
+        inputEl.value = '';
+        inputEl.focus();
+        updateGutter();
+        processConvert();
+      });
+    }
+
+    // Button: Clear All
+    if (btnClearAll && inputEl) {
+      btnClearAll.addEventListener('click', () => {
+        inputEl.value = '';
+        updateGutter();
+        processConvert();
+      });
+    }
+
+    // Button: Sample Data
+    if (btnSample && inputEl) {
+      btnSample.addEventListener('click', () => {
+        const sample = [
+          {
+            id: 101,
+            name: "Alice Johnson",
+            department: "Engineering",
+            role: "Lead Architect",
+            salary: 115000,
+            contact: { email: "alice@example.com", phone: "+1-555-0192" },
+            location: { city: "San Francisco", country: "USA" },
+            active: true
+          },
+          {
+            id: 102,
+            name: "Bob Smith",
+            department: "Product",
+            role: "Product Manager",
+            salary: 98000,
+            contact: { email: "bob@example.com", phone: "+1-555-0144" },
+            location: { city: "Austin", country: "USA" },
+            active: true
+          },
+          {
+            id: 103,
+            name: "Carol Martinez",
+            department: "Design",
+            role: "UI/UX Designer",
+            salary: 87000,
+            contact: { email: "carol@example.com", phone: "+1-555-0177" },
+            location: { city: "London", country: "UK" },
+            active: true
+          },
+          {
+            id: 104,
+            name: "David Chen",
+            department: "Finance",
+            role: "Financial Analyst",
+            salary: 92000,
+            contact: { email: "david@example.com", phone: "+1-555-0188" },
+            location: { city: "Toronto", country: "Canada" },
+            active: false
+          }
+        ];
+        inputEl.value = JSON.stringify(sample, null, 2);
+        updateGutter();
+        processConvert();
+      });
+    }
+
+    // Button: Paste
+    if (btnPaste && inputEl) {
+      btnPaste.addEventListener('click', async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text) {
+            inputEl.value = text;
+            updateGutter();
+            processConvert();
+          }
+        } catch {
+          inputEl.focus();
+        }
+      });
+    }
+
+    // Button: Upload File
+    if (btnUpload && fileInput) {
+      btnUpload.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          if (inputEl && evt.target) {
+            inputEl.value = String(evt.target.result || '');
+            updateGutter();
+            processConvert();
+          }
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    // Drag & Drop
+    if (inputEl && dropZone) {
+      ['dragenter', 'dragover'].forEach((eventName) => {
+        inputEl.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('hidden');
+          dropZone.classList.add('flex');
+        });
+      });
+      ['dragleave', 'drop'].forEach((eventName) => {
+        inputEl.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropZone.classList.add('hidden');
+          dropZone.classList.remove('flex');
+        });
+      });
+      inputEl.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const files = e.dataTransfer && e.dataTransfer.files;
+        if (files && files.length > 0) {
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            if (inputEl && evt.target) {
+              inputEl.value = String(evt.target.result || '');
+              updateGutter();
+              processConvert();
+            }
+          };
+          reader.readAsText(files[0]);
+        }
+      });
+    }
+
+    // URL Fetcher
+    if (btnOpenUrl && urlBar) {
+      btnOpenUrl.addEventListener('click', () => {
+        urlBar.classList.toggle('hidden');
+        if (!urlBar.classList.contains('hidden') && urlInput) urlInput.focus();
+      });
+    }
+    if (btnCloseUrl && urlBar) {
+      btnCloseUrl.addEventListener('click', () => urlBar.classList.add('hidden'));
+    }
+    if (urlForm && urlInput) {
+      urlForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const url = urlInput.value.trim();
+        if (!url) return;
+        if (urlStatus) urlStatus.textContent = 'Fetching...';
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+          const json = await res.json();
+          if (inputEl) {
+            inputEl.value = JSON.stringify(json, null, 2);
+            updateGutter();
+            processConvert();
+          }
+          if (urlStatus) urlStatus.textContent = '';
+          if (urlBar) urlBar.classList.add('hidden');
+        } catch (err) {
+          if (urlStatus) urlStatus.textContent = 'Fetch failed: ' + err.message;
+        }
+      });
+    }
+
+    // CSV Generator (RFC 4180 compliant)
+    function generateCsvContent() {
+      if (currentHeaders.length === 0 || currentRows.length === 0) return '';
+      const escapeCell = (val) => {
+        if (val === null || val === undefined) return '';
+        const s = String(val);
+        if (s.includes('"') || s.includes(',') || s.includes('\n') || s.includes('\r')) {
+          return '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+      };
+
+      const headerLine = currentHeaders.map(escapeCell).join(',');
+      const rowLines = currentRows.map((row) =>
+        currentHeaders.map((h) => escapeCell(row[h])).join(',')
+      );
+      return [headerLine, ...rowLines].join('\r\n');
+    }
+
+    // TSV Generator (Tab Separated Values for direct paste into Excel/Sheets)
+    function generateTsvContent() {
+      if (currentHeaders.length === 0 || currentRows.length === 0) return '';
+      const sanitizeCell = (val) => {
+        if (val === null || val === undefined) return '';
+        return String(val).replace(/\t/g, ' ').replace(/\r?\n/g, ' ');
+      };
+      const headerLine = currentHeaders.map(sanitizeCell).join('\t');
+      const rowLines = currentRows.map((row) =>
+        currentHeaders.map((h) => sanitizeCell(row[h])).join('\t')
+      );
+      return [headerLine, ...rowLines].join('\n');
+    }
+
+    // Button: Download CSV
+    if (btnDownloadCsv) {
+      btnDownloadCsv.addEventListener('click', () => {
+        const csv = generateCsvContent();
+        if (!csv) return;
+        const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'data.csv';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    // Button: Copy for Excel (TSV)
+    if (btnCopyTsv) {
+      btnCopyTsv.addEventListener('click', async () => {
+        const tsv = generateTsvContent();
+        if (!tsv) return;
+        try {
+          await navigator.clipboard.writeText(tsv);
+          if (copyTsvLabel) copyTsvLabel.textContent = 'Copied!';
+          btnCopyTsv.classList.add('text-emerald-600', 'border-emerald-400');
+          setTimeout(() => {
+            if (copyTsvLabel) copyTsvLabel.textContent = 'Copy for Excel';
+            btnCopyTsv.classList.remove('text-emerald-600', 'border-emerald-400');
+          }, 2000);
+        } catch (err) {
+          console.error('Copy TSV failed:', err);
+        }
+      });
+    }
+
+    // Lazy load SheetJS library on demand ONLY when user clicks Download XLSX
+    let xlsxLoading = false;
+    function loadSheetJs(callback) {
+      if (window.XLSX) {
+        callback(window.XLSX);
+        return;
+      }
+      if (xlsxLoading) return;
+      xlsxLoading = true;
+      if (xlsxLabel) xlsxLabel.textContent = 'Loading SheetJS...';
+
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js';
+      script.onload = () => {
+        xlsxLoading = false;
+        if (xlsxLabel) xlsxLabel.textContent = 'Download Excel (.xlsx)';
+        callback(window.XLSX);
+      };
+      script.onerror = () => {
+        xlsxLoading = false;
+        if (xlsxLabel) xlsxLabel.textContent = 'Download Excel (.xlsx)';
+        alert('SheetJS CDN could not be loaded. Downloading standard CSV spreadsheet instead.');
+        if (btnDownloadCsv) btnDownloadCsv.click();
+      };
+      document.head.appendChild(script);
+    }
+
+    // Button: Download XLSX
+    if (btnDownloadXlsx) {
+      btnDownloadXlsx.addEventListener('click', () => {
+        if (currentRows.length === 0) return;
+        loadSheetJs((XLSX) => {
+          try {
+            const worksheet = XLSX.utils.json_to_sheet(currentRows, { header: currentHeaders });
+            const workbook = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
+            XLSX.writeFile(workbook, 'data.xlsx');
+          } catch (e) {
+            console.error('XLSX export failed:', e);
+            if (btnDownloadCsv) btnDownloadCsv.click();
+          }
+        });
+      });
+    }
+
+    // Initial run
+    updateGutter();
+    processConvert();
+  })();
+</script>

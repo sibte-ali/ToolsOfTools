@@ -5,7 +5,10 @@ import { getEntry } from 'astro:content';
 
 export async function getStaticPaths() {
   const ptTools = toolsByLang('pt-br');
-  return Promise.all(
+  const ptSlugs = new Set(ptTools.map((t) => t.slug));
+  const enTools = toolsByLang('en').filter((t) => !ptSlugs.has(t.slug));
+
+  const paths = await Promise.all(
     ptTools.map(async (tool) => {
       const entry = await getEntry('tools', `pt-br/${tool.slug}`);
       return {
@@ -14,6 +17,20 @@ export async function getStaticPaths() {
       };
     })
   );
+
+  for (const tool of enTools) {
+    const localizedTool: Tool = {
+      ...tool,
+      lang: 'pt-br',
+      url: `/pt-br${tool.url}`,
+    };
+    paths.push({
+      params: { folder: tool.folder, slug: tool.slug },
+      props: { tool: localizedTool, entry: undefined },
+    });
+  }
+
+  return paths;
 }
 
 interface Props {

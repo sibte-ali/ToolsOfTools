@@ -1,0 +1,1369 @@
+---
+import type { SupportedLanguage } from '../../i18n';
+
+interface Props {
+  lang?: SupportedLanguage;
+}
+
+const { lang = 'en' } = Astro.props;
+
+const DEFAULT_SAMPLE = {
+  project: "ToolsOfTools",
+  version: "2.4.0",
+  description: "Next-generation developer and calculation utilities",
+  active: true,
+  features: [
+    "JSON Beautifier",
+    "JSON Minifier",
+    "Interactive Tree Viewer",
+    "Real-time Syntax Validator",
+    "URL Fetcher"
+  ],
+  metadata: {
+    totalTools: 1346,
+    languages: 14,
+    clientSide: true,
+    rating: 4.98,
+    license: null
+  },
+  maintainer: {
+    name: "Developer Suite",
+    verified: true
+  }
+};
+const defaultSampleJson = JSON.stringify(DEFAULT_SAMPLE, null, 2);
+---
+
+<div id="jb-app" class="relative flex flex-col rounded-2xl border border-neutral-200 bg-white shadow-xl dark:border-neutral-800 dark:bg-neutral-900 transition-all font-sans">
+  <!-- Top Primary Global Bar -->
+  <div class="flex flex-wrap items-center justify-between gap-2.5 border-b border-neutral-200 bg-neutral-50 px-4 py-3 dark:border-neutral-800 dark:bg-neutral-900/90 rounded-t-2xl">
+    <!-- Left Presets & Quick Tools -->
+    <div class="flex flex-wrap items-center gap-2">
+      <span class="text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Quick Actions:</span>
+      
+      <button
+        type="button"
+        id="jb-btn-sample"
+        title="Load rich sample JSON"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white transition cursor-pointer"
+      >
+        <svg class="h-3.5 w-3.5 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+          <polyline points="14 2 14 8 20 8"></polyline>
+          <line x1="16" y1="13" x2="8" y2="13"></line>
+          <line x1="16" y1="17" x2="8" y2="17"></line>
+        </svg>
+        <span>Sample JSON</span>
+      </button>
+
+      <button
+        type="button"
+        id="jb-btn-upload"
+        title="Open JSON file from computer"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white transition cursor-pointer"
+      >
+        <svg class="h-3.5 w-3.5 text-sky-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="17 8 12 3 7 8"></polyline>
+          <line x1="12" y1="3" x2="12" y2="15"></line>
+        </svg>
+        <span>Upload File</span>
+      </button>
+      <input type="file" id="jb-file-input" accept=".json,.txt,application/json" class="hidden" />
+
+      <button
+        type="button"
+        id="jb-btn-open-url"
+        title="Fetch JSON from public URL"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white transition cursor-pointer"
+      >
+        <svg class="h-3.5 w-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="2" y1="12" x2="22" y2="12"></line>
+          <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+        </svg>
+        <span>Load URL</span>
+      </button>
+
+      <button
+        type="button"
+        id="jb-btn-clear-all"
+        title="Clear both editor boxes"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs hover:bg-rose-50 hover:border-rose-300 hover:text-rose-700 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-rose-950/40 dark:hover:border-rose-700 dark:hover:text-rose-300 transition cursor-pointer"
+      >
+        <svg class="h-3.5 w-3.5 text-rose-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="3 6 5 6 21 6"></polyline>
+          <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+        </svg>
+        <span>Clear All</span>
+      </button>
+    </div>
+
+    <!-- Right Controls: Indent, Sort, Fullscreen -->
+    <div class="flex flex-wrap items-center gap-2">
+      <!-- Indent Selector -->
+      <div class="flex items-center gap-1.5 text-xs">
+        <label for="jb-select-indent" class="font-semibold text-neutral-600 dark:text-neutral-400">Tab Size:</label>
+        <select
+          id="jb-select-indent"
+          class="rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-xs font-bold text-neutral-800 shadow-2xs focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 cursor-pointer"
+        >
+          <option value="2">2 Spaces</option>
+          <option value="3">3 Spaces</option>
+          <option value="4">4 Spaces</option>
+          <option value="tab">Tab (\t)</option>
+        </select>
+      </div>
+
+      <!-- Sort Keys Toggle -->
+      <button
+        type="button"
+        id="jb-btn-sort"
+        aria-pressed="false"
+        title="Sort object keys alphabetically"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
+      >
+        <svg class="h-3.5 w-3.5 text-neutral-500 dark:text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 16 4 4 4-4"></path>
+          <path d="M7 20V4"></path>
+          <path d="M20 8h-5"></path>
+          <path d="M15 10V6.5a2.5 2.5 0 0 1 5 0V10"></path>
+          <path d="M15 14h5l-5 6h5"></path>
+        </svg>
+        <span>Sort A-Z</span>
+      </button>
+
+      <!-- Fullscreen Toggle -->
+      <button
+        type="button"
+        id="jb-btn-fullscreen"
+        title="Toggle Fullscreen"
+        class="inline-flex items-center justify-center rounded-lg border border-neutral-300 bg-white p-1.5 text-neutral-600 shadow-2xs hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white transition cursor-pointer"
+      >
+        <svg id="jb-icon-fs-enter" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <polyline points="9 21 3 21 3 15"></polyline>
+          <line x1="21" y1="3" x2="14" y2="10"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+        <svg id="jb-icon-fs-exit" class="h-4 w-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="4 14 10 14 10 20"></polyline>
+          <polyline points="20 10 14 10 14 4"></polyline>
+          <line x1="14" y1="10" x2="21" y2="3"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Inline URL Fetch Bar -->
+  <div id="jb-url-bar" class="hidden border-b border-neutral-200 bg-indigo-50/80 px-4 py-2.5 dark:border-neutral-800 dark:bg-indigo-950/40">
+    <form id="jb-url-form" class="flex flex-wrap items-center gap-2">
+      <span class="text-xs font-semibold text-indigo-900 dark:text-indigo-300">Public JSON URL:</span>
+      <input
+        type="url"
+        id="jb-url-input"
+        placeholder="https://api.github.com/users/octocat"
+        required
+        class="min-w-[280px] flex-1 rounded-lg border border-indigo-200 bg-white px-3 py-1.5 text-xs text-neutral-900 placeholder-neutral-400 shadow-2xs focus:border-indigo-600 focus:outline-none focus:ring-1 focus:ring-indigo-600 dark:border-indigo-800 dark:bg-neutral-800 dark:text-white"
+      />
+      <button
+        type="submit"
+        id="jb-btn-fetch"
+        class="inline-flex items-center gap-1 rounded-lg bg-indigo-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-2xs hover:bg-indigo-500 transition cursor-pointer"
+      >
+        <span>Fetch</span>
+      </button>
+      <button
+        type="button"
+        id="jb-btn-close-url"
+        class="inline-flex items-center rounded-lg border border-neutral-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 transition cursor-pointer"
+      >
+        Cancel
+      </button>
+      <span id="jb-url-status" class="text-xs text-rose-600 dark:text-rose-400 font-medium"></span>
+    </form>
+  </div>
+
+  <!-- Dual-Pane Workspace with Center Buttons -->
+  <div class="grid grid-cols-1 lg:grid-cols-[1fr_auto_1fr] min-h-[560px] divide-y lg:divide-y-0 lg:divide-x divide-neutral-200 dark:divide-neutral-800 bg-neutral-100/40 dark:bg-neutral-950/40">
+    
+    <!-- ==================== LEFT BOX: JSON INPUT ==================== -->
+    <div class="flex flex-col bg-white dark:bg-neutral-900 shadow-inner">
+      <!-- Left Box Header Toolbar -->
+      <div class="flex items-center justify-between border-b border-neutral-200 bg-neutral-50 px-3.5 py-2.5 text-xs dark:border-neutral-800 dark:bg-neutral-850">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 font-bold text-neutral-900 dark:text-white">
+            <svg class="h-4 w-4 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+              <path d="M7 8h10"></path>
+              <path d="M7 12h10"></path>
+              <path d="M7 16h6"></path>
+            </svg>
+            <span>JSON Input</span>
+          </span>
+          <span id="jb-in-badge" class="rounded-full bg-neutral-200/70 px-2 py-0.5 text-[11px] font-mono text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
+            0 lines
+          </span>
+        </div>
+
+        <div class="flex items-center gap-1.5">
+          <button
+            type="button"
+            id="jb-btn-paste"
+            title="Paste from clipboard"
+            class="inline-flex items-center gap-1 rounded-md border border-neutral-300 bg-white px-2 py-1 text-[11px] font-medium text-neutral-700 shadow-2xs hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
+          >
+            <svg class="h-3 w-3 text-neutral-500 dark:text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+            </svg>
+            <span>Paste</span>
+          </button>
+          <button
+            type="button"
+            id="jb-btn-clear-in"
+            title="Clear input text"
+            class="inline-flex items-center gap-1 rounded-md border border-neutral-300 bg-white px-2 py-1 text-[11px] font-medium text-neutral-700 shadow-2xs hover:bg-rose-50 hover:text-rose-600 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-rose-950/40 dark:hover:text-rose-300 transition cursor-pointer"
+          >
+            Clear
+          </button>
+        </div>
+      </div>
+
+      <!-- Left Box Editor Area -->
+      <div class="relative flex-1 flex flex-row overflow-hidden min-h-[380px] lg:min-h-[520px] bg-white dark:bg-neutral-900 w-full">
+        <!-- Line Numbers Gutter -->
+        <div
+          id="jb-gutter-in"
+          aria-hidden="true"
+          class="jb-editor-gutter select-none border-r border-neutral-200 bg-neutral-50 text-right font-mono text-neutral-400 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-600 overflow-hidden shrink-0"
+        >
+          1
+        </div>
+
+        <!-- Input Textarea -->
+        <textarea
+          id="jb-input"
+          spellcheck="false"
+          autocapitalize="off"
+          autocomplete="off"
+          placeholder="Paste or type raw, minified, or messy JSON here..."
+          class="jb-editor-textarea flex-1 min-w-0 resize-none bg-transparent font-mono text-neutral-900 placeholder-neutral-400 focus:outline-none dark:text-neutral-100 dark:placeholder-neutral-600 overflow-auto"
+        >{defaultSampleJson}</textarea>
+
+        <!-- Drop Overlay -->
+        <div
+          id="jb-drop-zone"
+          class="pointer-events-none absolute inset-0 hidden items-center justify-center border-2 border-dashed border-indigo-500 bg-indigo-50/90 text-indigo-900 font-semibold dark:bg-indigo-950/90 dark:text-indigo-200 z-10 text-sm"
+        >
+          📂 Drop JSON file to load into Input
+        </div>
+      </div>
+
+      <!-- Input Error Notification Banner -->
+      <div id="jb-error-bar" class="hidden border-t border-rose-200 bg-rose-50 px-3.5 py-2.5 text-xs text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/50 dark:text-rose-300">
+        <div class="flex items-start gap-2">
+          <svg class="h-4 w-4 shrink-0 text-rose-600 dark:text-rose-400 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          <div class="flex-1">
+            <span class="font-bold">JSON Syntax Error: </span>
+            <span id="jb-error-msg" class="font-mono text-[11px]"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== CENTER ACTION BRIDGE ==================== -->
+    <div class="flex flex-row lg:flex-col justify-center items-center gap-3 bg-neutral-100/90 px-3 py-4 dark:bg-neutral-850/80 border-y lg:border-y-0 border-neutral-200 dark:border-neutral-800">
+      <!-- Beautify Left -> Right -->
+      <button
+        type="button"
+        id="jb-btn-beautify"
+        title="Beautify JSON Left to Right (Ctrl+Enter)"
+        class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-indigo-600 px-4 py-2.5 text-xs font-bold text-white shadow-md shadow-indigo-600/25 hover:bg-indigo-500 active:scale-95 transition cursor-pointer w-full max-w-[140px]"
+      >
+        <span>Beautify</span>
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </button>
+
+      <!-- Reverse Beautify Right -> Left -->
+      <button
+        type="button"
+        id="jb-btn-reverse"
+        title="Copy Output to Input and Beautify"
+        class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-neutral-300 bg-white px-3.5 py-2 text-xs font-semibold text-neutral-800 shadow-2xs hover:bg-neutral-50 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 transition cursor-pointer w-full max-w-[140px]"
+      >
+        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+        <span>Beautify</span>
+      </button>
+
+      <!-- Minify -->
+      <button
+        type="button"
+        id="jb-btn-minify"
+        title="Minify JSON (strip all whitespace)"
+        class="inline-flex items-center justify-center gap-1.5 rounded-xl border border-neutral-300 bg-white px-3.5 py-2 text-xs font-semibold text-neutral-800 shadow-2xs hover:bg-neutral-50 active:scale-95 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 transition cursor-pointer w-full max-w-[140px]"
+      >
+        <svg class="h-3.5 w-3.5 text-neutral-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="4 14 10 14 10 20"></polyline>
+          <polyline points="20 10 14 10 14 4"></polyline>
+          <line x1="14" y1="10" x2="21" y2="3"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+        <span>Minify</span>
+      </button>
+    </div>
+
+    <!-- ==================== RIGHT BOX: JSON OUTPUT ==================== -->
+    <div class="flex flex-col bg-white dark:bg-neutral-900 shadow-inner">
+      <!-- Right Box Header Toolbar -->
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-200 bg-neutral-50 px-3.5 py-2.5 text-xs dark:border-neutral-800 dark:bg-neutral-850">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 font-bold text-neutral-900 dark:text-white">
+            <svg class="h-4 w-4 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="16 18 22 12 16 6"></polyline>
+              <polyline points="8 6 2 12 8 18"></polyline>
+            </svg>
+            <span>JSON Output</span>
+          </span>
+
+          <!-- View Mode Switcher -->
+          <div class="inline-flex rounded-lg bg-neutral-200/80 p-0.5 dark:bg-neutral-800 border border-neutral-300/60 dark:border-neutral-700">
+            <button
+              type="button"
+              id="jb-mode-code"
+              class="rounded-md px-2.5 py-0.5 text-[11px] font-bold bg-white text-neutral-900 shadow-2xs dark:bg-neutral-900 dark:text-white transition cursor-pointer"
+            >
+              Editor
+            </button>
+            <button
+              type="button"
+              id="jb-mode-syntax"
+              class="rounded-md px-2.5 py-0.5 text-[11px] font-semibold text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition cursor-pointer"
+            >
+              Colored
+            </button>
+            <button
+              type="button"
+              id="jb-mode-tree"
+              class="rounded-md px-2.5 py-0.5 text-[11px] font-semibold text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition cursor-pointer"
+            >
+              Tree View
+            </button>
+          </div>
+        </div>
+
+        <!-- Output Action Buttons -->
+        <div class="flex items-center gap-1.5">
+          <button
+            type="button"
+            id="jb-btn-copy"
+            title="Copy Output to Clipboard"
+            class="inline-flex items-center gap-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-neutral-700 shadow-2xs hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white transition cursor-pointer"
+          >
+            <svg id="jb-icon-copy" class="h-3 w-3 text-neutral-500 dark:text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span id="jb-copy-label">Copy</span>
+          </button>
+
+          <button
+            type="button"
+            id="jb-btn-download"
+            title="Download formatted JSON file"
+            class="inline-flex items-center gap-1 rounded-md border border-neutral-300 bg-white px-2.5 py-1 text-[11px] font-semibold text-neutral-700 shadow-2xs hover:bg-neutral-100 hover:text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white transition cursor-pointer"
+          >
+            <svg class="h-3 w-3 text-neutral-500 dark:text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Download</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Right Box Output Workspace -->
+      <div class="relative flex-1 flex flex-col overflow-hidden min-h-[380px] lg:min-h-[520px] bg-white dark:bg-neutral-900 w-full">
+        
+        <!-- 1. TEXT EDITOR MODE (Editable Textarea) -->
+        <div id="jb-out-editor-wrap" class="flex flex-row flex-1 overflow-hidden w-full h-full">
+          <div
+            id="jb-gutter-out-editor"
+            aria-hidden="true"
+            class="jb-editor-gutter select-none border-r border-neutral-200 bg-neutral-50 text-right font-mono text-neutral-400 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-600 overflow-hidden shrink-0"
+          >
+            1
+          </div>
+          <textarea
+            id="jb-output-textarea"
+            spellcheck="false"
+            autocapitalize="off"
+            autocomplete="off"
+            placeholder="Formatted JSON will appear here. You can also edit it directly..."
+            class="jb-editor-textarea flex-1 min-w-0 resize-none bg-transparent font-mono text-neutral-900 placeholder-neutral-400 focus:outline-none dark:text-neutral-100 dark:placeholder-neutral-600 overflow-auto"
+          ></textarea>
+        </div>
+
+        <!-- 2. SYNTAX HIGHLIGHTED MODE (Pre/Code View) -->
+        <div id="jb-out-syntax-wrap" class="hidden flex-row flex-1 overflow-hidden w-full h-full">
+          <div
+            id="jb-gutter-out-syntax"
+            aria-hidden="true"
+            class="jb-editor-gutter select-none border-r border-neutral-200 bg-neutral-50 text-right font-mono text-neutral-400 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-600 overflow-hidden shrink-0"
+          >
+            1
+          </div>
+          <div
+            id="jb-syntax-scroll"
+            class="flex-1 min-w-0 overflow-auto bg-neutral-50/20 dark:bg-neutral-950/30"
+          >
+            <pre
+              id="jb-output-pre"
+              class="jb-editor-pre font-mono select-text text-neutral-900 dark:text-neutral-100"
+            ></pre>
+          </div>
+        </div>
+
+        <!-- 3. INTERACTIVE TREE VIEW MODE -->
+        <div id="jb-out-tree-wrap" class="hidden flex-1 flex-col overflow-hidden bg-neutral-50/50 dark:bg-neutral-950/40">
+          <!-- Tree Toolbar -->
+          <div class="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-200 bg-white/70 px-3 py-2 text-xs dark:border-neutral-800 dark:bg-neutral-900/70">
+            <div class="flex items-center gap-1.5">
+              <button
+                type="button"
+                id="jb-tree-expand-all"
+                class="rounded border border-neutral-300 bg-white px-2 py-0.5 text-[11px] font-semibold text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
+              >
+                + Expand All
+              </button>
+              <button
+                type="button"
+                id="jb-tree-collapse-all"
+                class="rounded border border-neutral-300 bg-white px-2 py-0.5 text-[11px] font-semibold text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
+              >
+                - Collapse All
+              </button>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <input
+                type="text"
+                id="jb-tree-filter"
+                placeholder="Search keys/values..."
+                class="rounded border border-neutral-300 bg-white px-2.5 py-0.5 text-xs text-neutral-800 placeholder-neutral-400 focus:outline-none focus:ring-1 focus:ring-indigo-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200"
+              />
+            </div>
+          </div>
+
+          <!-- Tree Body -->
+          <div id="jb-tree-body" class="flex-1 overflow-auto p-3 font-mono text-xs leading-relaxed select-text">
+            <!-- Dynamic tree nodes rendered here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Comprehensive Status Bar -->
+  <div class="flex flex-wrap items-center justify-between gap-3 border-t border-neutral-200 bg-neutral-50 px-4 py-2.5 text-xs text-neutral-600 dark:border-neutral-800 dark:bg-neutral-900/90 dark:text-neutral-400 rounded-b-2xl">
+    <!-- Left Validation Status Badge -->
+    <div class="flex items-center gap-2">
+      <div id="jb-status-badge" class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 font-semibold text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300">
+        <span class="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+        <span id="jb-status-text">Valid JSON</span>
+      </div>
+      <span class="text-neutral-300 dark:text-neutral-700">|</span>
+      <span id="jb-stats-in-summary" class="font-mono text-[11px]">Input: 0 lines • 0 B</span>
+      <span class="text-neutral-300 dark:text-neutral-700">|</span>
+      <span id="jb-stats-out-summary" class="font-mono text-[11px]">Output: 0 lines • 0 B</span>
+    </div>
+
+    <!-- Right Diagnostic Badges -->
+    <div class="flex items-center gap-3 text-[11px] font-mono text-neutral-500 dark:text-neutral-400">
+      <span id="jb-stats-depth">Depth: 0</span>
+      <span id="jb-stats-keys">Keys: 0</span>
+      <span id="jb-stats-savings" class="hidden font-bold text-emerald-600 dark:text-emerald-400"></span>
+    </div>
+  </div>
+</div>
+
+<style is:inline>
+  /* Pixel-Perfect Editor & Gutter Font Metrics */
+  .jb-editor-gutter,
+  .jb-editor-textarea,
+  .jb-editor-pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+    font-size: 13px !important;
+    line-height: 22px !important;
+    letter-spacing: 0px !important;
+    tab-size: 2 !important;
+    box-sizing: border-box !important;
+  }
+
+  .jb-editor-gutter {
+    width: 48px !important;
+    min-width: 48px !important;
+    max-width: 48px !important;
+    flex: 0 0 48px !important;
+    flex-shrink: 0 !important;
+    white-space: pre !important;
+    word-break: normal !important;
+    overflow-x: hidden !important;
+    overflow-y: hidden !important;
+    text-align: right !important;
+    user-select: none !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    padding-left: 4px !important;
+    padding-right: 10px !important;
+  }
+
+  .jb-editor-textarea {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    white-space: pre !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    overflow-x: auto !important;
+    overflow-y: auto !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    outline: none !important;
+    border: none !important;
+  }
+
+  .jb-editor-pre {
+    flex: 1 1 0% !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    white-space: pre !important;
+    word-break: normal !important;
+    overflow-wrap: normal !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+    margin: 0 !important;
+  }
+
+  /* Syntax Highlighting Colors */
+  .jb-key { color: #0284c7; font-weight: 600; } /* sky-600 */
+  :root.dark .jb-key, .dark .jb-key { color: #38bdf8; } /* sky-400 */
+
+  .jb-string { color: #059669; } /* emerald-600 */
+  :root.dark .jb-string, .dark .jb-string { color: #34d399; } /* emerald-400 */
+
+  .jb-number { color: #d97706; } /* amber-600 */
+  :root.dark .jb-number, .dark .jb-number { color: #fbbf24; } /* amber-400 */
+
+  .jb-boolean { color: #7c3aed; font-weight: 600; } /* violet-600 */
+  :root.dark .jb-boolean, .dark .jb-boolean { color: #a78bfa; } /* violet-400 */
+
+  .jb-null { color: #e11d48; font-weight: 600; } /* rose-600 */
+  :root.dark .jb-null, .dark .jb-null { color: #fb7185; } /* rose-400 */
+
+  .jb-punct { color: #6b7280; } /* gray-500 */
+  :root.dark .jb-punct, .dark .jb-punct { color: #9ca3af; }
+
+  /* Tree View Elements */
+  .jb-tree-node { margin-left: 1.25rem; }
+  .jb-tree-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 14px;
+    height: 14px;
+    margin-right: 4px;
+    cursor: pointer;
+    user-select: none;
+    font-size: 10px;
+    color: #6b7280;
+    transition: transform 0.15s ease;
+  }
+  .jb-tree-toggle.collapsed { transform: rotate(-90deg); }
+  .jb-tree-badge {
+    font-size: 10px;
+    padding: 1px 5px;
+    border-radius: 4px;
+    background-color: rgba(107, 114, 128, 0.15);
+    color: #6b7280;
+    margin-left: 5px;
+  }
+  .jb-tree-hidden { display: none !important; }
+
+  /* Fullscreen Mode */
+  .jb-fullscreen {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 9999 !important;
+    border-radius: 0 !important;
+    height: 100vh !important;
+    width: 100vw !important;
+    max-width: none !important;
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    // Inputs & Editors
+    const inputEl = document.getElementById('jb-input');
+    const gutterIn = document.getElementById('jb-gutter-in');
+    const outputTextarea = document.getElementById('jb-output-textarea');
+    const gutterOutEditor = document.getElementById('jb-gutter-out-editor');
+    const gutterOutSyntax = document.getElementById('jb-gutter-out-syntax');
+    const outputPre = document.getElementById('jb-output-pre');
+    const syntaxScroll = document.getElementById('jb-syntax-scroll');
+
+    // Wrappers
+    const outEditorWrap = document.getElementById('jb-out-editor-wrap');
+    const outSyntaxWrap = document.getElementById('jb-out-syntax-wrap');
+    const outTreeWrap = document.getElementById('jb-out-tree-wrap');
+
+    // Error
+    const errorBar = document.getElementById('jb-error-bar');
+    const errorMsg = document.getElementById('jb-error-msg');
+
+    // Stats
+    const inBadge = document.getElementById('jb-in-badge');
+    const statusBadge = document.getElementById('jb-status-badge');
+    const statusText = document.getElementById('jb-status-text');
+    const statsInSummary = document.getElementById('jb-stats-in-summary');
+    const statsOutSummary = document.getElementById('jb-stats-out-summary');
+    const statsDepth = document.getElementById('jb-stats-depth');
+    const statsKeys = document.getElementById('jb-stats-keys');
+    const statsSavings = document.getElementById('jb-stats-savings');
+
+    // Settings
+    const selectIndent = document.getElementById('jb-select-indent');
+    const btnSort = document.getElementById('jb-btn-sort');
+    const btnBeautify = document.getElementById('jb-btn-beautify');
+    const btnReverse = document.getElementById('jb-btn-reverse');
+    const btnMinify = document.getElementById('jb-btn-minify');
+    const btnClearAll = document.getElementById('jb-btn-clear-all');
+    const btnClearIn = document.getElementById('jb-btn-clear-in');
+    const btnSample = document.getElementById('jb-btn-sample');
+    const btnUpload = document.getElementById('jb-btn-upload');
+    const fileInput = document.getElementById('jb-file-input');
+    const btnCopy = document.getElementById('jb-btn-copy');
+    const copyLabel = document.getElementById('jb-copy-label');
+    const btnDownload = document.getElementById('jb-btn-download');
+    const btnFullscreen = document.getElementById('jb-btn-fullscreen');
+    const appContainer = document.getElementById('jb-app');
+
+    // URL Fetcher
+    const btnOpenUrl = document.getElementById('jb-btn-open-url');
+    const urlBar = document.getElementById('jb-url-bar');
+    const urlForm = document.getElementById('jb-url-form');
+    const urlInput = document.getElementById('jb-url-input');
+    const btnCloseUrl = document.getElementById('jb-btn-close-url');
+    const urlStatus = document.getElementById('jb-url-status');
+
+    // Modes
+    const modeCodeBtn = document.getElementById('jb-mode-code');
+    const modeSyntaxBtn = document.getElementById('jb-mode-syntax');
+    const modeTreeBtn = document.getElementById('jb-mode-tree');
+
+    // Tree View
+    const treeBody = document.getElementById('jb-tree-body');
+    const treeExpandAll = document.getElementById('jb-tree-expand-all');
+    const treeCollapseAll = document.getElementById('jb-tree-collapse-all');
+    const treeFilter = document.getElementById('jb-tree-filter');
+
+    // Paste & Drag Drop
+    const btnPaste = document.getElementById('jb-btn-paste');
+    const dropZone = document.getElementById('jb-drop-zone');
+
+    let currentParsedData = null;
+    let isSortActive = false;
+    let currentMode = 'editor'; // 'editor' | 'syntax' | 'tree'
+
+    // Format Byte Size
+    function formatBytes(bytes) {
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+      return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
+    }
+
+    // Deep Analysis: Depth and Key Count
+    function analyzeJson(val, depth = 1) {
+      let maxDepth = depth;
+      let keyCount = 0;
+      if (val !== null && typeof val === 'object') {
+        const entries = Object.entries(val);
+        keyCount += entries.length;
+        for (const [, v] of entries) {
+          if (v !== null && typeof v === 'object') {
+            const sub = analyzeJson(v, depth + 1);
+            if (sub.maxDepth > maxDepth) maxDepth = sub.maxDepth;
+            keyCount += sub.keyCount;
+          }
+        }
+      }
+      return { maxDepth, keyCount };
+    }
+
+    // Deep Sort Object Keys
+    function sortDeep(obj) {
+      if (Array.isArray(obj)) return obj.map(sortDeep);
+      if (obj !== null && typeof obj === 'object') {
+        return Object.keys(obj)
+          .sort()
+          .reduce((acc, k) => {
+            acc[k] = sortDeep(obj[k]);
+            return acc;
+          }, {});
+      }
+      return obj;
+    }
+
+    // Syntax Highlight Tokenizer
+    function syntaxHighlight(jsonStr) {
+      if (!jsonStr) return '';
+      const escaped = jsonStr
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+      return escaped.replace(
+        /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+        function (match) {
+          let cls = 'jb-number';
+          if (/^"/.test(match)) {
+            if (/:$/.test(match)) {
+              cls = 'jb-key';
+            } else {
+              cls = 'jb-string';
+            }
+          } else if (/true|false/.test(match)) {
+            cls = 'jb-boolean';
+          } else if (/null/.test(match)) {
+            cls = 'jb-null';
+          }
+          return '<span class="' + cls + '">' + match + '</span>';
+        }
+      );
+    }
+
+    // Update Line Numbers Gutter
+    function renderGutter(text) {
+      if (!text) return '1';
+      const lines = text.split('\n').length;
+      let res = '';
+      for (let i = 1; i <= lines; i++) {
+        res += i + '\n';
+      }
+      return res;
+    }
+
+    function updateGutters() {
+      if (gutterIn && inputEl) {
+        gutterIn.textContent = renderGutter(inputEl.value);
+      }
+      if (outputTextarea) {
+        const outGutter = renderGutter(outputTextarea.value);
+        if (gutterOutEditor) gutterOutEditor.textContent = outGutter;
+        if (gutterOutSyntax) gutterOutSyntax.textContent = outGutter;
+      }
+    }
+
+    // Build Interactive Tree
+    function buildTree(val, keyName = null, isLast = true) {
+      const container = document.createElement('div');
+      container.className = 'jb-tree-item py-0.5';
+
+      const line = document.createElement('div');
+      line.className = 'jb-tree-line flex items-center flex-wrap';
+
+      const isObject = val !== null && typeof val === 'object' && !Array.isArray(val);
+      const isArray = Array.isArray(val);
+      const isComplex = isObject || isArray;
+
+      if (isComplex) {
+        const toggle = document.createElement('span');
+        toggle.className = 'jb-tree-toggle';
+        toggle.textContent = '▼';
+
+        const keySpan = document.createElement('span');
+        keySpan.className = 'jb-key mr-1';
+        keySpan.textContent = keyName !== null ? `"${keyName}": ` : '';
+
+        const badge = document.createElement('span');
+        badge.className = 'jb-tree-badge';
+        const length = isArray ? val.length : Object.keys(val).length;
+        badge.textContent = isArray ? `Array[${length}]` : `Object{${length}}`;
+
+        line.appendChild(toggle);
+        if (keyName !== null) line.appendChild(keySpan);
+        line.appendChild(badge);
+        container.appendChild(line);
+
+        const childrenContainer = document.createElement('div');
+        childrenContainer.className = 'jb-tree-node';
+
+        toggle.onclick = function (e) {
+          e.stopPropagation();
+          const isCollapsed = toggle.classList.toggle('collapsed');
+          childrenContainer.classList.toggle('jb-tree-hidden', isCollapsed);
+        };
+
+        if (isArray) {
+          val.forEach((item, idx) => {
+            const childNode = buildTree(item, idx, idx === val.length - 1);
+            childrenContainer.appendChild(childNode);
+          });
+        } else {
+          const keys = Object.keys(val);
+          keys.forEach((k, idx) => {
+            const childNode = buildTree(val[k], k, idx === keys.length - 1);
+            childrenContainer.appendChild(childNode);
+          });
+        }
+
+        container.appendChild(childrenContainer);
+      } else {
+        const spacer = document.createElement('span');
+        spacer.className = 'w-3.5 mr-1 inline-block';
+        line.appendChild(spacer);
+
+        if (keyName !== null) {
+          const keySpan = document.createElement('span');
+          keySpan.className = 'jb-key mr-1';
+          keySpan.textContent = `"${keyName}": `;
+          line.appendChild(keySpan);
+        }
+
+        const valSpan = document.createElement('span');
+        if (typeof val === 'string') {
+          valSpan.className = 'jb-string';
+          valSpan.textContent = `"${val}"`;
+        } else if (typeof val === 'number') {
+          valSpan.className = 'jb-number';
+          valSpan.textContent = String(val);
+        } else if (typeof val === 'boolean') {
+          valSpan.className = 'jb-boolean';
+          valSpan.textContent = String(val);
+        } else if (val === null) {
+          valSpan.className = 'jb-null';
+          valSpan.textContent = 'null';
+        }
+        line.appendChild(valSpan);
+        if (!isLast) {
+          const comma = document.createElement('span');
+          comma.className = 'jb-punct';
+          comma.textContent = ',';
+          line.appendChild(comma);
+        }
+        container.appendChild(line);
+      }
+
+      return container;
+    }
+
+    function renderTree(data) {
+      if (!treeBody) return;
+      treeBody.innerHTML = '';
+      if (data === null || data === undefined) {
+        treeBody.innerHTML = '<span class="text-neutral-400 italic">No valid JSON data</span>';
+        return;
+      }
+      const treeElement = buildTree(data, null, true);
+      treeBody.appendChild(treeElement);
+    }
+
+    // Core Formatting Function
+    function executeFormat(sourceText, isMinify = false, targetIsInput = false) {
+      const raw = (sourceText || '').trim();
+      if (!raw) {
+        if (targetIsInput) {
+          if (inputEl) inputEl.value = '';
+        } else {
+          if (outputTextarea) outputTextarea.value = '';
+          if (outputPre) outputPre.innerHTML = '';
+          renderTree(null);
+        }
+        updateGutters();
+        if (errorBar) errorBar.classList.add('hidden');
+        if (statusBadge) {
+          statusBadge.className = 'inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-2.5 py-0.5 font-semibold text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400';
+          statusText.textContent = 'Empty';
+        }
+        return;
+      }
+
+      let parsed;
+      try {
+        parsed = JSON.parse(raw);
+        if (errorBar) errorBar.classList.add('hidden');
+        if (statusBadge) {
+          statusBadge.className = 'inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-2.5 py-0.5 font-semibold text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300';
+          statusText.textContent = 'Valid JSON';
+        }
+      } catch (err) {
+        if (errorBar) {
+          errorBar.classList.remove('hidden');
+          if (errorMsg) errorMsg.textContent = err.message;
+        }
+        if (statusBadge) {
+          statusBadge.className = 'inline-flex items-center gap-1.5 rounded-full bg-rose-100 px-2.5 py-0.5 font-semibold text-rose-800 dark:bg-rose-950/70 dark:text-rose-300';
+          statusText.textContent = 'Invalid JSON';
+        }
+        return;
+      }
+
+      currentParsedData = parsed;
+      const dataToFormat = isSortActive ? sortDeep(parsed) : parsed;
+
+      let indentVal = selectIndent ? selectIndent.value : '2';
+      let indentArg = 2;
+      if (indentVal === 'tab') indentArg = '\t';
+      else indentArg = Number(indentVal) || 2;
+
+      let resultText = '';
+      if (isMinify) {
+        resultText = JSON.stringify(dataToFormat);
+      } else {
+        resultText = JSON.stringify(dataToFormat, null, indentArg);
+      }
+
+      if (targetIsInput) {
+        if (inputEl) inputEl.value = resultText;
+      } else {
+        if (outputTextarea) outputTextarea.value = resultText;
+        if (outputPre) outputPre.innerHTML = syntaxHighlight(resultText);
+        renderTree(dataToFormat);
+      }
+
+      updateGutters();
+      updateStats();
+    }
+
+    function updateStats() {
+      const inText = inputEl ? inputEl.value : '';
+      const outText = outputTextarea ? outputTextarea.value : '';
+
+      const inBytes = new Blob([inText]).size;
+      const inLines = inText ? inText.split('\n').length : 0;
+      if (inBadge) inBadge.textContent = `${inLines} lines`;
+      if (statsInSummary) statsInSummary.textContent = `Input: ${inLines} lines • ${formatBytes(inBytes)}`;
+
+      const outBytes = new Blob([outText]).size;
+      const outLines = outText ? outText.split('\n').length : 0;
+      if (statsOutSummary) statsOutSummary.textContent = `Output: ${outLines} lines • ${formatBytes(outBytes)}`;
+
+      if (currentParsedData) {
+        const analysis = analyzeJson(currentParsedData);
+        if (statsDepth) statsDepth.textContent = `Depth: ${analysis.maxDepth}`;
+        if (statsKeys) statsKeys.textContent = `Keys: ${analysis.keyCount}`;
+      }
+
+      if (inBytes > 0 && outBytes > 0 && outBytes < inBytes && statsSavings) {
+        const diff = Math.round(((inBytes - outBytes) / inBytes) * 100);
+        statsSavings.textContent = `Saved ${diff}%`;
+        statsSavings.classList.remove('hidden');
+      } else if (statsSavings) {
+        statsSavings.classList.add('hidden');
+      }
+    }
+
+    // Synchronize Input Scroll with Gutter
+    if (inputEl && gutterIn) {
+      inputEl.addEventListener('scroll', function () {
+        gutterIn.scrollTop = inputEl.scrollTop;
+      });
+
+      // Live formatting debounced
+      let inputTimer;
+      inputEl.addEventListener('input', function () {
+        clearTimeout(inputTimer);
+        inputTimer = setTimeout(() => {
+          executeFormat(inputEl.value, false, false);
+        }, 200);
+      });
+
+      // Tab Key Indentation support
+      inputEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
+          const spaces = selectIndent && selectIndent.value === 'tab' ? '\t' : '  ';
+          this.value = this.value.substring(0, start) + spaces + this.value.substring(end);
+          this.selectionStart = this.selectionEnd = start + spaces.length;
+          executeFormat(this.value, false, false);
+        } else if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+          e.preventDefault();
+          executeFormat(this.value, false, false);
+        }
+      });
+    }
+
+    // Synchronize Output Scroll with Gutter
+    if (outputTextarea && gutterOutEditor) {
+      outputTextarea.addEventListener('scroll', function () {
+        gutterOutEditor.scrollTop = outputTextarea.scrollTop;
+      });
+
+      let outTimer;
+      outputTextarea.addEventListener('input', function () {
+        clearTimeout(outTimer);
+        outTimer = setTimeout(() => {
+          updateGutters();
+          updateStats();
+          if (outputPre) outputPre.innerHTML = syntaxHighlight(outputTextarea.value);
+          try {
+            const p = JSON.parse(outputTextarea.value);
+            renderTree(p);
+          } catch {}
+        }, 200);
+      });
+
+      outputTextarea.addEventListener('keydown', function (e) {
+        if (e.key === 'Tab') {
+          e.preventDefault();
+          const start = this.selectionStart;
+          const end = this.selectionEnd;
+          const spaces = selectIndent && selectIndent.value === 'tab' ? '\t' : '  ';
+          this.value = this.value.substring(0, start) + spaces + this.value.substring(end);
+          this.selectionStart = this.selectionEnd = start + spaces.length;
+        }
+      });
+    }
+
+    if (syntaxScroll && gutterOutSyntax) {
+      syntaxScroll.addEventListener('scroll', function () {
+        gutterOutSyntax.scrollTop = syntaxScroll.scrollTop;
+      });
+    }
+
+    // Beautify Actions
+    if (btnBeautify) {
+      btnBeautify.addEventListener('click', () => {
+        if (inputEl) executeFormat(inputEl.value, false, false);
+      });
+    }
+
+    // Reverse Beautify: Format Output and put back into Input
+    if (btnReverse) {
+      btnReverse.addEventListener('click', () => {
+        const textToUse = outputTextarea && outputTextarea.value.trim() ? outputTextarea.value : (inputEl ? inputEl.value : '');
+        executeFormat(textToUse, false, true);
+        if (outputTextarea) executeFormat(inputEl.value, false, false);
+      });
+    }
+
+    // Minify Action
+    if (btnMinify) {
+      btnMinify.addEventListener('click', () => {
+        if (inputEl) executeFormat(inputEl.value, true, false);
+      });
+    }
+
+    // Tab Size Change
+    if (selectIndent) {
+      selectIndent.addEventListener('change', () => {
+        if (inputEl) executeFormat(inputEl.value, false, false);
+      });
+    }
+
+    // Sort Keys Toggle
+    if (btnSort) {
+      btnSort.addEventListener('click', () => {
+        isSortActive = !isSortActive;
+        btnSort.setAttribute('aria-pressed', isSortActive ? 'true' : 'false');
+        if (isSortActive) {
+          btnSort.classList.add('bg-indigo-50', 'text-indigo-700', 'border-indigo-300', 'dark:bg-indigo-950/60', 'dark:text-indigo-300', 'dark:border-indigo-700');
+        } else {
+          btnSort.classList.remove('bg-indigo-50', 'text-indigo-700', 'border-indigo-300', 'dark:bg-indigo-950/60', 'dark:text-indigo-300', 'dark:border-indigo-700');
+        }
+        if (inputEl) executeFormat(inputEl.value, false, false);
+      });
+    }
+
+    // Clear All
+    if (btnClearAll) {
+      btnClearAll.addEventListener('click', () => {
+        if (inputEl) inputEl.value = '';
+        if (outputTextarea) outputTextarea.value = '';
+        if (outputPre) outputPre.innerHTML = '';
+        renderTree(null);
+        updateGutters();
+        updateStats();
+        if (errorBar) errorBar.classList.add('hidden');
+        if (statusBadge) {
+          statusBadge.className = 'inline-flex items-center gap-1.5 rounded-full bg-neutral-100 px-2.5 py-0.5 font-semibold text-neutral-600 dark:bg-neutral-800 dark:text-neutral-400';
+          statusText.textContent = 'Empty';
+        }
+      });
+    }
+
+    // Clear Input Only
+    if (btnClearIn) {
+      btnClearIn.addEventListener('click', () => {
+        if (inputEl) {
+          inputEl.value = '';
+          inputEl.focus();
+        }
+        updateGutters();
+        updateStats();
+      });
+    }
+
+    // Load Sample
+    if (btnSample) {
+      btnSample.addEventListener('click', () => {
+        const sampleData = {
+          project: "ToolsOfTools",
+          version: "2.4.0",
+          description: "Next-generation developer and calculation utilities",
+          active: true,
+          features: [
+            "JSON Beautifier",
+            "JSON Minifier",
+            "Interactive Tree Viewer",
+            "Real-time Syntax Validator",
+            "URL Fetcher"
+          ],
+          metadata: {
+            totalTools: 1346,
+            languages: 14,
+            clientSide: true,
+            rating: 4.98,
+            license: null
+          },
+          maintainer: {
+            name: "Developer Suite",
+            verified: true
+          }
+        };
+        if (inputEl) {
+          inputEl.value = JSON.stringify(sampleData, null, 2);
+          executeFormat(inputEl.value, false, false);
+        }
+      });
+    }
+
+    // File Upload
+    if (btnUpload && fileInput) {
+      btnUpload.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          if (inputEl && evt.target) {
+            inputEl.value = String(evt.target.result || '');
+            executeFormat(inputEl.value, false, false);
+          }
+        };
+        reader.readAsText(file);
+      });
+    }
+
+    // Drag and Drop
+    if (inputEl && dropZone) {
+      ['dragenter', 'dragover'].forEach((eventName) => {
+        inputEl.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('hidden');
+          dropZone.classList.add('flex');
+        });
+      });
+      ['dragleave', 'drop'].forEach((eventName) => {
+        inputEl.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropZone.classList.add('hidden');
+          dropZone.classList.remove('flex');
+        });
+      });
+      inputEl.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const files = e.dataTransfer && e.dataTransfer.files;
+        if (files && files.length > 0) {
+          const reader = new FileReader();
+          reader.onload = (evt) => {
+            if (inputEl && evt.target) {
+              inputEl.value = String(evt.target.result || '');
+              executeFormat(inputEl.value, false, false);
+            }
+          };
+          reader.readAsText(files[0]);
+        }
+      });
+    }
+
+    // Paste Action
+    if (btnPaste && inputEl) {
+      btnPaste.addEventListener('click', async () => {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text) {
+            inputEl.value = text;
+            executeFormat(inputEl.value, false, false);
+          }
+        } catch {
+          inputEl.focus();
+        }
+      });
+    }
+
+    // Copy Action
+    if (btnCopy) {
+      btnCopy.addEventListener('click', async () => {
+        const textToCopy = outputTextarea && outputTextarea.value.trim() ? outputTextarea.value : (inputEl ? inputEl.value : '');
+        if (!textToCopy) return;
+        try {
+          await navigator.clipboard.writeText(textToCopy);
+          if (copyLabel) copyLabel.textContent = 'Copied!';
+          btnCopy.classList.add('text-emerald-600', 'border-emerald-400');
+          setTimeout(() => {
+            if (copyLabel) copyLabel.textContent = 'Copy';
+            btnCopy.classList.remove('text-emerald-600', 'border-emerald-400');
+          }, 2000);
+        } catch (err) {
+          console.error('Clipboard copy failed:', err);
+        }
+      });
+    }
+
+    // Download Action
+    if (btnDownload) {
+      btnDownload.addEventListener('click', () => {
+        const text = outputTextarea && outputTextarea.value.trim() ? outputTextarea.value : (inputEl ? inputEl.value : '');
+        if (!text) return;
+        const blob = new Blob([text], { type: 'application/json;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'formatted.json';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+    }
+
+    // URL Fetcher
+    if (btnOpenUrl && urlBar) {
+      btnOpenUrl.addEventListener('click', () => {
+        urlBar.classList.toggle('hidden');
+        if (!urlBar.classList.contains('hidden') && urlInput) urlInput.focus();
+      });
+    }
+    if (btnCloseUrl && urlBar) {
+      btnCloseUrl.addEventListener('click', () => urlBar.classList.add('hidden'));
+    }
+    if (urlForm && urlInput) {
+      urlForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const url = urlInput.value.trim();
+        if (!url) return;
+        if (urlStatus) urlStatus.textContent = 'Fetching...';
+        try {
+          const res = await fetch(url);
+          if (!res.ok) throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+          const json = await res.json();
+          if (inputEl) {
+            inputEl.value = JSON.stringify(json, null, 2);
+            executeFormat(inputEl.value, false, false);
+          }
+          if (urlStatus) urlStatus.textContent = '';
+          if (urlBar) urlBar.classList.add('hidden');
+        } catch (err) {
+          if (urlStatus) urlStatus.textContent = 'Fetch failed: ' + err.message;
+        }
+      });
+    }
+
+    // Right Box View Modes: Editor, Syntax, Tree
+    function setOutputMode(mode) {
+      currentMode = mode;
+      
+      // Buttons state
+      const inactiveBtn = 'rounded-md px-2.5 py-0.5 text-[11px] font-semibold text-neutral-600 hover:text-neutral-900 dark:text-neutral-400 dark:hover:text-white transition cursor-pointer';
+      const activeBtn = 'rounded-md px-2.5 py-0.5 text-[11px] font-bold bg-white text-neutral-900 shadow-2xs dark:bg-neutral-900 dark:text-white transition cursor-pointer';
+
+      if (modeCodeBtn) modeCodeBtn.className = mode === 'editor' ? activeBtn : inactiveBtn;
+      if (modeSyntaxBtn) modeSyntaxBtn.className = mode === 'syntax' ? activeBtn : inactiveBtn;
+      if (modeTreeBtn) modeTreeBtn.className = mode === 'tree' ? activeBtn : inactiveBtn;
+
+      // Panels state
+      if (outEditorWrap) outEditorWrap.classList.toggle('hidden', mode !== 'editor');
+      if (outSyntaxWrap) outSyntaxWrap.classList.toggle('hidden', mode !== 'syntax');
+      if (outTreeWrap) outTreeWrap.classList.toggle('hidden', mode !== 'tree');
+
+      if (mode === 'syntax' && outputPre && outputTextarea) {
+        outputPre.innerHTML = syntaxHighlight(outputTextarea.value);
+        if (gutterOutSyntax) gutterOutSyntax.textContent = renderGutter(outputTextarea.value);
+      } else if (mode === 'tree') {
+        try {
+          const p = JSON.parse(outputTextarea ? outputTextarea.value : (inputEl ? inputEl.value : '{}'));
+          renderTree(p);
+        } catch {
+          renderTree(null);
+        }
+      }
+    }
+
+    if (modeCodeBtn) modeCodeBtn.addEventListener('click', () => setOutputMode('editor'));
+    if (modeSyntaxBtn) modeSyntaxBtn.addEventListener('click', () => setOutputMode('syntax'));
+    if (modeTreeBtn) modeTreeBtn.addEventListener('click', () => setOutputMode('tree'));
+
+    // Tree View Actions
+    if (treeExpandAll) {
+      treeExpandAll.addEventListener('click', () => {
+        document.querySelectorAll('.jb-tree-toggle').forEach((t) => t.classList.remove('collapsed'));
+        document.querySelectorAll('.jb-tree-node').forEach((n) => n.classList.remove('jb-tree-hidden'));
+      });
+    }
+    if (treeCollapseAll) {
+      treeCollapseAll.addEventListener('click', () => {
+        document.querySelectorAll('.jb-tree-toggle').forEach((t) => t.classList.add('collapsed'));
+        document.querySelectorAll('.jb-tree-node').forEach((n) => n.classList.add('jb-tree-hidden'));
+      });
+    }
+    if (treeFilter) {
+      treeFilter.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        document.querySelectorAll('.jb-tree-item').forEach((item) => {
+          if (!query) {
+            item.style.display = '';
+            return;
+          }
+          const text = item.textContent.toLowerCase();
+          item.style.display = text.includes(query) ? '' : 'none';
+        });
+      });
+    }
+
+    // Fullscreen Toggle
+    if (btnFullscreen && appContainer) {
+      const fsEnterIcon = document.getElementById('jb-icon-fs-enter');
+      const fsExitIcon = document.getElementById('jb-icon-fs-exit');
+
+      btnFullscreen.addEventListener('click', () => {
+        const isFs = appContainer.classList.toggle('jb-fullscreen');
+        if (fsEnterIcon && fsExitIcon) {
+          fsEnterIcon.classList.toggle('hidden', isFs);
+          fsExitIcon.classList.toggle('hidden', !isFs);
+        }
+      });
+    }
+
+    // Initial Execution
+    if (inputEl) {
+      executeFormat(inputEl.value, false, false);
+    }
+  })();
+</script>

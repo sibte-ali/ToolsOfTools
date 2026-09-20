@@ -1,12 +1,18 @@
 ---
 import type { ToolConfig, OutputFormat } from '../../lib/engine/types';
 import { renderSvgChart } from '../../lib/engine/chart';
+import { getTranslations, type SupportedLanguage } from '../../i18n';
 
 interface Props {
   config: ToolConfig;
+  lang?: SupportedLanguage;
 }
 
-const { config } = Astro.props;
+const { config, lang = 'en' } = Astro.props;
+const t = getTranslations(lang);
+
+// Which inputs use full-width layout (textarea needs col-span-full)
+const hasTextarea = config.inputs.some((i) => i.type === 'textarea');
 
 // Build-time default values
 const defaultValues: Record<string, any> = {};
@@ -73,6 +79,10 @@ function formatOutput(
       return String(val);
   }
 }
+
+function isCodeOutput(format: OutputFormat): boolean {
+  return format === 'code';
+}
 ---
 
 <div
@@ -84,7 +94,7 @@ function formatOutput(
   data-currency={config.currency || 'USD'}
 >
   <form class="calculator-form space-y-6" onsubmit="return false;">
-    <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+    <div class={hasTextarea ? 'flex flex-col gap-5' : 'grid grid-cols-1 gap-5 sm:grid-cols-2'}>
       {
         config.inputs.map((input) => {
           const inputId = `calc-input-${input.key}`;
@@ -163,6 +173,15 @@ function formatOutput(
                     value={input.default}
                     class="mt-1.5 block w-full rounded-lg border border-neutral-300 bg-white px-3.5 py-2 text-sm text-neutral-900 shadow-xs focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:ring-white"
                   />
+                )}
+
+                {input.type === 'textarea' && (
+                  <textarea
+                    id={inputId}
+                    name={input.key}
+                    rows={8}
+                    class="mt-1.5 block w-full rounded-lg border border-neutral-300 bg-white px-3.5 py-2.5 text-sm text-neutral-900 shadow-xs focus:border-neutral-900 focus:outline-none focus:ring-2 focus:ring-neutral-900 dark:border-neutral-700 dark:bg-neutral-800 dark:text-white dark:focus:ring-white font-mono resize-y leading-relaxed"
+                  >{input.default}</textarea>
                 )}
 
                 {input.type === 'rows' && (
@@ -388,14 +407,14 @@ function formatOutput(
           type="submit"
           class="rounded-lg bg-neutral-900 px-5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-900 focus:ring-offset-2 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 transition cursor-pointer"
         >
-          Calculate
+          {t.calculate}
         </button>
         <button
           type="button"
           data-action="reset"
           class="rounded-lg border border-neutral-300 bg-white px-4 py-2.5 text-sm font-medium text-neutral-700 hover:bg-neutral-50 focus:outline-none focus:ring-2 focus:ring-neutral-500 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
         >
-          Reset
+          {t.reset}
         </button>
       </div>
 
@@ -404,7 +423,7 @@ function formatOutput(
         data-action="copy-result"
         class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-neutral-50 px-3.5 py-2 text-xs font-semibold text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-750 transition cursor-pointer"
       >
-        <span>Copy Result</span>
+        <span>{t.copy}</span>
       </button>
     </div>
 
@@ -457,6 +476,48 @@ function formatOutput(
         })
       }
     </div>
+
+    {/* Code output block - full width below the grid */}
+    {
+      config.outputs.some((o) => o.format === 'code') && (
+        <div class="mt-6 space-y-4">
+          {config.outputs
+            .filter((o) => o.format === 'code')
+            .map((out) => {
+              const rawVal = initialOutputs[out.key];
+              const strVal = rawVal != null ? String(rawVal) : '';
+              return (
+                <div>
+                  <div class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 mb-2">
+                    {out.label}
+                  </div>
+                  <pre
+                    data-output-key={out.key}
+                    class="block w-full overflow-x-auto rounded-lg border border-neutral-300 bg-neutral-50 p-4 text-sm text-neutral-900 dark:border-neutral-700 dark:bg-neutral-800/70 dark:text-neutral-100 font-mono whitespace-pre leading-relaxed min-h-[160px]"
+                  >{strVal}</pre>
+                  <div class="mt-2 flex gap-2">
+                    <button
+                      type="button"
+                      data-copy-key={out.key}
+                      class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
+                    >
+                      📋 Copy
+                    </button>
+                    <button
+                      type="button"
+                      data-download-key={out.key}
+                      data-filename={`${config.id}-output.json`}
+                      class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-200 bg-neutral-50 px-3 py-1.5 text-xs font-semibold text-neutral-700 hover:bg-neutral-100 dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 transition cursor-pointer"
+                    >
+                      ⬇ Download
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+        </div>
+      )
+    }
   </div>
 
   <!-- Chart Region -->

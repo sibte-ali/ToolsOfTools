@@ -1,0 +1,56 @@
+---
+import ToolPage from '../../../components/ToolPage.astro';
+import { toolsByLang, type Tool } from '../../../lib/tools';
+import { type SupportedLanguage } from '../../../i18n';
+
+export async function getStaticPaths() {
+  const nonRootLanguages: SupportedLanguage[] = [
+    'it',
+    'fr',
+    'de',
+    'nl',
+    'ru',
+    'jp',
+    'cn',
+    'kr',
+    'sa',
+    'il',
+  ];
+
+  const enTools = toolsByLang('en');
+  const paths: any[] = [];
+
+  for (const lang of nonRootLanguages) {
+    for (const tool of enTools) {
+      const localizedTool: Tool = {
+        ...tool,
+        lang,
+        url: `/${lang}${tool.url}`,
+      };
+
+      paths.push({
+        params: {
+          lang,
+          folder: tool.folder,
+          slug: tool.slug,
+        },
+        props: {
+          tool: localizedTool,
+          lang,
+        },
+      });
+    }
+  }
+
+  return paths;
+}
+
+interface Props {
+  tool: Tool;
+  lang: SupportedLanguage;
+}
+
+const { tool, lang } = Astro.props;
+---
+
+<ToolPage lang={lang} tool={tool} />

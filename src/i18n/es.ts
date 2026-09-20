@@ -48,8 +48,8 @@ export const es: UIStrings = {
     percentage: '%',
     currency: 'Moneda',
   },
-  homeHeroHeading: 'Calculadora Online y Herramientas',
-  homeHeroSubtitle: 'Calculadoras y utilidades precisas y privadas que funcionan 100% en tu navegador sin rastreo.',
+  homeHeroHeading: 'Buscar Herramientas y Calculadoras',
+  homeHeroSubtitle: 'Encuentra y utiliza calculadoras y utilidades gratuitas que funcionan directamente en tu navegador.',
   valuePropositionTitle: '¿Por qué elegir ToolsOfTools?',
   valueProps: [
     {

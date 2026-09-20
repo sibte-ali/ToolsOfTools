@@ -35,6 +35,7 @@ function formatOutput(
       return `${num} days`;
     case 'date':
       return new Date(val).toLocaleDateString(locale);
+    case 'code':
     case 'text':
     default:
       return String(val);
@@ -306,6 +307,40 @@ export async function hydrateCalculator(container: HTMLElement) {
         copyBtn.textContent = originalText;
       }, 2000);
     } catch {}
+  });
+
+  // Code block copy buttons
+  container.addEventListener('click', async (e) => {
+    const target = e.target as HTMLElement;
+    const copyKeyBtn = target.closest('[data-copy-key]') as HTMLElement | null;
+    if (copyKeyBtn) {
+      const key = copyKeyBtn.getAttribute('data-copy-key')!;
+      const pre = container.querySelector(`[data-output-key="${key}"]`) as HTMLElement | null;
+      if (pre) {
+        try {
+          await navigator.clipboard.writeText(pre.textContent || '');
+          const orig = copyKeyBtn.textContent;
+          copyKeyBtn.textContent = '✓ Copied!';
+          setTimeout(() => { copyKeyBtn.textContent = orig; }, 2000);
+        } catch {}
+      }
+    }
+    const dlKeyBtn = target.closest('[data-download-key]') as HTMLElement | null;
+    if (dlKeyBtn) {
+      const key = dlKeyBtn.getAttribute('data-download-key')!;
+      const filename = dlKeyBtn.getAttribute('data-filename') || `${key}-output.txt`;
+      const pre = container.querySelector(`[data-output-key="${key}"]`) as HTMLElement | null;
+      if (pre) {
+        const content = pre.textContent || '';
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.click();
+        URL.revokeObjectURL(url);
+      }
+    }
   });
 
   // Form input listeners

@@ -12,6 +12,9 @@ import {
 } from '../lib/compute';
 
 import Calculator from './tools/Calculator.astro';
+import ImageToolWidget from './tools/ImageToolWidget.astro';
+import JsonBeautifierWidget from './tools/JsonBeautifierWidget.astro';
+import JsonToExcelWidget from './tools/JsonToExcelWidget.astro';
 import { getToolConfig } from '../tools/registry';
 
 interface Props {
@@ -24,6 +27,9 @@ const t = getTranslations(lang);
 const localeConfig = resolveToolLocale(tool);
 
 const slug = tool.slug;
+const isImageTool = tool.folder === 'image-tools' || tool.template === 'image';
+const isJsonBeautifier = slug === 'json-beautifier';
+const isJsonToExcel = slug === 'json-to-excel';
 const engineConfig = getToolConfig(lang, slug);
 const isConfigEngineTool = !!engineConfig;
 let widgetType = 'general';
@@ -32,6 +38,126 @@ let defaultResult: { title: string; primary: string; secondary?: string } = {
   title: 'Calculated Result',
   primary: '100',
 };
+
+const labelsByLang: Record<string, Record<string, string>> = {
+  it: {
+    weight: 'Peso (kg)',
+    height: 'Altezza (cm)',
+    bmiCategory: 'Categoria BMI',
+    classification: 'Classificazione',
+    classesHeld: 'Totale Lezioni Tenute',
+    classesAttended: 'Lezioni Frequentate',
+    targetAttendance: 'Obiettivo Presenza (%)',
+    attendanceStatus: 'Stato Presenze',
+    currentAttendance: 'Presenza Attuale',
+    classesNeeded: 'Lezioni da frequentare per raggiungere l\'obiettivo',
+    originalPrice: 'Prezzo Originale',
+    discount: 'Sconto (%)',
+    discountBreakdown: 'Riepilogo Sconto',
+    finalPrice: 'Prezzo Finale',
+    youSave: 'Risparmi',
+    startDate: 'Data Iniziale',
+    endDate: 'Data Finale',
+    duration: 'Durata',
+    distance: 'Distanza (km)',
+    time: 'Tempo (minuti)',
+    targetPace: 'Ritmo Obiettivo',
+  },
+  fr: {
+    weight: 'Poids (kg)',
+    height: 'Taille (cm)',
+    bmiCategory: 'Catégorie IMC',
+    classification: 'Classification',
+    classesHeld: 'Total des cours dispensés',
+    classesAttended: 'Cours suivis',
+    targetAttendance: 'Objectif de présence (%)',
+    attendanceStatus: 'Statut de présence',
+    currentAttendance: 'Présence actuelle',
+    classesNeeded: 'Cours à suivre pour atteindre l\'objectif',
+    originalPrice: 'Prix original',
+    discount: 'Remise (%)',
+    discountBreakdown: 'Détail de la remise',
+    finalPrice: 'Prix final',
+    youSave: 'Vous économisez',
+    startDate: 'Date de début',
+    endDate: 'Date de fin',
+    duration: 'Durée',
+    distance: 'Distance (km)',
+    time: 'Temps (minutes)',
+    targetPace: 'Allure cible',
+  },
+  de: {
+    weight: 'Gewicht (kg)',
+    height: 'Größe (cm)',
+    bmiCategory: 'BMI-Kategorie',
+    classification: 'Klassifizierung',
+    classesHeld: 'Gesamtstunden gehalten',
+    classesAttended: 'Besuchte Stunden',
+    targetAttendance: 'Ziel-Anwesenheit (%)',
+    attendanceStatus: 'Anwesenheitsstatus',
+    currentAttendance: 'Aktuelle Anwesenheit',
+    classesNeeded: 'Erforderliche Stunden zur Zielerreichung',
+    originalPrice: 'Ursprünglicher Preis',
+    discount: 'Rabatt (%)',
+    discountBreakdown: 'Rabattübersicht',
+    finalPrice: 'Endpreis',
+    youSave: 'Ersparnis',
+    startDate: 'Startdatum',
+    endDate: 'Enddatum',
+    duration: 'Dauer',
+    distance: 'Distanz (km)',
+    time: 'Zeit (Minuten)',
+    targetPace: 'Zieltempo',
+  },
+  es: {
+    weight: 'Peso (kg)',
+    height: 'Altura (cm)',
+    bmiCategory: 'Categoría de IMC',
+    classification: 'Clasificación',
+    classesHeld: 'Total de clases impartidas',
+    classesAttended: 'Clases asistidas',
+    targetAttendance: 'Objetivo de asistencia (%)',
+    attendanceStatus: 'Estado de asistencia',
+    currentAttendance: 'Asistencia actual',
+    classesNeeded: 'Clases requeridas para alcanzar el objetivo',
+    originalPrice: 'Precio original',
+    discount: 'Descuento (%)',
+    discountBreakdown: 'Desglose del descuento',
+    finalPrice: 'Precio final',
+    youSave: 'Ahorras',
+    startDate: 'Fecha inicial',
+    endDate: 'Fecha final',
+    duration: 'Duración',
+    distance: 'Distancia (km)',
+    time: 'Tiempo (minutos)',
+    targetPace: 'Ritmo objetivo',
+  },
+  'pt-br': {
+    weight: 'Peso (kg)',
+    height: 'Altura (cm)',
+    bmiCategory: 'Categoria de IMC',
+    classification: 'Classificação',
+    classesHeld: 'Total de aulas ministradas',
+    classesAttended: 'Aulas assistidas',
+    targetAttendance: 'Meta de frequência (%)',
+    attendanceStatus: 'Status de frequência',
+    currentAttendance: 'Frequência atual',
+    classesNeeded: 'Aulas necessárias para atingir a meta',
+    originalPrice: 'Preço original',
+    discount: 'Desconto (%)',
+    discountBreakdown: 'Resumo do desconto',
+    finalPrice: 'Preço final',
+    youSave: 'Você economiza',
+    startDate: 'Data inicial',
+    endDate: 'Data final',
+    duration: 'Duração',
+    distance: 'Distância (km)',
+    time: 'Tempo (minutos)',
+    targetPace: 'Ritmo desejado',
+  },
+};
+
+const l = (key: string, defaultEn: string) => labelsByLang[lang]?.[key] || defaultEn;
 
 if (slug === 'swp-calculator') {
   widgetType = 'swp';
@@ -49,42 +175,42 @@ if (slug === 'swp-calculator') {
   };
 } else if (slug === 'bmi-calculator' || slug === 'imc') {
   widgetType = 'bmi';
-  const weightLabel = lang === 'pt-br' ? 'Peso (kg)' : lang === 'es' ? 'Peso (kg)' : 'Weight (kg)';
-  const heightLabel = lang === 'pt-br' ? 'Altura (cm)' : lang === 'es' ? 'Altura (cm)' : 'Height (cm)';
+  const weightLabel = l('weight', 'Weight (kg)');
+  const heightLabel = l('height', 'Height (cm)');
   defaultInputs = [
     { id: 'weight', label: weightLabel, type: 'number', value: 70, step: '0.5' },
     { id: 'height', label: heightLabel, type: 'number', value: 175, step: '1' },
   ];
   const bmiRes = computeBmi(70, 175);
   defaultResult = {
-    title: 'BMI Category',
+    title: l('bmiCategory', 'BMI Category'),
     primary: `BMI: ${bmiRes.bmi}`,
-    secondary: `Classification: ${bmiRes.category}`,
+    secondary: `${l('classification', 'Classification')}: ${bmiRes.category}`,
   };
 } else if (slug === 'attendance-calculator') {
   widgetType = 'attendance';
   defaultInputs = [
-    { id: 'held', label: 'Total Classes Held', type: 'number', value: 50, step: '1' },
-    { id: 'attended', label: 'Classes Attended', type: 'number', value: 30, step: '1' },
-    { id: 'target', label: 'Target Attendance %', type: 'number', value: 75, step: '1' },
+    { id: 'held', label: l('classesHeld', 'Total Classes Held'), type: 'number', value: 50, step: '1' },
+    { id: 'attended', label: l('classesAttended', 'Classes Attended'), type: 'number', value: 30, step: '1' },
+    { id: 'target', label: l('targetAttendance', 'Target Attendance %'), type: 'number', value: 75, step: '1' },
   ];
   const attRes = computeAttendance(50, 30, 75);
   defaultResult = {
-    title: 'Attendance Status',
-    primary: `Current Attendance: ${attRes.currentPct}%`,
-    secondary: `Classes needed to attend: ${attRes.classesToAttend}`,
+    title: l('attendanceStatus', 'Attendance Status'),
+    primary: `${l('currentAttendance', 'Current Attendance')}: ${attRes.currentPct}%`,
+    secondary: `${l('classesNeeded', 'Classes needed to attend')}: ${attRes.classesToAttend}`,
   };
 } else if (slug === 'discount-calculator') {
   widgetType = 'discount';
   defaultInputs = [
-    { id: 'price', label: 'Original Price', type: 'number', value: 120, step: '0.5' },
-    { id: 'discount', label: 'Discount (%)', type: 'number', value: 25, step: '1' },
+    { id: 'price', label: l('originalPrice', 'Original Price'), type: 'number', value: 120, step: '0.5' },
+    { id: 'discount', label: l('discount', 'Discount (%)'), type: 'number', value: 25, step: '1' },
   ];
   const discRes = computeDiscount(120, 25);
   defaultResult = {
-    title: 'Discount Breakdown',
-    primary: `Final Price: ${formatCurrency(discRes.finalPrice, localeConfig.locale, localeConfig.currency)}`,
-    secondary: `You Save: ${formatCurrency(discRes.savings, localeConfig.locale, localeConfig.currency)}`,
+    title: l('discountBreakdown', 'Discount Breakdown'),
+    primary: `${l('finalPrice', 'Final Price')}: ${formatCurrency(discRes.finalPrice, localeConfig.locale, localeConfig.currency)}`,
+    secondary: `${l('youSave', 'You Save')}: ${formatCurrency(discRes.savings, localeConfig.locale, localeConfig.currency)}`,
   };
 } else if (
   slug === 'day-calculator' ||
@@ -92,15 +218,15 @@ if (slug === 'swp-calculator') {
   slug === 'calculadora-entre-datas'
 ) {
   widgetType = 'datediff';
-  const startLabel = lang === 'pt-br' ? 'Data Inicial' : lang === 'es' ? 'Fecha Inicial' : 'Start Date';
-  const endLabel = lang === 'pt-br' ? 'Data Final' : lang === 'es' ? 'Fecha Final' : 'End Date';
+  const startLabel = l('startDate', 'Start Date');
+  const endLabel = l('endDate', 'End Date');
   defaultInputs = [
     { id: 'startdate', label: startLabel, type: 'date', value: '2026-01-01' },
     { id: 'enddate', label: endLabel, type: 'date', value: '2026-01-31' },
   ];
   const dateRes = computeDaysBetween('2026-01-01', '2026-01-31');
   defaultResult = {
-    title: 'Duration',
+    title: l('duration', 'Duration'),
     primary: `${dateRes.days} ${t.unitLabels.days}`,
   };
 } else if (
@@ -109,15 +235,15 @@ if (slug === 'swp-calculator') {
   slug === 'calculadora-de-ritmos'
 ) {
   widgetType = 'pace';
-  const distLabel = lang === 'pt-br' ? 'Distância (km)' : lang === 'es' ? 'Distancia (km)' : 'Distance (km)';
-  const timeLabel = lang === 'pt-br' ? 'Tempo (minutos)' : lang === 'es' ? 'Tiempo (minutos)' : 'Time (minutes)';
+  const distLabel = l('distance', 'Distance (km)');
+  const timeLabel = l('time', 'Time (minutes)');
   defaultInputs = [
     { id: 'dist', label: distLabel, type: 'number', value: 10, step: '0.1' },
     { id: 'time', label: timeLabel, type: 'number', value: 50, step: '1' },
   ];
   const paceRes = computePace(10, 50);
   defaultResult = {
-    title: 'Target Pace',
+    title: l('targetPace', 'Target Pace'),
     primary: `Pace: ${paceRes.formattedPace}`,
   };
 } else {
@@ -136,8 +262,14 @@ if (slug === 'swp-calculator') {
 ---
 
 {
-  isConfigEngineTool && engineConfig ? (
-    <Calculator config={engineConfig} />
+  isImageTool ? (
+    <ImageToolWidget tool={tool} lang={lang} />
+  ) : isJsonBeautifier ? (
+    <JsonBeautifierWidget lang={lang} />
+  ) : isJsonToExcel ? (
+    <JsonToExcelWidget lang={lang} />
+  ) : isConfigEngineTool && engineConfig ? (
+    <Calculator config={engineConfig} lang={lang} />
   ) : (
     <div
       class="tool-widget-container min-h-[320px] rounded-2xl border border-neutral-200 bg-white p-6 shadow-xs dark:border-neutral-800 dark:bg-neutral-900 transition-all"

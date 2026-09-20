@@ -97,7 +97,10 @@ export interface EffectiveHub {
  * Tools in every hub are sorted by search volume descending.
  */
 export function getEffectiveHubs(lang: string): EffectiveHub[] {
-  const tools = toolsByLang(lang);
+  let tools = toolsByLang(lang);
+  if (tools.length === 0) {
+    tools = toolsByLang('en');
+  }
   const otherFolder = getOtherCalculatorsFolder(lang);
 
   const folderCounts = new Map<string, number>();

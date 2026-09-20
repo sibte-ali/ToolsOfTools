@@ -96,6 +96,15 @@ import volumetricWeightConfig from './en/volumetric-weight-calculator';
 import hectareToAcreConfig from './en/hectare-to-acre';
 import mlToGramsConfig from './en/ml-to-grams-converter';
 
+// Batch G JSON Tools (EN)
+import jsonBeautifierConfig from './en/json-beautifier';
+import jsonParserConfig from './en/json-parser';
+import jsonEditorConfig from './en/json-editor';
+import jsonViewerConfig from './en/json-viewer';
+import jsonMinifierConfig from './en/json-minifier';
+import jsonToXmlConfig from './en/json-to-xml';
+import xmlToJsonConfig from './en/xml-to-json';
+
 // Batch F Tools (EN)
 import loveCalculatorConfig from './en/love-calculator';
 import flamesGameConfig from './en/flames-game';
@@ -198,6 +207,14 @@ const registry: Record<string, Record<string, ToolConfig>> = {
     'bhagyank-calculator': bhagyankCalculatorConfig,
     'friendship-calculator-by-name': friendshipCalculatorConfig,
     'business-name-numerology-calculator': businessNameNumerologyConfig,
+    // Batch G JSON Tools
+    'json-beautifier': jsonBeautifierConfig,
+    'json-parser': jsonParserConfig,
+    'json-editor': jsonEditorConfig,
+    'json-viewer': jsonViewerConfig,
+    'json-minifier': jsonMinifierConfig,
+    'json-to-xml': jsonToXmlConfig,
+    'xml-to-json': xmlToJsonConfig,
   },
   'pt-br': {
     'calculadora-de-investimentos': investimentoPtBrConfig,

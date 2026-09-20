@@ -134,6 +134,38 @@ export const config: ToolConfig = {
     };
   },
   chart: 'stacked',
+  table(values) {
+    const total = Number(values.totalClasses) || 50;
+    const attended = Number(values.attendedClasses) || 34;
+
+    const targets = [
+      { label: '65% (Medical Condonation)', pct: 65 },
+      { label: '75% (Mandatory University Rule)', pct: 75 },
+      { label: '80% (Lab / Strict College Norm)', pct: 80 },
+      { label: '85% (Academic Honors / Good Standing)', pct: 85 },
+      { label: '90% (Star Attendance / Exemption)', pct: 90 },
+    ];
+
+    const rows = targets.map((tgt) => {
+      const res = calculateAttendance(total, attended, tgt.pct);
+      return {
+        targetLabel: tgt.label,
+        status: res.isTargetMet ? '✓ Met' : '⚠ Below Target',
+        classesNeeded: res.isTargetMet ? 0 : res.classesToAttend,
+        safeBunks: res.isTargetMet ? res.classesCanMiss : 0,
+      };
+    });
+
+    return {
+      columns: [
+        { key: 'targetLabel', label: 'Attendance Target', format: 'text' as const },
+        { key: 'status', label: 'Status', format: 'text' as const },
+        { key: 'classesNeeded', label: 'Classes to Attend', format: 'number' as const },
+        { key: 'safeBunks', label: 'Safe Bunks (Can Miss)', format: 'number' as const },
+      ],
+      rows,
+    };
+  },
 };
 
 export default config;

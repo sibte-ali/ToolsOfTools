@@ -55,6 +55,19 @@ const alternates = getHreflang(currentPath, lang);
       noindex={noindex}
       jsonLd={jsonLd}
     />
+
+    <script is:inline>
+      (function () {
+        try {
+          const stored = localStorage.getItem('tot-theme');
+          if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (_) {}
+      })();
+    </script>
   </head>
   <body class="min-h-screen flex flex-col bg-neutral-50 text-neutral-900 antialiased dark:bg-neutral-950 dark:text-neutral-50">
     <a
