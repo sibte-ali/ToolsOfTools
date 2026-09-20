@@ -20,3 +20,28 @@ pnpm-debug.log*
 # System Files
 .DS_Store
 Thumbs.db
+
+# Wrangler (Cloudflare) local cache
+.wrangler/
+
+# Editor & IDE configs
+.vscode/settings.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Test coverage & reports
+coverage/
+*.lcov
+.nyc_output/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Temp / cache
+.cache/
+.temp/
+tmp/
