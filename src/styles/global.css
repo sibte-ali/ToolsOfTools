@@ -1,3 +1,73 @@
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+/* ==========================================================================
+   Color Hunt Palette: #E3F2FD | #90CAF9 | #2196F3 | #0D47A1
+   https://colorhunt.co/palette/e3f2fd90caf92196f30d47a1
+   Light mode theme colors for Headings and Sub-Headings
+   ========================================================================== */
+
+:root {
+  --color-palette-ice: #E3F2FD;       /* Soft Ice Blue */
+  --color-palette-sky-light: #90CAF9; /* Pastel Sky Blue */
+  --color-palette-vibrant: #2196F3;   /* Bright Sky / Dodger Blue */
+  --color-palette-navy-rich: #1565C0; /* Rich Sapphire Blue */
+  --color-palette-navy-deep: #0D47A1; /* Deep Navy Blue */
+}
+
+/* Light Mode: Primary Headings (H1, H2) */
+html:not(.dark) h1 {
+  color: #0D47A1;
+}
+
+html:not(.dark) h2 {
+  color: #0D47A1;
+}
+
+/* Light Mode: Sub-Headings (H3, H4, H5, H6) */
+html:not(.dark) h3 {
+  color: #1565C0;
+}
+
+html:not(.dark) h4 {
+  color: #1976D2;
+}
+
+html:not(.dark) h5,
+html:not(.dark) h6 {
+  color: #2196F3;
+}
+
+/* Reusable Palette Classes */
+.palette-heading-1,
+.palette-heading-2 {
+  color: #0D47A1;
+}
+:where(.dark, .dark *) .palette-heading-1,
+:where(.dark, .dark *) .palette-heading-2 {
+  color: #ffffff;
+}
+
+.palette-subheading {
+  color: #1565C0;
+}
+:where(.dark, .dark *) .palette-subheading {
+  color: #90CAF9;
+}
+
+.palette-accent-blue {
+  color: #2196F3;
+}
+
+/* Light Mode Palette Badges & Subtle Containers */
+.palette-badge {
+  background-color: #E3F2FD;
+  color: #0D47A1;
+  border: 1px solid #90CAF9;
+}
+:where(.dark, .dark *) .palette-badge {
+  background-color: rgba(13, 71, 161, 0.25);
+  color: #90CAF9;
+  border: 1px solid rgba(144, 202, 249, 0.3);
+}

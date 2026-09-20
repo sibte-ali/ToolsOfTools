@@ -157,7 +157,7 @@ const isWideTool = tool.slug === 'json-beautifier' || tool.slug === 'json-to-exc
 
     <!-- 2. h1 + 1-3 sentence intro directly answering the query -->
     <header class="border-b border-neutral-200 pb-6 dark:border-neutral-800">
-      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl text-neutral-950 dark:text-white capitalize">
+      <h1 class="text-3xl font-extrabold tracking-tight sm:text-4xl text-[#0D47A1] dark:text-white capitalize">
         {h1}
       </h1>
       <p class="mt-3 text-base leading-relaxed text-neutral-700 dark:text-neutral-300">
@@ -192,12 +192,12 @@ const isWideTool = tool.slug === 'json-beautifier' || tool.slug === 'json-to-exc
 
     <!-- 5. 'How it works' with formula (markdown) and worked example (numbers match compute output) -->
     <section aria-labelledby="how-it-works-heading" class="mt-12 space-y-6">
-      <h2 id="how-it-works-heading" class="text-2xl font-bold tracking-tight text-neutral-950 dark:text-white">
+      <h2 id="how-it-works-heading" class="text-2xl font-bold tracking-tight text-[#0D47A1] dark:text-white">
         {t.howItWorks}
       </h2>
 
-      <div class="rounded-xl border border-neutral-200 bg-neutral-50/60 p-5 dark:border-neutral-800 dark:bg-neutral-800/40">
-        <h3 class="text-sm font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+      <div class="rounded-xl border border-[#90CAF9]/50 bg-[#E3F2FD]/50 p-5 dark:border-neutral-800 dark:bg-neutral-800/40">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-[#1565C0] dark:text-sky-300">
           {t.formula}
         </h3>
         <div class="mt-2 rounded-lg bg-white p-3 font-mono text-sm border border-neutral-200 text-neutral-900 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-100 overflow-x-auto">
@@ -205,8 +205,8 @@ const isWideTool = tool.slug === 'json-beautifier' || tool.slug === 'json-to-exc
         </div>
       </div>
 
-      <div class="rounded-xl border border-neutral-200 bg-neutral-50/60 p-5 dark:border-neutral-800 dark:bg-neutral-800/40">
-        <h3 class="text-sm font-semibold uppercase tracking-wider text-neutral-600 dark:text-neutral-400">
+      <div class="rounded-xl border border-[#90CAF9]/50 bg-[#E3F2FD]/50 p-5 dark:border-neutral-800 dark:bg-neutral-800/40">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-[#1565C0] dark:text-sky-300">
           {t.workedExample}
         </h3>
         <div class="mt-2 text-sm leading-relaxed text-neutral-800 dark:text-neutral-200">
@@ -218,12 +218,12 @@ const isWideTool = tool.slug === 'json-beautifier' || tool.slug === 'json-to-exc
     <!-- 6. Long-form body from the markdown (400-800 unique words) with h2/h3 structure -->
     <section aria-labelledby="in-depth-guide" class="mt-12 space-y-6 text-sm leading-relaxed text-neutral-700 dark:text-neutral-300">
       {Content ? (
-        <div class="space-y-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-tight [&_h2]:text-neutral-950 dark:[&_h2]:text-white [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-neutral-900 dark:[&_h3]:text-white [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-relaxed [&_li]:mt-1">
+        <div class="space-y-6 [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:tracking-tight [&_h2]:text-[#0D47A1] dark:[&_h2]:text-white [&_h3]:text-lg [&_h3]:font-bold [&_h3]:text-[#1565C0] dark:[&_h3]:text-sky-200 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5 [&_p]:leading-relaxed [&_li]:mt-1">
           <Content />
         </div>
       ) : (
         <div>
-          <h2 id="in-depth-guide" class="text-2xl font-bold tracking-tight text-neutral-950 dark:text-white">
+          <h2 id="in-depth-guide" class="text-2xl font-bold tracking-tight text-[#0D47A1] dark:text-white">
             {h1}
           </h2>
           <p class="mt-3">
@@ -235,7 +235,7 @@ const isWideTool = tool.slug === 'json-beautifier' || tool.slug === 'json-to-exc
 
     <!-- 7. FAQ (visible accordion using <details>, same content as FAQPage JSON-LD) -->
     <section aria-labelledby="faq-heading" class="mt-12">
-      <h2 id="faq-heading" class="text-2xl font-bold tracking-tight text-neutral-950 dark:text-white">
+      <h2 id="faq-heading" class="text-2xl font-bold tracking-tight text-[#0D47A1] dark:text-white">
         {t.faq}
       </h2>
 
@@ -296,7 +296,7 @@ const isWideTool = tool.slug === 'json-beautifier' || tool.slug === 'json-to-exc
     <!-- 9. Related tools: 4-6 cards linking to siblings in same language + back link to folder hub -->
     <section aria-labelledby="related-heading" class="mt-12 border-t border-neutral-200 pt-8 dark:border-neutral-800">
       <div class="flex items-center justify-between">
-        <h2 id="related-heading" class="text-xl font-bold tracking-tight text-neutral-950 dark:text-white">
+        <h2 id="related-heading" class="text-xl font-bold tracking-tight text-[#0D47A1] dark:text-white">
           {t.relatedTools}
         </h2>
         <a
@@ -313,17 +313,17 @@ const isWideTool = tool.slug === 'json-beautifier' || tool.slug === 'json-to-exc
             return (
               <a
                 href={sibling.url}
-                class="group flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-4 shadow-xs hover:border-neutral-400 hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700 transition"
+                class="group flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-4 shadow-xs hover:border-[#90CAF9] hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900 dark:hover:border-neutral-700 transition"
               >
                 <div>
                   <span class="text-xs font-medium text-neutral-500 dark:text-neutral-400 capitalize">
                     {sibling.folder.replace(/-/g, ' ')}
                   </span>
-                  <h3 class="mt-1 text-sm font-semibold capitalize text-neutral-900 group-hover:text-neutral-950 dark:text-white">
+                  <h3 class="mt-1 text-sm font-semibold capitalize text-[#0D47A1] group-hover:text-[#2196F3] dark:text-white dark:group-hover:text-sky-300 transition-colors">
                     {sibling.keyword}
                   </h3>
                 </div>
-                <div class="mt-3 text-xs font-medium text-neutral-900 dark:text-white">
+                <div class="mt-3 text-xs font-medium text-[#1976D2] dark:text-sky-400">
                   {t.open}
                 </div>
               </a>
