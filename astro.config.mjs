@@ -79,7 +79,24 @@ export default defineConfig({
   vite: {
     plugins: [/** @type {any} */ (tailwindcss())],
     optimizeDeps: {
-      exclude: ['@astrojs/preact'],
+      exclude: ['@astrojs/preact', '@astrojs/preact/server.js'],
+      esbuildOptions: {
+        plugins: [
+          {
+            name: 'resolve-astro-preact-opts',
+            setup(build) {
+              build.onResolve({ filter: /^astro:preact:opts$/ }, () => ({
+                path: 'astro:preact:opts',
+                namespace: 'astro-preact-opts',
+              }));
+              build.onLoad({ filter: /.*/, namespace: 'astro-preact-opts' }, () => ({
+                contents: 'export default {}',
+                loader: 'js',
+              }));
+            },
+          },
+        ],
+      },
     },
   },
 });
