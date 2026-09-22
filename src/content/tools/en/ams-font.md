@@ -21,9 +21,10 @@ sources:
 updated: "2026-03-01"
 related:
   - "krutidev-to-unicode"
+  - "kruti-dev-keyboard"
+  - "unicode-to-krutidev"
   - "unicode-to-shree-lipi"
   - "unicode-text-converter"
-  - "bamini-to-unicode"
 disclaimer: "none"
 ---
 

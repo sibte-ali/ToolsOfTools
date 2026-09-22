@@ -32,11 +32,11 @@ const LANGUAGES: LanguageItem[] = [
   { code: 'it', displayCode: 'IT', label: 'Italiano', hreflangCodes: ['it', 'it-it'] },
   { code: 'nl', displayCode: 'NL', label: 'Nederlands', hreflangCodes: ['nl', 'nl-nl'] },
   { code: 'ru', displayCode: 'RU', label: 'Русский', hreflangCodes: ['ru', 'ru-ru'] },
-  { code: 'jp', displayCode: 'JP', label: '日本語', hreflangCodes: ['ja', 'ja-jp', 'jp'] },
-  { code: 'cn', displayCode: 'CN', label: '简体中文', hreflangCodes: ['zh', 'zh-cn', 'zh-hans', 'cn'] },
-  { code: 'kr', displayCode: 'KR', label: '한국어', hreflangCodes: ['ko', 'ko-kr', 'kr'] },
-  { code: 'sa', displayCode: 'SA', label: 'العربية', hreflangCodes: ['ar', 'ar-sa', 'sa'] },
-  { code: 'il', displayCode: 'IL', label: 'Italiano (IL)', hreflangCodes: ['il', 'it-il'] },
+  { code: 'jp', displayCode: 'JA', label: '日本語', hreflangCodes: ['ja', 'ja-jp'] },
+  { code: 'cn', displayCode: 'ZH', label: '简体中文', hreflangCodes: ['zh-hans', 'zh-cn', 'zh'] },
+  { code: 'kr', displayCode: 'KO', label: '한국어', hreflangCodes: ['ko', 'ko-kr'] },
+  { code: 'sa', displayCode: 'AR', label: 'العربية', hreflangCodes: ['ar', 'ar-sa'] },
+  { code: 'il', displayCode: 'HE', label: 'עברית', hreflangCodes: ['he', 'he-il'] },
 ];
 
 // Check if on a tool page: e.g. /education/attendance-calculator/ or /it/education/attendance-calculator/
@@ -76,8 +76,13 @@ const items = LANGUAGES.map((item) => {
     targetUrl = alternateMatch.url;
     isDedicated = true;
   } else if (isToolPage) {
-    // Preserve tool navigation across all languages
-    targetUrl = item.code === 'en' ? `/${toolFolder}/${toolSlug}/` : `/${item.code}/${toolFolder}/${toolSlug}/`;
+    if (toolFolder === 'font-converters') {
+      // Font converters are English-only
+      targetUrl = item.code === 'en' ? `/${toolFolder}/${toolSlug}/` : getLanguageHome(item.code);
+    } else {
+      // Preserve tool navigation across all languages
+      targetUrl = item.code === 'en' ? `/${toolFolder}/${toolSlug}/` : `/${item.code}/${toolFolder}/${toolSlug}/`;
+    }
     isDedicated = true;
   } else {
     // Navigate directly to that language's dedicated HTML route

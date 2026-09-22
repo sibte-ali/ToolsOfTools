@@ -1,0 +1,101 @@
+---
+import KrutiDevKeyboard from './KrutiDevKeyboard';
+import type { Tool } from '../../lib/tools';
+import type { SupportedLanguage } from '../../i18n';
+
+interface Props {
+  tool: Tool;
+  lang: SupportedLanguage;
+}
+
+const { tool, lang } = Astro.props;
+---
+
+<div class="kruti-dev-keyboard-widget space-y-8">
+  <!-- Interactive Preact Island Keyboard & Typing Practice -->
+  <KrutiDevKeyboard client:load />
+
+  <!-- Action & Download Cards -->
+  <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    <!-- Download PDF Chart Card -->
+    <a
+      href="/downloads/kruti-dev-010-keyboard-chart.pdf"
+      download="kruti-dev-010-keyboard-chart.pdf"
+      class="group flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-5 shadow-xs transition hover:border-[#1976D2] hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
+    >
+      <div>
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-red-600 dark:text-red-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+          </svg>
+          Printable Document
+        </div>
+        <h3 class="mt-2 text-base font-bold text-[#0D47A1] group-hover:text-[#1976D2] dark:text-white dark:group-hover:text-sky-300">
+          Download PDF Keyboard Chart
+        </h3>
+        <p class="mt-1 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          High-resolution vector PDF formatted for A4 printing with full Remington layout and Alt codes.
+        </p>
+      </div>
+      <div class="mt-4 flex items-center gap-1.5 text-xs font-semibold text-[#1976D2] dark:text-sky-400">
+        <span>Download PDF (Free)</span>
+        <span>&darr;</span>
+      </div>
+    </a>
+
+    <!-- Download PNG Chart Card -->
+    <a
+      href="/images/kruti-dev-keyboard-chart.png"
+      download="kruti-dev-keyboard-chart.png"
+      class="group flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-5 shadow-xs transition hover:border-[#1976D2] hover:shadow-md dark:border-neutral-800 dark:bg-neutral-900"
+    >
+      <div>
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-blue-600 dark:text-sky-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          High-Res Image
+        </div>
+        <h3 class="mt-2 text-base font-bold text-[#0D47A1] group-hover:text-[#1976D2] dark:text-white dark:group-hover:text-sky-300">
+          Download PNG Keyboard Chart
+        </h3>
+        <p class="mt-1 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          Crystal-clear 1920x1080 PNG image showing normal and shift key combinations for easy desktop wallpaper or phone reference.
+        </p>
+      </div>
+      <div class="mt-4 flex items-center gap-1.5 text-xs font-semibold text-[#1976D2] dark:text-sky-400">
+        <span>Save PNG Image</span>
+        <span>&darr;</span>
+      </div>
+    </a>
+
+    <!-- Print Layout Quick Trigger -->
+    <div
+      class="flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-5 shadow-xs dark:border-neutral-800 dark:bg-neutral-900"
+    >
+      <div>
+        <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
+          </svg>
+          Direct Print
+        </div>
+        <h3 class="mt-2 text-base font-bold text-[#0D47A1] dark:text-white">
+          Print Keyboard Layout
+        </h3>
+        <p class="mt-1 text-xs text-neutral-600 dark:text-neutral-400 leading-relaxed">
+          Send the Kruti Dev Remington keyboard layout chart directly to your connected printer.
+        </p>
+      </div>
+      <div class="mt-4">
+        <button
+          type="button"
+          onclick="window.print()"
+          class="w-full rounded-lg bg-neutral-900 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 transition cursor-pointer"
+        >
+          Print Now (Ctrl+P)
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

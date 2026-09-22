@@ -63,4 +63,30 @@ describe('hreflang reciprocity and invariants', () => {
     expect(ungroupedPt[0].url).toBe('/pt-br/random-standalone-page/');
     expect(ungroupedPt[0].lang).toBe('pt-BR');
   });
+
+  it('font converter tools return only self-referencing English hreflang', () => {
+    const kruti = getHreflang('/font-converters/krutidev-to-unicode/');
+    expect(kruti).toHaveLength(1);
+    expect(kruti[0].lang).toBe('en');
+    expect(kruti[0].url).toBe('/font-converters/krutidev-to-unicode/');
+
+    const keyboard = getHreflang('/font-converters/kruti-dev-keyboard/');
+    expect(keyboard).toHaveLength(1);
+    expect(keyboard[0].lang).toBe('en');
+    expect(keyboard[0].url).toBe('/font-converters/kruti-dev-keyboard/');
+  });
+
+  it('uses valid BCP-47 language codes and avoids country code aliases', async () => {
+    const { getHtmlLang } = await import('../i18n');
+    expect(getHtmlLang('jp')).toBe('ja');
+    expect(getHtmlLang('cn')).toBe('zh-Hans');
+    expect(getHtmlLang('kr')).toBe('ko');
+    expect(getHtmlLang('sa')).toBe('ar');
+    expect(getHtmlLang('il')).toBe('he');
+
+    const invalidCodes = ['JP', 'CN', 'KR', 'SA', 'IL', 'jp', 'cn', 'kr', 'sa', 'il'];
+    for (const code of ['jp', 'cn', 'kr', 'sa', 'il']) {
+      expect(invalidCodes.filter(c => c.toUpperCase() === c)).not.toContain(getHtmlLang(code));
+    }
+  });
 });

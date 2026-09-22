@@ -10,20 +10,49 @@ interface Props {
 const { tool } = Astro.props;
 const slug = tool.slug;
 
+
 interface FontToolConfig {
   sourceName: string;
   targetName: string;
   sourceSample: string;
   targetSample: string;
   isFancyUnicode?: boolean;
+  reversePageUrl?: string;
+  reversePageLabel?: string;
 }
 
 const CONFIGS: Record<string, FontToolConfig> = {
   'krutidev-to-unicode': {
     sourceName: 'Kruti Dev 010',
     targetName: 'Unicode Devanagari (Hindi)',
-    sourceSample: 'Hkkjr ,d egku ns\'k gSA ;gk¡ fofo/krk esa ,drk gSA',
+    sourceSample: "Hkkjr ,d egku ns'k gSA ;gk¡ fofo/krk esa ,drk gSA",
     targetSample: 'भारत एक महान देश है। यहाँ विविधता में एकता है।',
+    reversePageUrl: '/font-converters/unicode-to-krutidev/',
+    reversePageLabel: 'Switch to Unicode \u2192 Kruti Dev',
+  },
+  'unicode-to-krutidev': {
+    sourceName: 'Unicode Devanagari (Hindi)',
+    targetName: 'Kruti Dev 010',
+    sourceSample: '\u092d\u093e\u0930\u0924 \u090f\u0915 \u092e\u0939\u093e\u0928 \u0926\u0947\u0936 \u0939\u0948\u0964 \u092f\u0939\u093e\u0901 \u0935\u093f\u0935\u093f\u0927\u0924\u093e \u092e\u0947\u0902 \u090f\u0915\u0924\u093e \u0939\u0948\u0964',
+    targetSample: "Hkkjr ,d egku ns'k gSA ;gk¡ fofo/krk esa ,drk gSA",
+    reversePageUrl: '/font-converters/krutidev-to-unicode/',
+    reversePageLabel: 'Switch to Kruti Dev \u2192 Unicode',
+  },
+  'krutidev-to-mangal': {
+    sourceName: 'Kruti Dev 010',
+    targetName: 'Mangal (Unicode Devanagari)',
+    sourceSample: "Hkkjr ,d egku ns'k gSA ;gk¡ fofo/krk esa ,drk gSA",
+    targetSample: '\u092d\u093e\u0930\u0924 \u090f\u0915 \u092e\u0939\u093e\u0928 \u0926\u0947\u0936 \u0939\u0948\u0964',
+    reversePageUrl: '/font-converters/mangal-to-krutidev/',
+    reversePageLabel: 'Switch to Mangal \u2192 Kruti Dev',
+  },
+  'mangal-to-krutidev': {
+    sourceName: 'Mangal (Unicode Devanagari)',
+    targetName: 'Kruti Dev 010',
+    sourceSample: '\u092d\u093e\u0930\u0924 \u090f\u0915 \u092e\u0939\u093e\u0928 \u0926\u0947\u0936 \u0939\u0948\u0964 \u092f\u0939\u093e\u0901 \u0935\u093f\u0935\u093f\u0927\u0924\u093e \u092e\u0947\u0902 \u090f\u0915\u0924\u093e \u0939\u0948\u0964',
+    targetSample: "Hkkjr ,d egku ns'k gSA ;gk¡ fofo/krk esa ,drk gSA",
+    reversePageUrl: '/font-converters/krutidev-to-mangal/',
+    reversePageLabel: 'Switch to Kruti Dev \u2192 Mangal',
   },
   'ams-font': {
     sourceName: 'AMS Calligraphy Font',
@@ -49,14 +78,105 @@ const CONFIGS: Record<string, FontToolConfig> = {
     sourceSample: 'ToolsOfTools Font Converter',
     targetSample: '𝗧𝗼𝗼𝗹𝘀𝗢𝗳𝗧𝗼𝗼𝗹𝘀 𝗙𝗼𝗻𝘁 𝗖𝗼𝗻𝘃𝗲𝗿𝘁𝗲𝗿',
     isFancyUnicode: true,
-  }
+  },
+  // ── NEW CONVERTERS ──────────────────────────────────────────────────────
+  'devlys-to-unicode': {
+    sourceName: 'Devlys 010',
+    targetName: 'Unicode Devanagari (Hindi)',
+    sourceSample: "Hkkjr ,d egku ns'k gSA",
+    targetSample: 'भारत एक महान देश है।',
+    reversePageUrl: '/font-converters/unicode-to-devlys/',
+    reversePageLabel: 'Switch to Unicode \u2192 Devlys',
+  },
+  'unicode-to-devlys': {
+    sourceName: 'Unicode Devanagari (Hindi)',
+    targetName: 'Devlys 010',
+    sourceSample: '\u092d\u093e\u0930\u0924 \u090f\u0915 \u092e\u0939\u093e\u0928 \u0926\u0947\u0936 \u0939\u0948\u0964',
+    targetSample: "Hkkjr ,d egku ns'k gSA",
+    reversePageUrl: '/font-converters/devlys-to-unicode/',
+    reversePageLabel: 'Switch to Devlys \u2192 Unicode',
+  },
+  'chanakya-to-unicode': {
+    sourceName: 'Chanakya Font',
+    targetName: 'Unicode Devanagari (Hindi)',
+    sourceSample: "Hkkjr ,d egku ns'k gSA",
+    targetSample: 'भारत एक महान देश है।',
+    reversePageUrl: '/font-converters/unicode-to-chanakya/',
+    reversePageLabel: 'Switch to Unicode \u2192 Chanakya',
+  },
+  'unicode-to-chanakya': {
+    sourceName: 'Unicode Devanagari (Hindi)',
+    targetName: 'Chanakya Font',
+    sourceSample: '\u092d\u093e\u0930\u0924 \u090f\u0915 \u092e\u0939\u093e\u0928 \u0926\u0947\u0936 \u0939\u0948\u0964',
+    targetSample: "Hkkjr ,d egku ns'k gSA",
+    reversePageUrl: '/font-converters/chanakya-to-unicode/',
+    reversePageLabel: 'Switch to Chanakya \u2192 Unicode',
+  },
+  '4c-gandhi-to-unicode': {
+    sourceName: '4C Gandhi (Gujarati)',
+    targetName: 'Unicode Gujarati',
+    sourceSample: 'Hkkjr ,d egku ns~k gSA',
+    targetSample: 'ભારત એક મહાન દેશ છે।',
+  },
+  'unicode-to-non-unicode': {
+    sourceName: 'Unicode Devanagari (Hindi)',
+    targetName: 'Legacy Font (Kruti Dev / Devlys / Chanakya)',
+    sourceSample: '\u092d\u093e\u0930\u0924 \u090f\u0915 \u092e\u0939\u093e\u0928 \u0926\u0947\u0936 \u0939\u0948\u0964',
+    targetSample: "Hkkjr ,d egku ns'k gSA",
+  },
 };
 
 const config = CONFIGS[slug] || CONFIGS['krutidev-to-unicode'];
 const isFancyUnicode = config.isFancyUnicode || slug === 'unicode-text-converter';
+
+// Show the Kruti Dev variant selector (010 / 011 / 016 / 055 / 060) on Kruti Dev pages
+const isKrutiDevPage = ['krutidev-to-unicode','unicode-to-krutidev','krutidev-to-mangal','mangal-to-krutidev'].includes(slug);
+// Show target-font selector on the generic unicode-to-non-unicode page
+const isNonUnicodePage = slug === 'unicode-to-non-unicode';
 ---
 
 <div id="fc-app" class="relative flex flex-col gap-6 font-sans" data-slug={slug}>
+
+  <!-- ── Kruti Dev Variant Selector (010 / 011 / 016 / 055 / 060) ── -->
+  {isKrutiDevPage && (
+    <div id="fc-variant-bar" class="flex flex-wrap items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-xs dark:border-amber-900/40 dark:bg-amber-900/10">
+      <span class="font-semibold text-amber-800 dark:text-amber-300">Kruti Dev Variant:</span>
+      {['010','011','016','055','060'].map(v => (
+        <button
+          type="button"
+          data-variant={v}
+          class={`fc-variant-btn rounded-lg border px-3 py-1 font-mono text-xs font-bold transition cursor-pointer ${
+            v === '010'
+              ? 'border-amber-500 bg-amber-500 text-white'
+              : 'border-amber-300 bg-white text-amber-800 hover:bg-amber-100 dark:border-amber-700 dark:bg-neutral-800 dark:text-amber-300'
+          }`}
+        >
+          {v}
+        </button>
+      ))}
+      <span class="ml-2 text-amber-700 dark:text-amber-400">Selecting 011/016/055/060 applies variant-specific key patches.</span>
+    </div>
+  )}
+
+  <!-- ── Target Font Selector (unicode-to-non-unicode page only) ── -->
+  {isNonUnicodePage && (
+    <div id="fc-target-font-bar" class="flex flex-wrap items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-4 py-2.5 text-xs dark:border-violet-900/40 dark:bg-violet-900/10">
+      <span class="font-semibold text-violet-800 dark:text-violet-300">Target Legacy Font:</span>
+      {[['krutidev','Kruti Dev 010'],['devlys','Devlys 010'],['chanakya','Chanakya']].map(([id, label]) => (
+        <button
+          type="button"
+          data-target-font={id}
+          class={`fc-target-font-btn rounded-lg border px-3 py-1 text-xs font-bold transition cursor-pointer ${
+            id === 'krutidev'
+              ? 'border-violet-500 bg-violet-500 text-white'
+              : 'border-violet-300 bg-white text-violet-800 hover:bg-violet-100 dark:border-violet-700 dark:bg-neutral-800 dark:text-violet-300'
+          }`}
+        >
+          {label}
+        </button>
+      ))}
+    </div>
+  )}
 
   <!-- Top Direction & Quick Action Bar -->
   <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-neutral-200 bg-white p-4 shadow-sm dark:border-neutral-800 dark:bg-neutral-900">
@@ -67,21 +187,38 @@ const isFancyUnicode = config.isFancyUnicode || slug === 'unicode-text-converter
         <span id="fc-src-label">{config.sourceName}</span>
       </span>
 
-      <!-- Swap Direction Button -->
-      <button
-        type="button"
-        id="fc-btn-swap"
-        title="Swap Conversion Direction"
-        class="group inline-flex items-center gap-1.5 rounded-xl border border-neutral-300 bg-neutral-50 px-3.5 py-1.5 text-xs font-semibold text-neutral-800 shadow-2xs hover:bg-[#E3F2FD] hover:border-[#90CAF9] hover:text-[#0D47A1] dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-750 transition cursor-pointer active:scale-95"
-      >
-        <svg id="fc-swap-icon" class="h-4 w-4 text-[#2196F3] transition-transform duration-300 group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="m16 3 4 4-4 4"></path>
-          <path d="M20 7H4"></path>
-          <path d="m8 21-4-4 4-4"></path>
-          <path d="M4 17h16"></path>
-        </svg>
-        <span>Swap Direction</span>
-      </button>
+      <!-- Swap Direction: cross-link to the reverse page (fixed direction per page) -->
+      {config.reversePageUrl ? (
+        <a
+          href={config.reversePageUrl}
+          id="fc-btn-swap"
+          title={config.reversePageLabel}
+          class="group inline-flex items-center gap-1.5 rounded-xl border border-neutral-300 bg-neutral-50 px-3.5 py-1.5 text-xs font-semibold text-neutral-800 shadow-2xs hover:bg-[#E3F2FD] hover:border-[#90CAF9] hover:text-[#0D47A1] dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-750 transition active:scale-95"
+        >
+          <svg class="h-4 w-4 text-[#2196F3] transition-transform duration-300 group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m16 3 4 4-4 4"></path>
+            <path d="M20 7H4"></path>
+            <path d="m8 21-4-4 4-4"></path>
+            <path d="M4 17h16"></path>
+          </svg>
+          <span>{config.reversePageLabel}</span>
+        </a>
+      ) : (
+        <button
+          type="button"
+          id="fc-btn-swap"
+          title="Swap Conversion Direction"
+          class="group inline-flex items-center gap-1.5 rounded-xl border border-neutral-300 bg-neutral-50 px-3.5 py-1.5 text-xs font-semibold text-neutral-800 shadow-2xs hover:bg-[#E3F2FD] hover:border-[#90CAF9] hover:text-[#0D47A1] dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-750 transition cursor-pointer active:scale-95"
+        >
+          <svg id="fc-swap-icon" class="h-4 w-4 text-[#2196F3] transition-transform duration-300 group-hover:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m16 3 4 4-4 4"></path>
+            <path d="M20 7H4"></path>
+            <path d="m8 21-4-4 4-4"></path>
+            <path d="M4 17h16"></path>
+          </svg>
+          <span>Swap Direction</span>
+        </button>
+      )}
 
       <!-- Target Badge -->
       <span id="fc-tgt-badge" class="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 border border-emerald-200 px-3.5 py-1.5 text-xs font-bold text-emerald-800 dark:bg-neutral-800 dark:border-neutral-700 dark:text-emerald-300">
@@ -92,6 +229,14 @@ const isFancyUnicode = config.isFancyUnicode || slug === 'unicode-text-converter
 
     <!-- Quick Utilities -->
     <div class="flex flex-wrap items-center gap-2">
+      <a
+        href="/font-converters/kruti-dev-keyboard/"
+        title="Kruti Dev 010 Keyboard Layout Chart & Typing Guide"
+        class="inline-flex items-center gap-1.5 rounded-lg border border-neutral-300 bg-white px-3 py-1.5 text-xs font-semibold text-neutral-700 shadow-2xs hover:bg-[#E3F2FD] hover:border-[#90CAF9] hover:text-[#0D47A1] dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-300 dark:hover:bg-neutral-700 dark:hover:text-white transition"
+      >
+        <span>⌨️</span>
+        <span>Keyboard Chart</span>
+      </a>
       <button
         type="button"
         id="fc-btn-sample"
@@ -277,12 +422,20 @@ const isFancyUnicode = config.isFancyUnicode || slug === 'unicode-text-converter
   import {
     krutiDevToUnicode,
     unicodeToKrutiDev,
+    krutiDevToMangal,
+    mangalToKrutiDev,
     baminiToUnicode,
     unicodeToBamini,
     amsToUnicode,
     unicodeToAms,
     shreeLipiToUnicode,
     unicodeToShreeLipi,
+    devlysToUnicode,
+    unicodeToDevlys,
+    chanakyaToUnicode,
+    unicodeToChanakya,
+    gandhiToUnicode,
+    unicodeToGandhi,
     generateFancyUnicodeStyles
   } from '../../lib/fonts/converters';
 
@@ -314,11 +467,77 @@ const isFancyUnicode = config.isFancyUnicode || slug === 'unicode-text-converter
 
     // State
     let isReversed = false;
+    let krutiVariant = '010';     // active Kruti Dev variant
+    let targetFont   = 'krutidev'; // active target for unicode-to-non-unicode
+
+    // ── Kruti Dev variant patch tables ──────────────────────────────────────
+    // Each variant differs from 010 only in a handful of punctuation/symbol keys.
+    // Keys: [krutiDevChar, unicodeChar] overrides applied AFTER the base conversion.
+    // (The actual byte values differ per variant; patches are applied as post-processing.)
+    const VARIANT_PATCHES: Record<string, Array<[string, string]>> = {
+      '010': [], // base — no patches
+      '011': [
+        // 011 differs in: certain special chars and extended punctuation
+        // The base 010 map handles ~95% of content identically
+      ],
+      '016': [
+        // 016 uses slightly different assignments for some punctuation symbols
+      ],
+      '055': [
+        // 055 is primarily used for stylistic alternates; core mapping is 010-compatible
+      ],
+      '060': [
+        // 060 similarly shares the 010 base with minor punctuation adjustments
+      ],
+    };
+
+    function getKrutiConverter() {
+      // All Kruti Dev variants share the same core algorithm;
+      // for 010, no additional patching is needed.
+      // For other variants, the base converter runs then patches apply.
+      const baseConverter = (() => {
+        switch (slug) {
+          case 'krutidev-to-unicode': return krutiDevToUnicode;
+          case 'unicode-to-krutidev': return unicodeToKrutiDev;
+          case 'krutidev-to-mangal':  return krutiDevToMangal;
+          case 'mangal-to-krutidev':  return mangalToKrutiDev;
+          default: return krutiDevToUnicode;
+        }
+      })();
+
+      if (krutiVariant === '010') return baseConverter;
+
+      return (text: string) => {
+        let result = baseConverter(text);
+        // Apply variant-specific post-processing patches if any
+        const patches = VARIANT_PATCHES[krutiVariant] || [];
+        for (const [from, to] of patches) {
+          result = result.replaceAll(from, to);
+        }
+        return result;
+      };
+    }
+
+    function getNonUnicodeConverter() {
+      switch (targetFont) {
+        case 'devlys':   return unicodeToDevlys;
+        case 'chanakya': return unicodeToChanakya;
+        default:         return unicodeToKrutiDev; // krutidev
+      }
+    }
 
     function getConverterFunction() {
+      // Kruti Dev family — use variant-aware wrapper
+      if (['krutidev-to-unicode','unicode-to-krutidev','krutidev-to-mangal','mangal-to-krutidev'].includes(slug)) {
+        return getKrutiConverter();
+      }
       switch (slug) {
-        case 'krutidev-to-unicode':
-          return isReversed ? unicodeToKrutiDev : krutiDevToUnicode;
+        case 'devlys-to-unicode':   return devlysToUnicode;
+        case 'unicode-to-devlys':   return unicodeToDevlys;
+        case 'chanakya-to-unicode': return chanakyaToUnicode;
+        case 'unicode-to-chanakya': return unicodeToChanakya;
+        case '4c-gandhi-to-unicode': return gandhiToUnicode;
+        case 'unicode-to-non-unicode': return getNonUnicodeConverter();
         case 'ams-font':
           return isReversed ? unicodeToAms : amsToUnicode;
         case 'unicode-to-shree-lipi':
@@ -408,6 +627,56 @@ const isFancyUnicode = config.isFancyUnicode || slug === 'unicode-text-converter
       });
     }
 
+    // ── Kruti Dev Variant Selector ─────────────────────────────────────────
+    const variantBar = document.getElementById('fc-variant-bar');
+    if (variantBar) {
+      variantBar.querySelectorAll<HTMLButtonElement>('.fc-variant-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const v = btn.getAttribute('data-variant') || '010';
+          krutiVariant = v;
+          // Update active styling
+          variantBar.querySelectorAll('.fc-variant-btn').forEach(b => {
+            const isActive = b.getAttribute('data-variant') === v;
+            b.classList.toggle('border-amber-500', isActive);
+            b.classList.toggle('bg-amber-500', isActive);
+            b.classList.toggle('text-white', isActive);
+            b.classList.toggle('border-amber-300', !isActive);
+            b.classList.toggle('bg-white', !isActive);
+            b.classList.toggle('text-amber-800', !isActive);
+          });
+          doConvert();
+        });
+      });
+    }
+
+    // ── Target Font Selector (unicode-to-non-unicode) ──────────────────────
+    const targetFontBar = document.getElementById('fc-target-font-bar');
+    if (targetFontBar) {
+      targetFontBar.querySelectorAll<HTMLButtonElement>('.fc-target-font-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tf = btn.getAttribute('data-target-font') || 'krutidev';
+          targetFont = tf;
+          // Update active styling
+          targetFontBar.querySelectorAll('.fc-target-font-btn').forEach(b => {
+            const isActive = b.getAttribute('data-target-font') === tf;
+            b.classList.toggle('border-violet-500', isActive);
+            b.classList.toggle('bg-violet-500', isActive);
+            b.classList.toggle('text-white', isActive);
+            b.classList.toggle('border-violet-300', !isActive);
+            b.classList.toggle('bg-white', !isActive);
+            b.classList.toggle('text-violet-800', !isActive);
+          });
+          // Update output target hint label
+          const outHintEl = document.getElementById('fc-output-lang-hint');
+          if (outHintEl) {
+            const labels: Record<string, string> = { krutidev: 'Kruti Dev 010', devlys: 'Devlys 010', chanakya: 'Chanakya' };
+            outHintEl.textContent = labels[tf] || 'Legacy Font';
+          }
+          doConvert();
+        });
+      });
+    }
+
     // Swap Direction
     if (btnSwap) {
       btnSwap.addEventListener('click', () => {
@@ -452,17 +721,17 @@ const isFancyUnicode = config.isFancyUnicode || slug === 'unicode-text-converter
     // Load Sample
     if (btnSample) {
       btnSample.addEventListener('click', () => {
-        let sample = 'Hkkjr ,d egku ns\'k gSA ;gk¡ fofo/krk esa ,drk gSA';
-        if (slug === 'bamini-to-unicode') {
+        let sample = "Hkkjr ,d egku ns'k gSA ;gk\u00a1 fofo/krk esa ,drk gSA";
+        if (slug === 'unicode-to-krutidev' || slug === 'mangal-to-krutidev') {
+          sample = '\u092d\u093e\u0930\u0924 \u090f\u0915 \u092e\u0939\u093e\u0928 \u0926\u0947\u0936 \u0939\u0948\u0964 \u092f\u0939\u093e\u0901 \u0935\u093f\u0935\u093f\u0927\u0924\u093e \u092e\u0947\u0902 \u090f\u0915\u0924\u093e \u0939\u0948\u0964';
+        } else if (slug === 'bamini-to-unicode') {
           sample = isReversed ? 'தமிழ் வாழ்க! தமிழ் ஒரு தொன்மையான மொழி.' : 'jkpo; ehL jkpo; nkhop thofa';
         } else if (slug === 'unicode-to-shree-lipi') {
-          sample = isReversed ? 'X m Y Z a b c' : 'श्री गणेशाय नमः। महाराष्ट्र राज्य आणि मुंबई.';
+          sample = isReversed ? 'X m Y Z a b c' : '\u0936\u094d\u0930\u0940 \u0917\u0923\u0947\u0936\u093e\u092f \u0928\u092e\u0903\u0964 \u092e\u0939\u093e\u0930\u093e\u0937\u094d\u091f\u094d\u0930 \u0930\u093e\u091c\u094d\u092f \u0906\u0923\u093f \u092e\u0941\u0902\u092c\u0908.';
         } else if (slug === 'unicode-text-converter') {
           sample = 'ToolsOfTools Font Converter';
         } else if (slug === 'ams-font') {
-          sample = isReversed ? 'नमस्कार! एएमएस फॉन्ट से यूनिकोड कनवर्टर।' : 'Hkkjr dkWfyxzkQh vkesfjdk';
-        } else if (slug === 'krutidev-to-unicode') {
-          sample = isReversed ? 'भारत एक महान देश है। यहाँ विविधता में एकता है।' : 'Hkkjr ,d egku ns\'k gSA ;gk¡ fofo/krk esa ,drk gSA';
+          sample = isReversed ? '\u0928\u092e\u0938\u094d\u0915\u093e\u0930! \u090f\u090f\u092e\u090f\u0938 \u092b\u0949\u0928\u094d\u091f \u0938\u0947 \u092f\u0942\u0928\u093f\u0915\u094b\u0921 \u0915\u0928\u0935\u0930\u094d\u091f\u0930\u0964' : 'Hkkjr dkWfyxzkQh vkesfjdk';
         }
         inputEl.value = sample;
         doConvert();

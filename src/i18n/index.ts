@@ -79,13 +79,13 @@ export function getHtmlLang(lang: string): string {
     case 'jp':
       return 'ja';
     case 'cn':
-      return 'zh-CN';
+      return 'zh-Hans';
     case 'kr':
       return 'ko';
     case 'sa':
       return 'ar';
     case 'il':
-      return 'it';
+      return 'he';
     default:
       return 'en';
   }

@@ -23,6 +23,7 @@ sources:
 updated: "2026-03-01"
 related:
   - "krutidev-to-unicode"
+  - "kruti-dev-keyboard"
   - "ams-font"
   - "unicode-to-shree-lipi"
   - "unicode-text-converter"

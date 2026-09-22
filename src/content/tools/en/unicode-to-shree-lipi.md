@@ -21,9 +21,10 @@ sources:
 updated: "2026-03-01"
 related:
   - "krutidev-to-unicode"
+  - "kruti-dev-keyboard"
+  - "devlys-to-unicode"
   - "ams-font"
   - "unicode-text-converter"
-  - "bamini-to-unicode"
 disclaimer: "none"
 ---
 

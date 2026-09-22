@@ -23,9 +23,10 @@ sources:
 updated: "2026-03-01"
 related:
   - "krutidev-to-unicode"
+  - "kruti-dev-keyboard"
+  - "unicode-to-krutidev"
   - "ams-font"
-  - "unicode-to-shree-lipi"
-  - "bamini-to-unicode"
+  - "unicode-to-non-unicode"
 disclaimer: "none"
 ---
 

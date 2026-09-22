@@ -17,7 +17,8 @@ export async function getStaticPaths() {
     'il',
   ];
 
-  const enTools = toolsByLang('en');
+  // Exclude Hindi/Indian regional font converters from non-English translations
+  const enTools = toolsByLang('en').filter((tool) => tool.folder !== 'font-converters');
   const paths: any[] = [];
 
   for (const lang of nonRootLanguages) {

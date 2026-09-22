@@ -8,7 +8,8 @@ export async function getStaticPaths() {
   // Exclude 'calculadora' mounted on /es/ homepage
   const dedicatedEs = esTools.filter((tool) => !(tool.slug === 'calculadora' && tool.folder === 'otras-calculadoras'));
   const esSlugs = new Set(dedicatedEs.map((t) => t.slug));
-  const enTools = toolsByLang('en').filter((t) => !esSlugs.has(t.slug));
+  // Exclude Hindi/Indian font converters from Spanish translations
+  const enTools = toolsByLang('en').filter((t) => !esSlugs.has(t.slug) && t.folder !== 'font-converters');
 
   const paths = await Promise.all(
     dedicatedEs.map(async (tool) => {

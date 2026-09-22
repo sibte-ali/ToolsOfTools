@@ -37,4 +37,15 @@ describe('buildTools URL invariants', () => {
       expect(yearPattern.test(tool.url)).toBe(false);
     }
   });
+
+  it('all font converter tools are English-only', () => {
+    const fontTools = buildTools.filter((t) => t.folder === 'font-converters');
+    expect(fontTools.length).toBeGreaterThan(0);
+    for (const tool of fontTools) {
+      expect(tool.lang).toBe('en');
+    }
+
+    const nonEnFontTools = buildTools.filter((t) => t.folder === 'font-converters' && t.lang !== 'en');
+    expect(nonEnFontTools).toHaveLength(0);
+  });
 });

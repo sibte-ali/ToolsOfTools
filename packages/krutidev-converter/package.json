@@ -1,0 +1,75 @@
+{
+  "name": "krutidev-converter",
+  "version": "1.0.0",
+  "description": "Ultra-fast, zero-dependency Kruti Dev, Devlys, Chanakya & Mangal Unicode Devanagari bidirectional converter engine with accurate matra and reph reordering.",
+  "author": "ToolsOfTools (https://toolsoftools.com)",
+  "license": "MIT",
+  "keywords": [
+    "krutidev",
+    "kruti-dev",
+    "krutidev-to-unicode",
+    "unicode-to-krutidev",
+    "mangal-font",
+    "devlys",
+    "chanakya",
+    "hindi-typing",
+    "remington",
+    "devanagari",
+    "indic",
+    "font-converter"
+  ],
+  "homepage": "https://toolsoftools.com/font-converters/krutidev-to-unicode/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/toolsoftools/indic-font-converter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/toolsoftools/indic-font-converter/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./krutidev": {
+      "types": "./dist/krutidev.d.ts",
+      "import": "./dist/krutidev.js",
+      "require": "./dist/krutidev.cjs"
+    },
+    "./devlys": {
+      "types": "./dist/devlys.d.ts",
+      "import": "./dist/devlys.js",
+      "require": "./dist/devlys.cjs"
+    },
+    "./chanakya": {
+      "types": "./dist/chanakya.d.ts",
+      "import": "./dist/chanakya.js",
+      "require": "./dist/chanakya.cjs"
+    },
+    "./gandhi": {
+      "types": "./dist/gandhi.d.ts",
+      "import": "./dist/gandhi.js",
+      "require": "./dist/gandhi.cjs"
+    }
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.7"
+  }
+}

@@ -6,7 +6,8 @@ import { getEntry } from 'astro:content';
 export async function getStaticPaths() {
   const ptTools = toolsByLang('pt-br');
   const ptSlugs = new Set(ptTools.map((t) => t.slug));
-  const enTools = toolsByLang('en').filter((t) => !ptSlugs.has(t.slug));
+  // Exclude Hindi/Indian font converters from Portuguese translations
+  const enTools = toolsByLang('en').filter((t) => !ptSlugs.has(t.slug) && t.folder !== 'font-converters');
 
   const paths = await Promise.all(
     ptTools.map(async (tool) => {

@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
+import preact from '@astrojs/preact';
 import tailwindcss from '@tailwindcss/vite';
 import fs from 'node:fs';
 
@@ -40,6 +41,7 @@ export default defineConfig({
     },
   },
   integrations: [
+    preact(),
     sitemap({
       i18n: {
         defaultLocale: 'en',
@@ -54,6 +56,8 @@ export default defineConfig({
         if (page.includes('/es/otras-calculadoras/calculadora/')) return false;
         // Exclude 404 page
         if (page.includes('/404')) return false;
+        // Exclude non-English font-converters (Hindi tools are English-only)
+        if (page.match(/\/(es|pt-br|it|fr|de|nl|ru|jp|cn|kr|sa|il)\/font-converters\//)) return false;
         return true;
       },
       serialize(item) {
@@ -74,5 +78,8 @@ export default defineConfig({
   ],
   vite: {
     plugins: [/** @type {any} */ (tailwindcss())],
+    optimizeDeps: {
+      exclude: ['@astrojs/preact'],
+    },
   },
 });

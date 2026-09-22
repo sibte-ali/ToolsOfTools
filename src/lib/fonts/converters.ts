@@ -1,7 +1,11 @@
 /**
  * Font Conversion Engines for Indian Regional & Fancy Unicode Scripts
  * Supports:
- * - Kruti Dev 010 <-> Unicode Devanagari (Hindi/Marathi)
+ * - Kruti Dev 010 <-> Unicode Devanagari (Hindi/Marathi)  [via src/lib/krutidev]
+ * - Kruti Dev 010 <-> Mangal (Unicode Devanagari)         [via src/lib/krutidev]
+ * - Devlys 010    <-> Unicode Devanagari                  [via src/lib/devlys]
+ * - Chanakya      <-> Unicode Devanagari                  [via src/lib/chanakya]
+ * - 4C Gandhi     <-> Unicode Gujarati                    [via src/lib/gandhi]
  * - AMS India Font <-> Unicode Devanagari
  * - Shree Lipi (Shree-Dev) <-> Unicode Devanagari
  * - Bamini <-> Tamil Unicode
@@ -9,112 +13,42 @@
  */
 
 // =============================================================================
-// 1. KRUTI DEV 010 <-> UNICODE DEVANAGARI
+// 1. KRUTI DEV 010 <-> UNICODE DEVANAGARI  (shared module)
 // =============================================================================
+export {
+  krutiDevToUnicode,
+  unicodeToKrutiDev,
+  krutiDevToMangal,
+  mangalToKrutiDev,
+  KRUTI_TO_UNICODE_MAP,
+} from '../krutidev/index';
 
-// Mapping array ordered from multi-character to single character for accurate replacement
-const KRUTI_TO_UNICODE_MAP: [string, string][] = [
-  // Special conjuncts & compound glyphs
-  ['“', '“'], ['”', '”'], ['‘', '‘'], ['’', '’'],
-  ['क्द्', 'क्द'], ['द्ग', 'द्ग'], ['द्घ', 'द्घ'], ['द्द', 'द्द'], ['द्ध', 'द्ध'],
-  ['द्ब', 'द्ब'], ['द्भ', 'द्भ'], ['द्म', 'द्म'], ['द्य', 'द्य'], ['द्व', 'द्व'],
-  ['क्त', 'क्त'], ['ज्ञ', 'ज्ञ'], ['त्र', 'त्र'], ['क्ष', 'क्ष'], ['श्र', 'श्र'],
+// =============================================================================
+// 1b. DEVLYS 010 <-> UNICODE DEVANAGARI
+// =============================================================================
+export {
+  devlysToUnicode,
+  unicodeToDevlys,
+  DEVLYS_TO_UNICODE_MAP,
+} from '../devlys/index';
 
-  // Numbers
-  ['0', '०'], ['1', '१'], ['2', '२'], ['3', '३'], ['4', '४'],
-  ['5', '५'], ['6', '६'], ['7', '७'], ['8', '८'], ['9', '९'],
+// =============================================================================
+// 1c. CHANAKYA <-> UNICODE DEVANAGARI
+// =============================================================================
+export {
+  chanakyaToUnicode,
+  unicodeToChanakya,
+  CHANAKYA_TO_UNICODE_MAP,
+} from '../chanakya/index';
 
-  // Multi-character ligatures in Kruti Dev
-  ['vks', 'ओ'], ['vkS', 'औ'], ['vk', 'आ'], ['v', 'अ'],
-  ['bZ', 'ई'], ['b', 'इ'], ['m', 'उ'], ['Å', 'ऊ'], [',', 'ए'], ['S', 'ऐ'],
-  ['ऋ', 'ऋ'],
-
-  // Consonants with nukta & specials
-  ['d', 'क'], ['[k', 'ख'], ['x', 'ग'], ['?k', 'घ'], ['³', 'ङ'],
-  ['p', 'च'], ['N', 'छ'], ['t', 'ज'], ['P', 'झ'], ['¥', 'ञ'],
-  ['V', 'ट'], ['B', 'ठ'], ['M', 'ड'], ['<', 'ढ'], ['.k', 'ण'],
-  ['r', 'त'], ['Fk', 'थ'], ['n', 'द'], ['/k', 'ध'], ['u', 'न'],
-  ['i', 'प'], ['Q', 'फ'], ['c', 'ब'], ['Hk', 'भ'], ['e', 'म'],
-  [';', 'य'], ['j', 'र'], ['y', 'ल'], ['o', 'व'],
-  ['\'k', 'श'], ['\"k', 'ष'], ['l', 'स'], ['g', 'ह'],
-
-  // Half-consonants (Halant forms in Kruti Dev)
-  ['D', 'क्'], ['[', 'ख्'], ['X', 'ग्'], ['?', 'घ्'],
-  ['P', 'च्'], ['T', 'ज्'], ['R', 'त्'], ['F', 'थ्'],
-  ['/', 'ध्'], ['U', 'न्'], ['I', 'प्'], ['Q', 'फ्'],
-  ['C', 'ब्'], ['H', 'भ्'], ['E', 'म्'], ['Y', 'ल्'],
-  ['O', 'व्'], ['\'', 'श्'], ['\"', 'ष्'], ['L', 'स्'],
-
-  // Matras (Vowel signs)
-  ['kS', 'ौ'], ['ks', 'ो'], ['k', 'ा'], ['h', 'ी'],
-  ['q', 'ु'], ['w', 'ू'], ['`', 'ृ'], ['s', 'े'], ['S', 'ै'],
-  ['a', 'ं'], ['¡', 'ँ'], ['%', 'ः'], ['~', '्'],
-
-  // Symbols & Punctuations
-  ['A', '।'], ['॥', '॥'],
-  ['K', 'ज्ञ'], ['=', 'त्र'], ['{', 'क्ष']
-];
-
-export function krutiDevToUnicode(krutiText: string): string {
-  if (!krutiText) return '';
-  let text = krutiText;
-
-  // Step 1: Handle reph 'Z' which appears after the consonant in Kruti Dev
-  // E.g. 'eZ' -> 'र्म' (half ra before the consonant in Unicode)
-  // Match consonant + optional matra + 'Z'
-  const rephRegex = /([a-zA-Z\[\]\?'"`~=%]+)Z/g;
-  text = text.replace(rephRegex, 'Z$1');
-
-  // Step 2: Multi-character replacements
-  for (const [kd, uni] of KRUTI_TO_UNICODE_MAP) {
-    if (text.includes(kd)) {
-      text = text.replaceAll(kd, uni);
-    }
-  }
-
-  // Step 3: Handle chhoti 'ee' ki matra 'f' (precedes consonant in Kruti Dev)
-  // E.g. 'fd' -> 'कि', 'fD' + cons -> 'क्...' + 'ि'
-  // In Unicode, 'ि' comes AFTER the consonant or consonant cluster
-  const chotiEeRegex = /f([\u0900-\u097F]+)/g;
-  text = text.replace(chotiEeRegex, (_match, cluster) => {
-    // If cluster starts with a half-letter (e.g. क् + य), attach ि at end of cluster
-    return cluster + 'ि';
-  });
-
-  // Step 4: Handle moved 'Z' to Unicode reph 'र्'
-  text = text.replaceAll('Z', 'र्');
-
-  // Step 5: Fix any misplaced matras
-  text = text.replace(/ि्/g, '्ि');
-
-  return text;
-}
-
-export function unicodeToKrutiDev(uniText: string): string {
-  if (!uniText) return '';
-  let text = uniText;
-
-  // Step 1: Reorder chhoti 'ee' ki matra: In Unicode it follows the consonant cluster,
-  // in Kruti Dev 'f' must precede the consonant cluster
-  // Match consonant (optionally preceded by half-consonant) + 'ि'
-  const chotiEeRegex = /((?:[\u0900-\u097F]्)*[\u0900-\u097F])ि/g;
-  text = text.replace(chotiEeRegex, 'f$1');
-
-  // Step 2: Reorder reph 'र्': In Unicode it precedes the consonant, in Kruti Dev 'Z' follows
-  const rephRegex = /र्((?:[\u0900-\u097F]्)*[\u0900-\u097F](?:[ाीुूेैोौृ]*))/g;
-  text = text.replace(rephRegex, '$1Z');
-
-  // Step 3: Reverse map Unicode to Kruti Dev (reverse table)
-  // Sort reverse mapping by length of unicode string descending
-  const reverseMap = [...KRUTI_TO_UNICODE_MAP].sort((a, b) => b[1].length - a[1].length);
-  for (const [kd, uni] of reverseMap) {
-    if (text.includes(uni)) {
-      text = text.replaceAll(uni, kd);
-    }
-  }
-
-  return text;
-}
+// =============================================================================
+// 1d. 4C GANDHI <-> UNICODE GUJARATI
+// =============================================================================
+export {
+  gandhiToUnicode,
+  unicodeToGandhi,
+  GANDHI_TO_UNICODE_MAP,
+} from '../gandhi/index';
 
 
 // =============================================================================
@@ -167,8 +101,8 @@ export function baminiToUnicode(baminiText: string): string {
   }
 
   // Handle compound vowel signs: ெ + ா = ொ, ே + ா = ோ, ெ + ள = ௌ
-  text = text.replace(/ொ/g, 'ொ');
-  text = text.replace(/ோ/g, 'ோ');
+  text = text.replace(/ொ/g, 'ொ');
+  text = text.replace(/ோ/g, 'ோ');
   text = text.replace(/ெள/g, 'ௌ');
 
   return text;
@@ -179,8 +113,8 @@ export function unicodeToBamini(tamilText: string): string {
   let text = tamilText;
 
   // Expand compound vowel signs to component pre-base signs
-  text = text.replace(/ொ/g, 'ொ');
-  text = text.replace(/ோ/g, 'ோ');
+  text = text.replace(/ொ/g, 'ொ');
+  text = text.replace(/ோ/g, 'ோ');
   text = text.replace(/ௌ/g, 'ெள');
 
   // Move pre-base vowel signs before consonant
@@ -213,7 +147,7 @@ const AMS_TO_UNICODE_MAP: [string, string][] = [
   ['r', 'त'], ['Fk', 'थ'], ['n', 'द'], ['/k', 'ध'], ['u', 'न'],
   ['i', 'प'], ['Q', 'फ'], ['c', 'ब'], ['Hk', 'भ'], ['e', 'म'],
   [';', 'य'], ['j', 'र'], ['y', 'ल'], ['o', 'व'],
-  ['\'k', 'श'], ['\"k', 'ष'], ['l', 'स'], ['g', 'ह'],
+  ["'k", 'श'], ['"k', 'ष'], ['l', 'स'], ['g', 'ह'],
   ['kS', 'ौ'], ['ks', 'ो'], ['k', 'ा'], ['h', 'ी'],
   ['q', 'ु'], ['w', 'ू'], ['`', 'ृ'], ['s', 'े'], ['S', 'ै'],
   ['a', 'ं'], ['%', 'ः'], ['~', '्']

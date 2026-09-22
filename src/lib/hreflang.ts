@@ -73,6 +73,12 @@ for (const [groupName, targets] of Object.entries(staticPageGroups)) {
  */
 export function getHreflang(currentUrl: string, currentLang?: string): HreflangLink[] {
   const normalizedUrl = currentUrl.endsWith('/') ? currentUrl : `${currentUrl}/`;
+
+  // Hindi font tools are English-only; return strictly a self-referencing English hreflang
+  if (normalizedUrl.includes('/font-converters/')) {
+    return [{ lang: 'en', url: normalizedUrl }];
+  }
+
   const groupName = urlToHreflangGroup.get(normalizedUrl);
 
   if (!groupName) {
